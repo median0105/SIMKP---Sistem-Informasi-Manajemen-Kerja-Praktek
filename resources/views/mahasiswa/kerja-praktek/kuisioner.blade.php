@@ -1,0 +1,167 @@
+{{-- resources/views/mahasiswa/kerja-praktek/kuisioner.blade.php --}}
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Kuisioner Evaluasi KP
+            </h2>
+            <a href="{{ route('mahasiswa.kerja-praktek.index') }}"
+               class="text-unib-blue-600 hover:text-unib-blue-800">
+                <i class="fas fa-arrow-left mr-2"></i>Kembali
+            </a>
+        </div>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+
+            {{-- Flash --}}
+            @if (session('success'))
+                <div class="mb-4 p-3 rounded bg-green-50 text-green-700">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="mb-4 p-3 rounded bg-red-50 text-red-700">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if ($errors->any())
+                <div class="mb-4 p-3 rounded bg-red-50 text-red-700">
+                    <div class="font-semibold mb-1">Periksa lagi input Anda:</div>
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach ($errors->all() as $err)
+                            <li>{{ $err }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+
+                    {{-- Info ringkas KP --}}
+                    <div class="mb-6">
+                        <p class="text-sm text-gray-600">Judul KP</p>
+                        <p class="text-gray-900 font-medium">{{ $kerjaPraktek->judul_kp }}</p>
+                        <p class="text-sm text-gray-600 mt-2">Tempat Magang</p>
+                        <p class="text-gray-900">
+                            @if($kerjaPraktek->pilihan_tempat == 3)
+                                {{ $kerjaPraktek->tempat_magang_sendiri }}
+                            @else
+                                {{ $kerjaPraktek->tempatMagang->nama_perusahaan ?? '-' }}
+                            @endif
+                        </p>
+                    </div>
+
+                    <form method="POST" action="{{ route('mahasiswa.kerja-praktek.store-kuisioner', $kerjaPraktek) }}" class="space-y-6">
+                        @csrf
+
+                        {{-- Rating Tempat Magang --}}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Nilai Tempat Magang (1–5) *
+                            </label>
+                            <div class="flex items-center gap-4">
+                                @for($i=1;$i<=5;$i++)
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="rating_tempat_magang" value="{{ $i }}"
+                                               class="text-unib-blue-600 focus:ring-unib-blue-500"
+                                               {{ old('rating_tempat_magang', $kuisioner->rating_tempat_magang ?? null) == $i ? 'checked' : '' }} required>
+                                        <span class="ml-2">{{ $i }}</span>
+                                    </label>
+                                @endfor
+                            </div>
+                            @error('rating_tempat_magang') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- Rating Bimbingan --}}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Nilai Bimbingan Dosen/Pembimbing (1–5) *
+                            </label>
+                            <div class="flex items-center gap-4">
+                                @for($i=1;$i<=5;$i++)
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="rating_bimbingan" value="{{ $i }}"
+                                               class="text-unib-blue-600 focus:ring-unib-blue-500"
+                                               {{ old('rating_bimbingan', $kuisioner->rating_bimbingan ?? null) == $i ? 'checked' : '' }} required>
+                                        <span class="ml-2">{{ $i }}</span>
+                                    </label>
+                                @endfor
+                            </div>
+                            @error('rating_bimbingan') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- Rating Sistem --}}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Nilai Sistem SIMKP (1–5) *
+                            </label>
+                            <div class="flex items-center gap-4">
+                                @for($i=1;$i<=5;$i++)
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="rating_sistem" value="{{ $i }}"
+                                               class="text-unib-blue-600 focus:ring-unib-blue-500"
+                                               {{ old('rating_sistem', $kuisioner->rating_sistem ?? null) == $i ? 'checked' : '' }} required>
+                                        <span class="ml-2">{{ $i }}</span>
+                                    </label>
+                                @endfor
+                            </div>
+                            @error('rating_sistem') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- Saran --}}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Saran Perbaikan</label>
+                            <textarea name="saran_perbaikan" rows="3"
+                                      class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                      placeholder="Tuliskan saran Anda...">{{ old('saran_perbaikan', $kuisioner->saran_perbaikan ?? '') }}</textarea>
+                            @error('saran_perbaikan') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- Kesan Pesan --}}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Kesan & Pesan</label>
+                            <textarea name="kesan_pesan" rows="3"
+                                      class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                      placeholder="Tuliskan kesan dan pesan...">{{ old('kesan_pesan', $kuisioner->kesan_pesan ?? '') }}</textarea>
+                            @error('kesan_pesan') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- Rekomendasi --}}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Apakah Anda merekomendasikan tempat ini ke teman lain? *
+                            </label>
+                            <div class="flex items-center gap-6">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="rekomendasi_tempat" value="1"
+                                           class="text-unib-blue-600 focus:ring-unib-blue-500"
+                                           {{ (string)old('rekomendasi_tempat', (string)($kuisioner->rekomendasi_tempat ?? '')) === '1' ? 'checked' : '' }} required>
+                                    <span class="ml-2">Ya</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="rekomendasi_tempat" value="0"
+                                           class="text-unib-blue-600 focus:ring-unib-blue-500"
+                                           {{ (string)old('rekomendasi_tempat', (string)($kuisioner->rekomendasi_tempat ?? '')) === '0' ? 'checked' : '' }} required>
+                                    <span class="ml-2">Tidak</span>
+                                </label>
+                            </div>
+                            @error('rekomendasi_tempat') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit"
+                                    class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
+                                <i class="fas fa-save mr-2"></i>Simpan Kuisioner
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</x-app-layout>
