@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             {{-- === Statistik === --}}
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            {{-- <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                 <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center justify-between">
                         <div>
@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- === Filter & Search === --}}
             <div class="bg-white rounded-lg shadow mb-6 p-6">

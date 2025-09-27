@@ -82,7 +82,7 @@
                     <h4 class="font-medium text-gray-900">Kartu </h4>
                     <p class="text-sm text-gray-600 mt-1">
                         @if($data['kerjaPraktek']->acc_pembimbing_lapangan)
-                            ACC Pembimbing
+                            Sudah ACC
                         @elseif($data['kerjaPraktek']->file_kartu_implementasi)
                             Menunggu ACC
                         @else

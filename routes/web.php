@@ -66,6 +66,7 @@ Route::middleware(['auth', 'verified', 'role:mahasiswa'])
         Route::prefix('kerja-praktek')->name('kerja-praktek.')->group(function () {
             Route::get('/',  [MahasiswaKerjaPraktekController::class, 'index'])->name('index');
             Route::post('/', [MahasiswaKerjaPraktekController::class, 'store'])->name('store');
+            Route::get('/check', [MahasiswaKerjaPraktekController::class, 'checkLatestKP'])->name('check');
 
             // Upload laporan & kartu implementasi
             Route::post('{kerjaPraktek}/upload-laporan', [MahasiswaKerjaPraktekController::class, 'uploadLaporan'])->name('upload-laporan');
@@ -134,6 +135,10 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
         // Users
         Route::resource('users', SAUserController::class);
         Route::post('users/{user}/toggle-status', [SAUserController::class, 'toggleStatus'])->name('users.toggle-status');
+        Route::delete('users/{user}/kerja-praktek/{kerjaPraktek}', [SAUserController::class, 'destroyKP'])->name('users.destroy-kp');
+
+        // Kerja Praktek
+        Route::get('kerja-praktek', [SAUserController::class, 'indexKP'])->name('kerja-praktek.index');
 
         // Tempat Magang
         Route::resource('tempat-magang', SATempatMagangController::class);

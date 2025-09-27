@@ -4,9 +4,28 @@
   </x-slot>
 
   <div class="py-8 max-w-5xl mx-auto space-y-6">
+    @if($errors->any())
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <ul>
+          @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>
+    @endif
+    @if(session('error'))
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        {{ session('error') }}
+      </div>
+    @endif
+    @if(session('success'))
+      <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+        {{ session('success') }}
+      </div>
+    @endif
     {{-- Form tambah kegiatan --}}
     <div class="bg-white rounded-lg shadow p-6">
-      <form method="POST" action="{{ route('mahasiswa.kegiatan.store') }}">
+      <form method="POST" action="{{ route('mahasiswa.kegiatan.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -52,11 +71,19 @@
               <tr>
                 <td class="px-3 py-2">{{ $k->tanggal_kegiatan->format('d M Y') }}</td>
                 <td class="px-3 py-2">{{ $k->durasi_jam }} jam</td>
-                <td class="px-3 py-2">{{ $k->file_dokumentasi }}</td>
+                <td class="px-3 py-2">
+                  @if($k->file_dokumentasi)
+                    <a href="{{ \Illuminate\Support\Facades\Storage::url($k->file_dokumentasi) }}" target="_blank">
+                      <img src="{{ \Illuminate\Support\Facades\Storage::url($k->file_dokumentasi) }}" alt="Bukti" class="w-20 h-20 object-cover rounded cursor-pointer hover:opacity-75">
+                    </a>
+                  @else
+                    Tidak ada bukti
+                  @endif
+                </td>
                 <td class="px-3 py-2">{{ $k->deskripsi_kegiatan }}</td>
               </tr>
             @empty
-              <tr><td colspan="3" class="px-3 py-6 text-center text-gray-500">Belum ada kegiatan.</td></tr>
+              <tr><td colspan="4" class="px-3 py-6 text-center text-gray-500">Belum ada kegiatan.</td></tr>
             @endforelse
           </tbody>
         </table>

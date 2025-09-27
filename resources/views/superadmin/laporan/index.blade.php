@@ -22,7 +22,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Laporan & Analytics
+                Laporan & Analisis
             </h2>
             <div class="flex space-x-2">
                 <a href="{{ route('superadmin.laporan.export-kp') }}"
@@ -85,7 +85,7 @@
                         <span class="text-green-600 font-medium">
                             {{ $stats['total_kp'] > 0 ? number_format(($stats['kp_selesai'] / $stats['total_kp']) * 100, 1) : 0 }}%
                         </span>
-                        <span class="text-gray-600 ml-1">completion rate</span>
+                        <span class="text-gray-600 ml-1">Tingkat Penyelesaian</span>
                     </div>
                 </div>
 

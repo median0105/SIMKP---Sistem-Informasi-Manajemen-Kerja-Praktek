@@ -49,13 +49,18 @@ class KegiatanController extends Controller
             'tanggal_kegiatan'   => ['required', 'date'],
             'durasi_jam'         => ['required', 'integer', 'min:1'],
             'deskripsi_kegiatan' => ['required', 'string', 'max:3000'],
+            'file_dokumentasi'   => ['required', 'image', 'max:5120'],
         ]);
 
         // Pastikan mahasiswa punya KP berjalan
         $kp = $request->user()
             ->kerjaPraktek()            // relasi User->hasMany(KerjaPraktek::class)
             ->latest()
-            ->firstOrFail();
+            ->first();
+
+        if (!$kp) {
+            return back()->with('error', 'Anda belum memiliki kerja praktek.');
+        }
 
         if ($kp->status !== KerjaPraktek::STATUS_SEDANG_KP) {
             return back()->with('error', 'Status KP belum/sudah tidak sedang berlangsung.');
@@ -68,6 +73,7 @@ class KegiatanController extends Controller
             'tanggal_kegiatan'   => $data['tanggal_kegiatan'],
             'durasi_jam'         => $data['durasi_jam'],
             'deskripsi_kegiatan' => $data['deskripsi_kegiatan'],
+            'file_dokumentasi'   => $request->file('file_dokumentasi')->store('kegiatan-dokumentasi', 'public'),
         ]);
 
         // Kirim notifikasi ke dosen pembimbing akademik (jika ada)
@@ -125,9 +131,9 @@ class KegiatanController extends Controller
         if ($request->hasFile('file_dokumentasi')) {
             // Hapus file lama
             if ($kegiatan->file_dokumentasi) {
-                Storage::delete($kegiatan->file_dokumentasi);
+                Storage::disk('public')->delete($kegiatan->file_dokumentasi);
             }
-            $data['file_dokumentasi'] = $request->file('file_dokumentasi')->store('kegiatan-dokumentasi');
+            $data['file_dokumentasi'] = $request->file('file_dokumentasi')->store('kegiatan-dokumentasi', 'public');
         }
 
         $kegiatan->update($data);
@@ -142,7 +148,7 @@ class KegiatanController extends Controller
         $this->authorize('delete', $kegiatan);
 
         if ($kegiatan->file_dokumentasi) {
-            Storage::delete($kegiatan->file_dokumentasi);
+            Storage::disk('public')->delete($kegiatan->file_dokumentasi);
         }
 
         $kegiatan->delete();

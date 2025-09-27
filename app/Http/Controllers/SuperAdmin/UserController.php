@@ -5,7 +5,9 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\KerjaPraktek;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -153,5 +155,71 @@ class UserController extends Controller
 
         $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
         return back()->with('success', "User berhasil {$status}.");
+    }
+
+    /**
+     * Hapus data KP yang ditolak untuk mahasiswa tertentu.
+     * Hanya untuk status 'ditolak'.
+     */
+    public function destroyKP(User $user, KerjaPraktek $kerjaPraktek)
+    {
+        $this->authorize('delete', $kerjaPraktek);
+
+        // Pastikan KP milik user ini
+        if ($kerjaPraktek->mahasiswa_id !== $user->id) {
+            return back()->with('error', 'KP tidak ditemukan untuk user ini.');
+        }
+
+        // Hanya boleh hapus jika status ditolak
+        if ($kerjaPraktek->status !== KerjaPraktek::STATUS_DITOLAK) {
+            return back()->with('error', 'Hanya KP yang ditolak yang dapat dihapus.');
+        }
+
+        // Hapus file terkait jika ada
+        if ($kerjaPraktek->file_krs) {
+            Storage::disk('public')->delete($kerjaPraktek->file_krs);
+        }
+        if ($kerjaPraktek->file_laporan) {
+            Storage::disk('public')->delete($kerjaPraktek->file_laporan);
+        }
+        if ($kerjaPraktek->file_kartu_implementasi) {
+            Storage::disk('public')->delete($kerjaPraktek->file_kartu_implementasi);
+        }
+
+        // Hapus catatan terkait (notifikasi, dll.)
+        $kerjaPraktek->notifikasi()->delete();
+        // Jika ada bimbingan/kegiatan kosong, hapus juga (opsional)
+        // $kerjaPraktek->bimbingan()->delete(); // Jika diperlukan
+
+        // Hapus KP
+        $kerjaPraktek->delete();
+
+        return back()->with('success', 'Data KP yang ditolak berhasil dihapus. Mahasiswa dapat mengajukan ulang.');
+    }
+
+    /**
+     * List semua data KP untuk superadmin.
+     */
+    public function indexKP(Request $request)
+    {
+        $search = trim((string) $request->get('search', ''));
+        $status = $request->get('status'); // filter status
+
+        $kerjaPrakteks = KerjaPraktek::with(['mahasiswa', 'tempatMagang'])
+            ->when($search !== '', function ($q) use ($search) {
+                $q->whereHas('mahasiswa', function ($qq) use ($search) {
+                    $qq->where('name', 'like', "%{$search}%")
+                       ->orWhere('npm', 'like', "%{$search}%");
+                })
+                ->orWhere('judul_kp', 'like', "%{$search}%");
+            })
+            ->when($status, function ($q) use ($status) {
+                $q->where('status', $status);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('superadmin.kerja-praktek.index', compact('kerjaPrakteks', 'search', 'status'));
     }
 }

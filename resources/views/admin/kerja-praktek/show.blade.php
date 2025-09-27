@@ -116,6 +116,18 @@
                                     <p class="text-gray-900 mt-1">{{ $kerjaPraktek->tanggal_selesai->format('d F Y') }}</p>
                                 </div>
                             @endif
+
+                            {{-- KRS --}}
+                            @if($kerjaPraktek->file_krs)
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600">Kartu Rencana Studi (KRS)</label>
+                                    <div class="mt-1">
+                                        <a href="{{ Storage::url($kerjaPraktek->file_krs) }}" target="_blank" class="text-unib-blue-600 hover:text-unib-blue-800">
+                                            <i class="fas fa-file-pdf text-red-500 mr-1"></i> Lihat KRS
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -232,7 +244,7 @@
             @if($kerjaPraktek->acc_seminar)
                 <div class="bg-white rounded-lg shadow">
                     <div class="px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900">Kartu Implementasi</h3>
+                        <h3 class="text-lg font-semibold text-gray-900">Lembar Penilaian Kerja Praktek</h3>
                     </div>
                     <div class="p-6">
                         @if($kerjaPraktek->file_kartu_implementasi)
@@ -240,7 +252,7 @@
                                 <div class="flex items-center">
                                     <i class="fas fa-file-pdf text-green-600 text-2xl mr-3"></i>
                                     <div>
-                                        <h4 class="font-medium text-green-800">Kartu Implementasi</h4>
+                                        <h4 class="font-medium text-green-800">Lembar Penilaian Kerja Praktek</h4>
                                         <p class="text-sm text-green-600">
                                             Status: {{ $kerjaPraktek->acc_pembimbing_lapangan ? 'ACC Pembimbing' : 'Pending ACC' }}
                                         </p>
@@ -254,7 +266,7 @@
                                     @if(!$kerjaPraktek->acc_pembimbing_lapangan)
                                         <button type="button" onclick="accKartu({{ $kerjaPraktek->id }})"
                                                 class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
-                                            <i class="fas fa-check mr-2"></i>ACC Kartu
+                                            <i class="fas fa-check mr-2"></i>ACC 
                                         </button>
                                     @endif
                                 </div>
@@ -262,7 +274,7 @@
                         @else
                             <div class="text-center py-6 text-gray-500">
                                 <i class="fas fa-file-upload text-4xl mb-2"></i>
-                                <p>Mahasiswa belum upload kartu implementasi</p>
+                                <p>Mahasiswa belum upload Lembar Penilaian Kerja Praktek</p>
                             </div>
                         @endif
                     </div>
@@ -589,7 +601,7 @@
 
         // ACC kartu implementasi oleh Admin/Dosen
         function accKartu(kpId) {
-            if (!confirm('ACC kartu implementasi mahasiswa ini?')) return;
+            if (!confirm('ACC Lembar Penilaian Kerja Praktek mahasiswa ini?')) return;
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = `/admin/kerja-praktek/${kpId}/acc-kartu`;

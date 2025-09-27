@@ -28,7 +28,7 @@
 
         <!-- Content -->
         <div class="relative z-10 flex flex-col justify-center items-center text-center">
-            <img src="{{ asset('storage/unib.png') }}" alt="UNIB Logo" class="w-40 h-40 mb-6">
+            <img src="{{ asset('storage/logo-unib.png') }}" alt="UNIB Logo" class="w-48 h-auto ">
             <h1 class="text-3xl sm:text-4xl font-bold">Universitas bengkulu</h1>
             <p class="mt-3 text-lg font-medium">Selamat Datang</p>
             <p class="text-sm text-blue-200 mt-1">Sistem Informasi Manajemen Praktek</p>
@@ -53,6 +53,13 @@
             @if (session('status'))
                 <div class="mb-4 p-3 rounded-lg text-sm text-center bg-green-100 text-green-800">
                     {{ session('status') }}
+                </div>
+            @endif
+
+            <!-- Error Message -->
+            @if (session('error'))
+                <div class="mb-4 p-3 rounded-lg text-sm text-center bg-red-100 text-red-800">
+                    {{ session('error') }}
                 </div>
             @endif
 

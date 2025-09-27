@@ -4,7 +4,13 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Notifikasi') }}
             </h2>
-            @if($notifications->where('is_read', false)->count() > 0)
+
+            {{-- Tampilkan tombol "Tandai semua" hanya bila ada yang belum dibaca --}}
+            @php
+                // Idealnya kirim $unreadCount dari controller.
+                $unreadCount = $unreadCount ?? $notifications->where('is_read', false)->count();
+            @endphp
+            @if($unreadCount > 0)
                 <form method="POST" action="{{ route('notifications.mark-all-read') }}">
                     @csrf
                     <button type="submit" class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
@@ -47,7 +53,7 @@
                                                 </div>
                                         @endswitch
                                     </div>
-                                    
+
                                     <div class="ml-4 flex-1">
                                         <div class="flex items-center justify-between">
                                             <h3 class="text-sm font-medium text-gray-900 {{ $notification->is_read ? '' : 'font-bold' }}">
@@ -62,19 +68,23 @@
                                                 @endif
                                             </div>
                                         </div>
+
                                         <p class="mt-1 text-sm text-gray-600">
                                             {{ $notification->message }}
                                         </p>
-                                        
+
                                         <div class="mt-3 flex items-center space-x-3">
+                                            {{-- LINK ke halaman tujuan: klik → POST dulu ke mark-read, baru redirect --}}
                                             @if($notification->action_url)
-                                                <a href="{{ route('notifications.mark-read', $notification) }}" 
-                                                   class="text-unib-blue-600 hover:text-unib-blue-800 text-sm font-medium">
+                                                <a href="{{ $notification->action_url }}"
+                                                   data-mark-url="{{ route('notifications.mark-read', $notification) }}"
+                                                   class="text-unib-blue-600 hover:text-unib-blue-800 text-sm font-medium js-mark-then-go">
                                                     <i class="fas fa-external-link-alt mr-1"></i>
                                                     Lihat Detail
                                                 </a>
                                             @endif
-                                            
+
+                                            {{-- Tombol tandai sudah dibaca (POST murni) --}}
                                             @if(!$notification->is_read)
                                                 <form method="POST" action="{{ route('notifications.mark-read', $notification) }}" class="inline">
                                                     @csrf
@@ -91,7 +101,7 @@
                         @endforeach
                     </div>
 
-                    <!-- Pagination -->
+                    {{-- Pagination --}}
                     <div class="px-6 py-4 border-t border-gray-200">
                         {{ $notifications->links() }}
                     </div>
@@ -105,4 +115,23 @@
             </div>
         </div>
     </div>
+
+    {{-- JS: klik "Lihat Detail" → kirim POST mark-read dulu, baru redirect ke action_url --}}
+    <script>
+      document.querySelectorAll('.js-mark-then-go').forEach(link => {
+        link.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const markUrl = link.dataset.markUrl;
+          try {
+            await fetch(markUrl, {
+              method: 'POST',
+              headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+            });
+          } catch(e) {
+            // gagal menandai dibaca bukan masalah fatal, tetap redirect
+          }
+          window.location.href = link.getAttribute('href');
+        });
+      });
+    </script>
 </x-app-layout>

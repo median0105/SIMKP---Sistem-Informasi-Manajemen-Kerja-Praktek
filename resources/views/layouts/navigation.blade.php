@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center">
-                        <img class="h-8 w-auto" src="{{ asset('storage/unib.png') }}" alt="UNIB Logo">
+                        <img class="h-24 w-auto" src="{{ asset('storage/logo-unib.png') }}" alt="UNIB Logo">
                         <div class="ml-3">
                             <div class="text-white font-bold text-lg">SIMKP</div>
                             <div class="text-unib-blue-200 text-xs">Universitas Bengkulu</div>
@@ -62,6 +62,9 @@
                         </x-nav-link>
                         <x-nav-link :href="route('superadmin.kegiatan.index')" :active="request()->routeIs('superadmin.kegiatan.*')" class="text-white hover:text-unib-blue-200">
                             {{ __('Kegiatan Mahasiswa') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('superadmin.kerja-praktek.index')" :active="request()->routeIs('superadmin.kerja-praktek.*')" class="text-white hover:text-unib-blue-200">
+                            {{ __('Data KP') }}
                         </x-nav-link>
                     @endif
 

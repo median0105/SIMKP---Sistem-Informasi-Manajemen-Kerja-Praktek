@@ -61,6 +61,7 @@ class KerjaPraktekController extends Controller
             // Wajib saat daftar KP
             'ipk_semester' => ['required','numeric','between:0,4.00'],
             'semester_ke'  => ['required','integer','min:1','max:14'],
+            'file_krs'     => ['required','file','mimes:pdf','max:5120'],
         ];
 
         $messages = [
@@ -119,6 +120,8 @@ class KerjaPraktekController extends Controller
         }
 
         // Build payload tersanitasi
+        $fileKrsPath = $request->file('file_krs')->store('krs', 'public');
+
         $payload = [
             'mahasiswa_id'   => $mahasiswaId,
             'judul_kp'       => $dataValid['judul_kp'],
@@ -126,6 +129,7 @@ class KerjaPraktekController extends Controller
             'status'         => KerjaPraktek::STATUS_PENGAJUAN,
             'ipk_semester'   => (float) $dataValid['ipk_semester'],
             'semester_ke'    => (int) $dataValid['semester_ke'],
+            'file_krs'       => $fileKrsPath,
         ];
 
         if ($choice === 1) {
@@ -235,5 +239,18 @@ class KerjaPraktekController extends Controller
 
         return back()->with('success', 'Kartu implementasi berhasil diupload. Menunggu ACC dari pembimbing lapangan.');
     }
-    
+
+    /** Endpoint untuk cek KP terbaru (untuk polling auto-refresh) */
+    public function checkLatestKP()
+    {
+        $kerjaPraktek = KerjaPraktek::where('mahasiswa_id', auth()->id())
+            ->latest('created_at')
+            ->first();
+
+        return response()->json([
+            'has_kp' => $kerjaPraktek ? true : false,
+            'status' => $kerjaPraktek ? $kerjaPraktek->status : null,
+        ]);
+    }
+
 }

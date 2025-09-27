@@ -32,7 +32,7 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('mahasiswa.kerja-praktek.store') }}" class="space-y-6">
+                        <form method="POST" action="{{ route('mahasiswa.kerja-praktek.store') }}" enctype="multipart/form-data" class="space-y-6">
                             @csrf
 
                             {{-- JUDUL KP --}}
@@ -60,6 +60,15 @@
                                            class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
                                     @error('ipk_semester') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                 </div>
+                            </div>
+
+                            {{-- UPLOAD KRS --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Upload Kartu Rencana Studi (KRS) *</label>
+                                <input type="file" name="file_krs" accept=".pdf" required
+                                       class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-unib-blue-50 file:text-unib-blue-700 hover:file:bg-unib-blue-100">
+                                <p class="text-xs text-gray-500 mt-1">Format: PDF, Maksimal 5MB</p>
+                                @error('file_krs') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                             </div>
 
                             {{-- PILIHAN TEMPAT --}}
@@ -319,12 +328,12 @@
                                 {{-- Upload Kartu Implementasi --}}
                                 @if($kerjaPraktek->acc_seminar)
                                     <div>
-                                        <label class="text-sm font-medium text-gray-600">Kartu Implementasi</label>
+                                        <label class="text-sm font-medium text-gray-600">Lembar Penilaian Kerja Praktek</label>
                                         <div class="mt-2">
                                             @if($kerjaPraktek->file_kartu_implementasi)
                                                 <div class="flex items-center space-x-2 mb-2">
                                                     <i class="fas fa-file-pdf text-red-500"></i>
-                                                    <a href="{{ Storage::url($kerjaPraktek->file_kartu_implementasi) }}" target="_blank" class="text-unib-blue-600 hover:text-unib-blue-800">Lihat Kartu Implementasi</a>
+                                                    <a href="{{ Storage::url($kerjaPraktek->file_kartu_implementasi) }}" target="_blank" class="text-unib-blue-600 hover:text-unib-blue-800">Lihat penilaian</a>
                                                     @if($kerjaPraktek->acc_pembimbing_lapangan)
                                                         <span class="text-green-600 text-sm"><i class="fas fa-check-circle mr-1"></i>ACC Pembimbing </span>
                                                     @else
@@ -337,7 +346,7 @@
                                                     <input type="file" name="file_kartu_implementasi" accept=".pdf,.jpg,.jpeg,.png" required
                                                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
                                                     <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
-                                                        <i class="fas fa-upload mr-2"></i> Upload Kartu Implementasi
+                                                        <i class="fas fa-upload mr-2"></i> Upload Lembar Penilaian Kerja Praktek
                                                     </button>
                                                 </form>
                                             @endif
@@ -418,5 +427,19 @@
             const oldChoice = '{{ old('pilihan_tempat') }}';
             toggleCustomInput(oldChoice === '3');
         });
+
+        @if($kerjaPraktek && $kerjaPraktek->status === \App\Models\KerjaPraktek::STATUS_DITOLAK)
+        // Polling untuk refresh otomatis jika KP ditolak dihapus
+        setInterval(function() {
+            fetch('{{ route('mahasiswa.kerja-praktek.check') }}')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.has_kp) {
+                        location.reload();
+                    }
+                })
+                .catch(error => console.error('Polling error:', error));
+        }, 30000); // 30 detik
+        @endif
     </script>
 </x-app-layout>

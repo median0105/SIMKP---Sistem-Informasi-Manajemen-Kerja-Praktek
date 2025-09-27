@@ -53,7 +53,7 @@
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Perusahaan</th>
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Durasi</th>
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Deskripsi</th>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">File</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Bukti</th>
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
                     </tr>
                     </thead>
@@ -78,9 +78,8 @@
                             </td>
                             <td class="px-4 py-2 text-sm">
                                 @if($row->file_dokumentasi)
-                                    <a class="text-unib-blue-600 hover:text-unib-blue-800" target="_blank"
-                                       href="{{ \Illuminate\Support\Facades\Storage::url($row->file_dokumentasi) }}">
-                                        <i class="fas fa-paperclip mr-1"></i>Lihat
+                                    <a href="{{ \Illuminate\Support\Facades\Storage::url($row->file_dokumentasi) }}" target="_blank">
+                                        <img src="{{ \Illuminate\Support\Facades\Storage::url($row->file_dokumentasi) }}" alt="Bukti" class="w-16 h-16 object-cover rounded cursor-pointer hover:opacity-75">
                                     </a>
                                 @else
                                     <span class="text-gray-400">-</span>

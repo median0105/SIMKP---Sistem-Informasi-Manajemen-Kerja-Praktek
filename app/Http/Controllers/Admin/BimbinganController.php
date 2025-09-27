@@ -34,19 +34,21 @@ class BimbinganController extends Controller
                     $q->where('status_verifikasi', false);
                 }
             })
-            // search
+            // search (DIKELOMPOKKAN agar OR tidak "bocor")
             ->when($request->filled('search'), function ($q) use ($request) {
                 $search = trim($request->search);
-                $q->where('topik_bimbingan', 'like', "%{$search}%")
-                  ->orWhereHas('mahasiswa', function ($sub) use ($search) {
-                      $sub->where('name', 'like', "%{$search}%")
-                          ->orWhere('npm', 'like', "%{$search}%");
-                  });
+                $q->where(function ($qq) use ($search) {
+                    $qq->where('topik_bimbingan', 'like', "%{$search}%")
+                       ->orWhereHas('mahasiswa', function ($sub) use ($search) {
+                           $sub->where('name', 'like', "%{$search}%")
+                               ->orWhere('npm', 'like', "%{$search}%");
+                       });
+                });
             })
             ->orderByDesc('tanggal_bimbingan') // utamakan tanggal terbaru
             ->orderByDesc('id')
             ->paginate(15)
-            ->withQueryString(); // supaya filter & search tetap menempel saat paging
+            ->withQueryString();
 
         return view('admin.bimbingan.index', compact('bimbingan'));
     }
@@ -61,6 +63,8 @@ class BimbinganController extends Controller
         $bimbingan->load([
             'mahasiswa:id,name,npm,email',
             'kerjaPraktek.tempatMagang',
+            // jika ada relasi feedbacks, bisa diaktifkan:
+            // 'feedbacks.user:id,name',
         ]);
 
         return view('admin.bimbingan.show', compact('bimbingan'));
@@ -81,7 +85,7 @@ class BimbinganController extends Controller
             'status_verifikasi' => true,
         ])->save();
 
-        // Notifikasi ke mahasiswa (opsional, jika model ada)
+        // Notifikasi ke mahasiswa (opsional)
         if (class_exists(Notifikasi::class)) {
             Notifikasi::create([
                 'user_id'          => $bimbingan->mahasiswa_id,
@@ -89,6 +93,7 @@ class BimbinganController extends Controller
                 'message'          => "Bimbingan '{$bimbingan->topik_bimbingan}' telah diverifikasi oleh dosen pembimbing.",
                 'type'             => 'success',
                 'kerja_praktek_id' => $bimbingan->kerja_praktek_id,
+                // Pastikan route ini ada. Kalau tidak, bisa kosongkan `action_url`.
                 'action_url'       => route('mahasiswa.bimbingan.show', $bimbingan),
             ]);
         }
@@ -103,23 +108,33 @@ class BimbinganController extends Controller
     {
         $this->authorize('update', $bimbingan);
 
-        $data = $request->validate([
-            'catatan_dosen' => ['required','string','max:2000'],
-            'verify'        => ['nullable','boolean'], // centang jika ingin sekalian verifikasi
+        // Terima dua kemungkinan nama input:
+        //  - "catatan_dosen" (nama kolom)
+        //  - "feedback" (nama field di form)
+        $request->validate([
+            'catatan_dosen' => 'required_without:feedback|string|max:2000',
+            'feedback'      => 'required_without:catatan_dosen|string|max:2000',
+            'verify'        => 'nullable|boolean',
         ]);
 
+        $feedbackText = $request->input('catatan_dosen', $request->input('feedback'));
+
         $bimbingan->forceFill([
-            'catatan_dosen'     => $data['catatan_dosen'],
-            'status_verifikasi' => $request->boolean('verify', true), // default: true
+            'catatan_dosen'     => $feedbackText,
+            // Jika checkbox verify dicentang maka true, jika tidak biarkan nilai sebelumnya
+            'status_verifikasi' => $request->has('verify')
+                ? $request->boolean('verify')
+                : $bimbingan->status_verifikasi,
         ])->save();
 
         if (class_exists(Notifikasi::class)) {
             Notifikasi::create([
                 'user_id'          => $bimbingan->mahasiswa_id,
                 'title'            => 'Feedback bimbingan',
-                'message'          => "Dosen memberikan feedback untuk bimbingan '{$bimbingan->topik_bimbingan}'.",
+                'message'          => "Dosen memberikan feedback untuk bimbingan '{$bimbingan->catatan_dosen}'.",
                 'type'             => 'info',
                 'kerja_praktek_id' => $bimbingan->kerja_praktek_id,
+                // Pastikan route ini ada. Kalau tidak, bisa kosongkan `action_url`.
                 'action_url'       => route('mahasiswa.bimbingan.show', $bimbingan),
             ]);
         }

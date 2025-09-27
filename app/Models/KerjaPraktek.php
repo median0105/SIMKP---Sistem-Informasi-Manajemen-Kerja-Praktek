@@ -13,34 +13,35 @@ class KerjaPraktek extends Model
 
     // app/Models/KerjaPraktek.php
 
-protected $fillable = [
-    'mahasiswa_id',
-    'tempat_magang_id',
-    'judul_kp',
-    'pilihan_tempat',
-    'tempat_magang_sendiri',
-    'alamat_tempat_sendiri',
-    'kontak_tempat_sendiri',
-    'tanggal_mulai',
-    'tanggal_selesai',
-    'status',
-    'file_laporan',
-    'file_kartu_implementasi',
-    'acc_seminar',
-    'tanggal_seminar',
-    'acc_pembimbing_lapangan',
-    'penilaian_detail',
-    'nilai_akhir',
-    'keterangan_penilaian',
-    'lulus_ujian',
-    'perlu_responsi',
-    'catatan_dosen',
-    'catatan_pengawas',
+    protected $fillable = [
+        'mahasiswa_id',
+        'tempat_magang_id',
+        'judul_kp',
+        'pilihan_tempat',
+        'tempat_magang_sendiri',
+        'alamat_tempat_sendiri',
+        'kontak_tempat_sendiri',
+        'tanggal_mulai',
+        'tanggal_selesai',
+        'status',
+        'file_laporan',
+        'file_kartu_implementasi',
+        'acc_seminar',
+        'tanggal_seminar',
+        'acc_pembimbing_lapangan',
+        'penilaian_detail',
+        'nilai_akhir',
+        'keterangan_penilaian',
+        'lulus_ujian',
+        'perlu_responsi',
+        'catatan_dosen',
+        'catatan_pengawas',
 
-    // ✅ Tambahan:
-    'ipk_semester',
-    'semester_ke',
-];
+        // ✅ Tambahan:
+        'ipk_semester',
+        'semester_ke',
+        'file_krs',
+    ];
 
     protected $casts = [
         'tanggal_mulai' => 'date',
