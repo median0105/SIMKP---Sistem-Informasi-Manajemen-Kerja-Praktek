@@ -100,6 +100,13 @@
     <x-dropdown align="right" width="48">
         <x-slot name="trigger">
             <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-unib-blue-600 hover:bg-unib-blue-500 focus:outline-none transition ease-in-out duration-150">
+                @if(Auth::user()->avatar)
+                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Avatar" class="w-8 h-8 rounded-full mr-2">
+                @else
+                    <div class="w-6 h-6 rounded-full bg-gray-300 mr-2 flex items-center justify-center">
+                        <i class="fas fa-user text-gray-600 text-xs"></i>
+                    </div>
+                @endif
                 <div>{{ Auth::user()->name }}</div>
                 <div class="ml-1">
                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
