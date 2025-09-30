@@ -24,7 +24,7 @@
                         <span class="
                             @switch($data['kerjaPraktek']->status)
                                 @case('pengajuan') text-yellow-600 @break
-                                @case('disetujui') text-blue-600 @break  
+                                @case('disetujui') text-blue-600 @break
                                 @case('sedang_kp') text-green-600 @break
                                 @case('selesai') text-gray-600 @break
                                 @case('ditolak') text-red-600 @break
@@ -42,69 +42,7 @@
             </div>
         </div>
     </div>
-<!-- Tambahkan setelah Stats Cards yang sudah ada -->
 
-@if($data['kerjaPraktek'] && in_array($data['kerjaPraktek']->status, ['sedang_kp', 'selesai']))
-    <!-- Progress Seminar & Ujian -->
-    <div class="bg-white rounded-lg shadow mb-6">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Progress Seminar & Ujian</h3>
-        </div>
-        <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <!-- Upload Laporan -->
-                <div class="text-center">
-                    <div class="mx-auto w-12 h-12 bg-{{ $data['kerjaPraktek']->file_laporan ? 'green' : 'gray' }}-100 rounded-full flex items-center justify-center mb-3">
-                        <i class="fas fa-file-alt text-{{ $data['kerjaPraktek']->file_laporan ? 'green' : 'gray' }}-600"></i>
-                    </div>
-                    <h4 class="font-medium text-gray-900">Laporan</h4>
-                    <p class="text-sm text-gray-600 mt-1">
-                        {{ $data['kerjaPraktek']->file_laporan ? 'Sudah Upload' : 'Belum Upload' }}
-                    </p>
-                </div>
-
-                <!-- ACC Seminar -->
-                <div class="text-center">
-                    <div class="mx-auto w-12 h-12 bg-{{ $data['kerjaPraktek']->acc_seminar ? 'green' : 'gray' }}-100 rounded-full flex items-center justify-center mb-3">
-                        <i class="fas fa-microphone text-{{ $data['kerjaPraktek']->acc_seminar ? 'green' : 'gray' }}-600"></i>
-                    </div>
-                    <h4 class="font-medium text-gray-900">Seminar</h4>
-                    <p class="text-sm text-gray-600 mt-1">
-                        {{ $data['kerjaPraktek']->acc_seminar ? 'Sudah ACC' : 'Belum ACC' }}
-                    </p>
-                </div>
-
-                <!-- Kartu Implementasi -->
-                <div class="text-center">
-                    <div class="mx-auto w-12 h-12 bg-{{ $data['kerjaPraktek']->acc_pembimbing_lapangan ? 'green' : ($data['kerjaPraktek']->file_kartu_implementasi ? 'yellow' : 'gray') }}-100 rounded-full flex items-center justify-center mb-3">
-                        <i class="fas fa-id-card text-{{ $data['kerjaPraktek']->acc_pembimbing_lapangan ? 'green' : ($data['kerjaPraktek']->file_kartu_implementasi ? 'yellow' : 'gray') }}-600"></i>
-                    </div>
-                    <h4 class="font-medium text-gray-900">Kartu </h4>
-                    <p class="text-sm text-gray-600 mt-1">
-                        @if($data['kerjaPraktek']->acc_pembimbing_lapangan)
-                            Sudah ACC
-                        @elseif($data['kerjaPraktek']->file_kartu_implementasi)
-                            Menunggu ACC
-                        @else
-                            Belum Upload
-                        @endif
-                    </p>
-                </div>
-
-                <!-- Ujian -->
-                <div class="text-center">
-                    <div class="mx-auto w-12 h-12 bg-{{ $data['kerjaPraktek']->lulus_ujian ? 'green' : 'gray' }}-100 rounded-full flex items-center justify-center mb-3">
-                        <i class="fas fa-graduation-cap text-{{ $data['kerjaPraktek']->lulus_ujian ? 'green' : 'gray' }}-600"></i>
-                    </div>
-                    <h4 class="font-medium text-gray-900">Ujian</h4>
-                    <p class="text-sm text-gray-600 mt-1">
-                        {{ $data['kerjaPraktek']->lulus_ujian ? 'Lulus' : ($data['kerjaPraktek']->nilai_akhir ? 'Tidak Lulus' : 'Belum Ujian') }}
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-@endif
     <!-- Total Bimbingan -->
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between">
@@ -156,6 +94,68 @@
         </div>
     </div>
 </div>
+
+<!-- Additional Progress Details (if needed for more space) -->
+@if($data['kerjaPraktek'] && in_array($data['kerjaPraktek']->status, ['sedang_kp', 'selesai']))
+    <div class="bg-white rounded-lg shadow mb-6">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Detail Progress Seminar & Ujian</h3>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Upload Laporan -->
+                <div class="text-center">
+                    <div class="mx-auto w-12 h-12 bg-{{ $data['kerjaPraktek']->file_laporan ? 'green' : 'gray' }}-100 rounded-full flex items-center justify-center mb-3">
+                        <i class="fas fa-file-alt text-{{ $data['kerjaPraktek']->file_laporan ? 'green' : 'gray' }}-600"></i>
+                    </div>
+                    <h4 class="font-medium text-gray-900">Laporan KP</h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                        {{ $data['kerjaPraktek']->file_laporan ? 'Sudah Upload' : 'Belum Upload' }}
+                    </p>
+                </div>
+
+                <!-- ACC Seminar -->
+                <div class="text-center">
+                    <div class="mx-auto w-12 h-12 bg-{{ $data['kerjaPraktek']->acc_seminar ? 'green' : 'gray' }}-100 rounded-full flex items-center justify-center mb-3">
+                        <i class="fas fa-microphone text-{{ $data['kerjaPraktek']->acc_seminar ? 'green' : 'gray' }}-600"></i>
+                    </div>
+                    <h4 class="font-medium text-gray-900">Seminar KP</h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                        {{ $data['kerjaPraktek']->acc_seminar ? 'Sudah ACC' : 'Belum ACC' }}
+                    </p>
+                </div>
+
+                <!-- Kartu Implementasi -->
+                <div class="text-center">
+                    <div class="mx-auto w-12 h-12 bg-{{ $data['kerjaPraktek']->acc_pembimbing_lapangan ? 'green' : ($data['kerjaPraktek']->file_kartu_implementasi ? 'yellow' : 'gray') }}-100 rounded-full flex items-center justify-center mb-3">
+                        <i class="fas fa-id-card text-{{ $data['kerjaPraktek']->acc_pembimbing_lapangan ? 'green' : ($data['kerjaPraktek']->file_kartu_implementasi ? 'yellow' : 'gray') }}-600"></i>
+                    </div>
+                    <h4 class="font-medium text-gray-900">Lembar Penilaian KP</h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                        @if($data['kerjaPraktek']->acc_pembimbing_lapangan)
+                            Sudah ACC
+                        @elseif($data['kerjaPraktek']->file_kartu_implementasi)
+                            Menunggu ACC
+                        @else
+                            Belum Upload
+                        @endif
+                    </p>
+                </div>
+
+                <!-- Ujian -->
+                <div class="text-center">
+                    <div class="mx-auto w-12 h-12 bg-{{ $data['kerjaPraktek']->lulus_ujian ? 'green' : 'gray' }}-100 rounded-full flex items-center justify-center mb-3">
+                        <i class="fas fa-graduation-cap text-{{ $data['kerjaPraktek']->lulus_ujian ? 'green' : 'gray' }}-600"></i>
+                    </div>
+                    <h4 class="font-medium text-gray-900">Ujian</h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                        {{ $data['kerjaPraktek']->lulus_ujian ? 'Lulus' : ($data['kerjaPraktek']->nilai_akhir ? 'Tidak Lulus' : 'Belum Ujian') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
 
 <!-- Content Grid -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

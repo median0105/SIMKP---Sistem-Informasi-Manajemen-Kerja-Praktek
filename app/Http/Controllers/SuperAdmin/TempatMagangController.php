@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TempatMagang;
 use App\Models\KerjaPraktek;
+use App\Models\PengawasTempatMagang;
+use App\Models\User;
 use App\Services\NotificationService;
 
 class TempatMagangController extends Controller
@@ -67,6 +69,8 @@ class TempatMagangController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge(['pengawas_id' => $request->pengawas_id === '' ? null : $request->pengawas_id]);
+
         $request->validate([
             'nama_perusahaan' => 'required|string|max:255',
             'alamat' => 'required|string',
@@ -77,9 +81,15 @@ class TempatMagangController extends Controller
             'kuota_mahasiswa' => 'required|integer|min:1|max:50',
             'deskripsi' => 'nullable|string',
             'is_active' => 'boolean',
+            'pengawas_id' => 'nullable|exists:users,id',
         ]);
 
-        TempatMagang::create($request->all());
+        $tempatMagang = TempatMagang::create($request->except('pengawas_id'));
+
+        // Assign pengawas if provided
+        if ($request->pengawas_id) {
+            User::where('id', $request->pengawas_id)->update(['tempat_magang_id' => $tempatMagang->id]);
+        }
 
         // Send notification to admin dosen about new tempat magang
         NotificationService::sendToRole(
@@ -115,6 +125,8 @@ class TempatMagangController extends Controller
 
     public function update(Request $request, TempatMagang $tempatMagang)
     {
+        $request->merge(['pengawas_id' => $request->pengawas_id === '' ? null : $request->pengawas_id]);
+
         $request->validate([
             'nama_perusahaan' => 'required|string|max:255',
             'alamat' => 'required|string',
@@ -125,10 +137,20 @@ class TempatMagangController extends Controller
             'kuota_mahasiswa' => 'required|integer|min:1|max:50',
             'deskripsi' => 'nullable|string',
             'is_active' => 'boolean',
+            'pengawas_id' => 'nullable|exists:users,id',
         ]);
 
+        $oldPengawasId = $tempatMagang->pengawas->first()->id ?? null;
         $wasInactive = !$tempatMagang->is_active;
-        $tempatMagang->update($request->all());
+        $tempatMagang->update($request->except('pengawas_id'));
+
+        // Handle pengawas assignment
+        if ($oldPengawasId && $oldPengawasId != $request->pengawas_id) {
+            User::where('id', $oldPengawasId)->update(['tempat_magang_id' => null]);
+        }
+        if ($request->pengawas_id) {
+            User::where('id', $request->pengawas_id)->update(['tempat_magang_id' => $tempatMagang->id]);
+        }
 
         // Send notification if tempat magang is reactivated
         if ($wasInactive && $request->is_active) {

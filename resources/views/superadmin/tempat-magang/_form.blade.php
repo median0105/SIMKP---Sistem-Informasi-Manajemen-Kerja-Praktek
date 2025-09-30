@@ -89,6 +89,19 @@
         >{{ old('deskripsi', $tempatMagang->deskripsi ?? '') }}</textarea>
     </div>
 
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Pengawas Lapangan</label>
+        <select name="pengawas_id" class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
+            <option value="">-- Pilih Pengawas Lapangan --</option>
+            @foreach(\App\Models\User::where('role', 'pengawas_lapangan')->where('is_active', true)->get() as $pengawas)
+                <option value="{{ $pengawas->id }}" {{ old('pengawas_id', $tempatMagang ? $tempatMagang->pengawas->first()->id ?? '' : '') == $pengawas->id ? 'selected' : '' }}>
+                    {{ $pengawas->name }} ({{ $pengawas->email }})
+                </option>
+            @endforeach
+        </select>
+        <p class="text-xs text-gray-500 mt-1">Opsional: Pilih pengawas lapangan yang bertanggung jawab untuk tempat magang ini.</p>
+    </div>
+
     <div class="flex items-center gap-3">
         <input type="checkbox" id="is_active" name="is_active" value="1"
                {{ old('is_active', $tempatMagang->is_active ?? true) ? 'checked' : '' }}

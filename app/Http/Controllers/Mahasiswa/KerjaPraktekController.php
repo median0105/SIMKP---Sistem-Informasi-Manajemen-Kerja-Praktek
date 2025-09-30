@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\KerjaPraktek;
 use App\Models\TempatMagang;
 use App\Models\Kuisioner;
+use App\Services\NotificationService;
+use App\Models\PengawasTempatMagang;
+use App\Models\User;
 
 class KerjaPraktekController extends Controller
 {
@@ -148,7 +151,17 @@ class KerjaPraktekController extends Controller
             $payload['tanggal_mulai']          = $dataValid['tanggal_mulai'];
         }
 
-        KerjaPraktek::create($payload);
+        $kerjaPraktek = KerjaPraktek::create($payload);
+
+        // Kirim notifikasi ke dosen
+        NotificationService::sendToRole(
+            'admin_dosen',
+            'Pengajuan Kerja Praktek Baru',
+            'Mahasiswa ' . auth()->user()->name . ' mengajukan kerja praktek dengan judul: ' . $payload['judul_kp'],
+            'info',
+            $kerjaPraktek->id,
+            route('admin.kerja-praktek.show', $kerjaPraktek->id)
+        );
 
         return redirect()->route('mahasiswa.kerja-praktek.index')
             ->with('success', 'Pengajuan kerja praktek berhasil disubmit.');

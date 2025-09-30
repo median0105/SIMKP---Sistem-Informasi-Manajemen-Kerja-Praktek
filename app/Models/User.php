@@ -17,6 +17,7 @@ class User extends Authenticatable
         'password',
         'npm',
         'role',
+        'tempat_magang_id',
         'phone',
         'avatar',
         'is_active',

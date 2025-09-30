@@ -84,9 +84,10 @@ class UserController extends Controller
             'npm'      => 'required_if:role,mahasiswa|nullable|string|unique:users,npm',
             'phone'    => 'nullable|string',
             'password' => 'required|string|min:8|confirmed',
+            'tempat_magang_id' => 'nullable|exists:tempat_magang,id',
         ]);
 
-        User::create([
+        $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'role'     => $request->role,
@@ -94,6 +95,17 @@ class UserController extends Controller
             'phone'    => $request->phone,
             'password' => Hash::make($request->password),
         ]);
+
+        // Jika role pengawas_lapangan dan ada tempat magang_id, buat relasi otomatis
+        if ($request->role === 'pengawas_lapangan' && $request->filled('tempat_magang_id')) {
+            \App\Models\PengawasTempatMagang::create([
+                'pengawas_id' => $user->id,
+                'tempat_magang_id' => $request->tempat_magang_id,
+                'is_active' => true,
+                'jabatan_pengawas' => 'Pengawas Lapangan',
+                'deskripsi_tugas' => 'Pengawas lapangan untuk tempat magang ini',
+            ]);
+        }
 
         return redirect()->route('superadmin.users.index')
             ->with('success', 'User berhasil ditambahkan.');
