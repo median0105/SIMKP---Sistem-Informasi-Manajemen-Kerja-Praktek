@@ -6,14 +6,9 @@
                 Detail Tempat — {{ $tempatMagang->nama_perusahaan }}
             </h2>
             <div class="flex gap-2">
-                <a href="{{ route('superadmin.tempat-magang.edit', $tempatMagang) }}"
-                   class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">
-                   Edit
-                </a>
-                <a href="{{ route('superadmin.tempat-magang.index') }}"
-                   class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium">
-                   Kembali
-                </a>
+                <a href="{{ route('superadmin.tempat-magang.index') }}" class="text-unib-blue-600 hover:text-unib-blue-800">
+                <i class="fas fa-arrow-left mr-2"></i>Kembali
+            </a>
             </div>
         </div>
     </x-slot>

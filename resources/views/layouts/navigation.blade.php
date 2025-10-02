@@ -156,9 +156,18 @@
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-unib-blue-700">
-            <div class="px-4">
-                <div class="font-medium text-base text-white">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-unib-blue-200">{{ Auth::user()->email }}</div>
+            <div class="px-4 flex items-center">
+                @if(Auth::user()->avatar)
+                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Avatar" class="w-10 h-10 rounded-full mr-3">
+                @else
+                    <div class="w-10 h-10 rounded-full bg-gray-300 mr-3 flex items-center justify-center">
+                        <i class="fas fa-user text-gray-600 text-sm"></i>
+                    </div>
+                @endif
+                <div>
+                    <div class="font-medium text-base text-white">{{ Auth::user()->name }}</div>
+                    <div class="font-medium text-sm text-unib-blue-200">{{ Auth::user()->email }}</div>
+                </div>
             </div>
 
             <div class="mt-3 space-y-1">

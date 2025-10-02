@@ -37,7 +37,7 @@
                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
                     </div>
                     <div class="flex items-end gap-2">
-                        <button class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-md">Filter</button>
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Cari</button>
                         <a href="{{ route('superadmin.kegiatan.index') }}" class="ml-3 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md">Reset</a>
                     </div>
                 </form>
@@ -61,7 +61,7 @@
                     @forelse($kegiatan as $row)
                         <tr>
                             <td class="px-4 py-2 text-sm text-gray-900">
-                                {{ \Illuminate\Support\Carbon::parse($row->tanggal_kegiatan)->format('d M Y') }}
+                                {{ $row->tanggal_kegiatan->format('d/m/Y') }}
                             </td>
                             <td class="px-4 py-2">
                                 <div class="text-gray-900 font-medium">{{ $row->mahasiswa->name ?? '-' }}</div>

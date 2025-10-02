@@ -193,8 +193,18 @@ class KerjaPraktekController extends Controller
     public function kuisioner(KerjaPraktek $kerjaPraktek)
     {
         $this->authorize('view', $kerjaPraktek);
+
+        // Pastikan KP sudah selesai
+        if ($kerjaPraktek->status !== 'selesai') {
+            return back()->with('error', 'Kuisioner hanya dapat diisi setelah KP selesai.');
+        }
+
         $kuisioner = $kerjaPraktek->kuisioner; // hasOne
-        return view('mahasiswa.kerja-praktek.kuisioner', compact('kerjaPraktek', 'kuisioner'));
+
+        // Ambil pertanyaan aktif
+        $questions = \App\Models\KuisionerQuestion::where('is_active', true)->orderBy('order')->get();
+
+        return view('mahasiswa.kerja-praktek.kuisioner', compact('kerjaPraktek', 'kuisioner', 'questions'));
     }
 
     /** Simpan kuisioner */
@@ -202,25 +212,44 @@ class KerjaPraktekController extends Controller
     {
         $this->authorize('update', $kerjaPraktek);
 
-        $request->validate([
+        $rules = [
             'rating_tempat_magang' => ['required','integer','min:1','max:5'],
             'rating_bimbingan'     => ['required','integer','min:1','max:5'],
             'rating_sistem'        => ['required','integer','min:1','max:5'],
             'saran_perbaikan'      => ['nullable','string'],
             'kesan_pesan'          => ['nullable','string'],
             'rekomendasi_tempat'   => ['required','boolean'],
+        ];
+
+        // Validasi jawaban dinamis
+        $questions = \App\Models\KuisionerQuestion::where('is_active', true)->get();
+        foreach ($questions as $question) {
+            $key = 'dynamic_answers.' . $question->id;
+            if ($question->type === 'rating') {
+                $rules[$key] = ['required','integer','min:1','max:5'];
+            } elseif ($question->type === 'text') {
+                $rules[$key] = ['nullable','string'];
+            } elseif ($question->type === 'yes_no') {
+                $rules[$key] = ['required','boolean'];
+            }
+        }
+
+        $validated = $request->validate($rules);
+
+        $data = $request->only([
+            'rating_tempat_magang',
+            'rating_bimbingan',
+            'rating_sistem',
+            'saran_perbaikan',
+            'kesan_pesan',
+            'rekomendasi_tempat',
         ]);
+
+        $data['dynamic_answers'] = $validated['dynamic_answers'] ?? [];
 
         Kuisioner::updateOrCreate(
             ['kerja_praktek_id' => $kerjaPraktek->id],
-            $request->only([
-                'rating_tempat_magang',
-                'rating_bimbingan',
-                'rating_sistem',
-                'saran_perbaikan',
-                'kesan_pesan',
-                'rekomendasi_tempat',
-            ])
+            $data
         );
 
         return back()->with('success', 'Kuisioner berhasil disimpan.');

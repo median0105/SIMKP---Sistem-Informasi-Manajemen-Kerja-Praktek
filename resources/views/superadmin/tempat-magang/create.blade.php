@@ -3,10 +3,8 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Tambah Tempat Magang</h2>
-            <a href="{{ route('superadmin.tempat-magang.index') }}"
-               class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium">
-               Kembali
-            </a>
+            <a href="{{ route('superadmin.tempat-magang.index') }}" class="text-unib-blue-600 hover:text-unib-blue-800">
+            <i class="fas fa-arrow-left mr-2"></i>Kembali </a>
         </div>
     </x-slot>
 

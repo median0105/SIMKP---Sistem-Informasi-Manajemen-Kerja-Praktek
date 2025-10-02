@@ -75,10 +75,12 @@
                                         <form method="POST" action="{{ route('superadmin.users.destroy-kp', [$kp->mahasiswa, $kp]) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data KP yang ditolak ini? Mahasiswa dapat mengajukan ulang.')" class="inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
+                                            <button type="submit" class="text-red-600 hover:text-red-900" title="Hapus">
+                                                    <i class="fas fa-trash"></i>Hapus</button>
                                         </form>
                                         @else
-                                        <a href="{{ route('superadmin.users.show', $kp->mahasiswa) }}" class="text-indigo-600 hover:text-indigo-900">Lihat Detail</a>
+                                        <a href="{{ route('superadmin.users.show', $kp->mahasiswa) }}" class="text-unib-blue-600 hover:text-unib-blue-900" title="Detail">
+                                        <i class="fas fa-eye"></i> Detail</a>
                                         @endif
                                     </td>
                                 </tr>

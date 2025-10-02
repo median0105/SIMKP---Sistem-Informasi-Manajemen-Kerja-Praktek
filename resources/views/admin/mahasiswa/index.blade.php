@@ -82,8 +82,8 @@
 
                     <div class="flex gap-2">
                         <button type="submit"
-                                class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-2 rounded-md font-medium">
-                            <i class="fas fa-search mr-2"></i>Filter
+                                class="bg-blue-500 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium">
+                            <i class="fas fa-search mr-2"></i>Cari
                         </button>
                         @if(request()->filled('search') || request()->filled('status_kp'))
                             <a href="{{ route('admin.mahasiswa.index') }}"
@@ -110,7 +110,7 @@
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Judul KP</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status KP</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tempat</th>
-                                        <th class="px-6 py-3"></th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -147,7 +147,7 @@
                                             <td class="px-6 py-4 text-sm text-gray-900">
                                                 {{ $kp?->tempatMagang?->nama_perusahaan ?? ($kp->tempat_magang_sendiri ?? '-') }}
                                             </td>
-                                            <td class="px-6 py-4 text-right text-sm font-medium">
+                                            <td class="px-2 py-1 text-right text-sm font-medium">
                                                 <a href="{{ route('admin.mahasiswa.show', $mhs->id) }}"
                                                    class="text-unib-blue-600 hover:text-unib-blue-900">
                                                     <i class="fas fa-eye mr-1"></i>Detail

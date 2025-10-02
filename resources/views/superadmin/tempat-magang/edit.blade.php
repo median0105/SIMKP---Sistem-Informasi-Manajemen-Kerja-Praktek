@@ -6,19 +6,8 @@
                 Edit Tempat Magang — {{ $tempatMagang->nama_perusahaan }}
             </h2>
             <div class="flex gap-2">
-                <a href="{{ route('superadmin.tempat-magang.index') }}"
-                   class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium">
-                   Kembali
-                </a>
-                {{-- Tombol Hapus cepat (opsional, ada juga di index) --}}
-                <form method="POST" action="{{ route('superadmin.tempat-magang.destroy', $tempatMagang) }}"
-                      onsubmit="return confirm('Yakin ingin menghapus tempat magang ini?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium">
-                        Hapus
-                    </button>
-                </form>
+                <a href="{{ route('superadmin.tempat-magang.index') }}" class="text-unib-blue-600 hover:text-unib-blue-800">
+                <i class="fas fa-arrow-left mr-2"></i>Kembali </a>
             </div>
         </div>
     </x-slot>

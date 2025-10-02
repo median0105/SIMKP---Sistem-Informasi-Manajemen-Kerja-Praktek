@@ -30,8 +30,8 @@
                         </select>
                     </div>
                     <button type="submit"
-                            class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-2 rounded-md font-medium">
-                        <i class="fas fa-search mr-2"></i>Filter
+                            class="bg-blue-500 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium">
+                        <i class="fas fa-search mr-2"></i>Cari
                     </button>
                 </form>
             </div>

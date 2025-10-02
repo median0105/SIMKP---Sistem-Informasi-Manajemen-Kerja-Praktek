@@ -30,9 +30,12 @@
                             class="w-full border-gray-300 rounded-md shadow-sm">
                     </div>
                     <div class="flex items-center">
-                        <button class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-md">
-                            Filter
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+                            Cari
                         </button>
+                        <a href="{{ route('superadmin.laporan.detail-kp', ['status' => 'selesai']) }}" class="ml-3 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md">
+                            Reset
+                        </a>
                     </div>
                 </form>
             </div>
@@ -61,7 +64,7 @@
                                     <td class="px-4 py-2">{{ $row->tempatMagang->nama_perusahaan ?? $row->tempat_magang_sendiri ?? '-' }}</td>
                                     <td class="px-4 py-2 capitalize">{{ str_replace('_',' ',$row->status) }}</td>
                                     <td class="px-4 py-2">{{ $row->nilai_akhir ?? '-' }}</td>
-                                    <td class="px-4 py-2 text-sm text-gray-600">{{ $row->created_at->format('d M Y') }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-600">{{ $row->created_at->format('d/m/Y') }}</td>
                                 </tr>
                             @empty
                                 <tr>

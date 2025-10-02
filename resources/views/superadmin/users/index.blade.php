@@ -3,11 +3,11 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Kelola Pengguna
+                Manajemen User
             </h2>
             <a href="{{ route('superadmin.users.create') }}"
-               class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
-                <i class="fas fa-plus mr-2"></i>Tambah Pengguna
+               class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                <i class="fas fa-plus mr-2"></i>Tambah User
             </a>
         </div>
     </x-slot>
@@ -44,8 +44,8 @@
                         </select>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-md">Filter</button>
-                        <a href="{{ route('superadmin.users.index') }}" class="text-gray-600 hover:text-gray-800 px-3 py-2">
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Cari</button>
+                        <a href="{{ route('superadmin.users.index') }}" class="ml-3 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md">
                             Reset
                         </a>
                     </div>

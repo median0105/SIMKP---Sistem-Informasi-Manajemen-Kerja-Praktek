@@ -161,6 +161,8 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
             Route::get('/',           [SAKuisionerController::class, 'index'])->name('index');
             Route::get('/{kuisioner}',[SAKuisionerController::class, 'show'])->name('show');
         });
+
+        Route::resource('kuisioner_questions', \App\Http\Controllers\SuperAdmin\KuisionerQuestionController::class);
     });
 
 /*

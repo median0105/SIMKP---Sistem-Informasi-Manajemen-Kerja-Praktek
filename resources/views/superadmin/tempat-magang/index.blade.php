@@ -5,7 +5,7 @@
                 {{ __('Manajemen Tempat Magang') }}
             </h2>
             <a href="{{ route('superadmin.tempat-magang.create') }}" 
-               class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
+               class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
                 <i class="fas fa-plus mr-2"></i>Tambah Tempat Magang
             </a>
         </div>
@@ -90,8 +90,8 @@
                             @endforeach
                         </select>
                     </div>
-                    <button type="submit" class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-2 rounded-md font-medium">
-                        <i class="fas fa-search mr-2"></i>Filter
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium">
+                        <i class="fas fa-search mr-2"></i>Cari
                     </button>
                     @if(request()->anyFilled(['search', 'status', 'bidang_usaha']))
                         <a href="{{ route('superadmin.tempat-magang.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-md font-medium">
@@ -181,7 +181,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-semibold text-gray-900">{{ $tempat->kuota_mahasiswa }}</div>
-                                            <div class="text-xs text-gray-500">mahasiswa</div>
+                                            <div class="text-xs text-gray-500">Mahasiswa</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @if($tempat->is_active)
@@ -196,7 +196,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-semibold text-gray-900">{{ $tempat->terpakai_count }}</div>
-                                            <div class="text-xs text-gray-500">total KP</div>
+                                            <div class="text-xs text-gray-500">Total KP</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex space-x-2">

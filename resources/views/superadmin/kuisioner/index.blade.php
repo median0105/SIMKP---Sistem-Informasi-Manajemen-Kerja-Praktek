@@ -30,8 +30,8 @@
                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-unib-blue-500 focus:border-unib-blue-500">
                     </div>
                     <div class="flex items-end">
-                        <button class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-md">
-                            Filter
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+                            Cari
                         </button >
                         <a href="{{ route('superadmin.kuisioner.index') }}" class="ml-3 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md">
                             Reset
@@ -71,7 +71,7 @@
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tempat</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Rating</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Rekomendasi</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tgl Isi</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Isi</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                         </tr>
                         </thead>
@@ -94,12 +94,15 @@
                                     {{ $kp?->pilihan_tempat == 3 ? ($kp->tempat_magang_sendiri ?? '-') : ($tm?->nama_perusahaan ?? '-') }}
                                 </td>
                                 <td class="px-4 py-2">
-                                    <div class="text-gray-900 text-sm">
-                                        T: <b>{{ $it->rating_tempat_magang }}</b> •
-                                        B: <b>{{ $it->rating_bimbingan }}</b> •
-                                        S: <b>{{ $it->rating_sistem }}</b>
-                                    </div>
-                                </td>
+                                    <span class="px-6 py-4 whitespace-nowrap text-sm font-medium
+                                        @class([
+                                            'bg-green-100 text-green-800' => $it->rating_keseluruhan === 'Sangat Baik',
+                                            'bg-blue-100 text-blue-800'  => $it->rating_keseluruhan === 'Baik',
+                                            'bg-yellow-100 text-yellow-800' => $it->rating_keseluruhan === 'Cukup Baik',
+                                            'bg-red-100 text-red-800'    => $it->rating_keseluruhan === 'Kurang Baik',
+                                            'bg-gray-100 text-gray-800'  => !$it->rating_keseluruhan,
+                                        ])">
+                                        {{ $it->rating_keseluruhan ?? 'N/A' }}
                                 <td class="px-4 py-2">
                                     @if($it->rekomendasi_tempat)
                                         <span class="px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">Ya</span>
@@ -108,13 +111,12 @@
                                     @endif
                                 </td>
                                 <td class="px-4 py-2 text-sm text-gray-700">
-                                    {{ $it->created_at->format('d M Y') }}
+                                    {{ $it->created_at->format('d/m/Y') }}
                                 </td>
-                                <td class="px-4 py-2">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <a href="{{ route('superadmin.kuisioner.show', $it) }}"
-                                       class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
-                                        Detail
-                                    </a>
+                                        class="text-unib-blue-600 hover:text-unib-blue-900" title="Detail">
+                                        <i class="fas fa-eye"></i> Detail</a>
                                 </td>
                             </tr>
                         @empty

@@ -31,7 +31,7 @@
                     <div>
                         <p class="text-sm text-gray-600">Tanggal Isi</p>
                         <p class="text-gray-900">
-                            {{ $kuisioner->created_at->format('d F Y H:i') }}
+                            {{ $kuisioner->created_at->format('d/m/Y') }}
                         </p>
                     </div>
                     <div class="md:col-span-2">
