@@ -43,7 +43,7 @@ class MahasiswaController extends Controller
         }
 
         // Hanya mahasiswa yang dibimbing oleh dosen (akademik) ini
-        if ($request->filled('my_students')) {
+        if ($request->filled('my_students') || (auth()->check() && auth()->user()->role === User::ROLE_ADMIN_DOSEN)) {
             $query->whereHas('kerjaPraktek.dosenAkademik', fn ($q) => $q->where('dosen_id', auth()->id()));
         }
 
@@ -135,5 +135,4 @@ class MahasiswaController extends Controller
         return back()->with('success', 'Dosen pembimbing berhasil ditugaskan.');
     }
     
-
 }

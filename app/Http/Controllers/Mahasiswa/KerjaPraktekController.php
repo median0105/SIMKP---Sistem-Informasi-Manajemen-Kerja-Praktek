@@ -186,6 +186,16 @@ class KerjaPraktekController extends Controller
             'file_laporan' => $path,
         ]);
 
+        // Kirim notifikasi ke dosen bahwa mahasiswa telah upload laporan
+        NotificationService::sendToRole(
+            'admin_dosen',
+            'Laporan KP Diunggah',
+            'Mahasiswa ' . auth()->user()->name . ' telah mengunggah laporan kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
+            'info',
+            $kerjaPraktek->id,
+            route('admin.kerja-praktek.show', $kerjaPraktek->id)
+        );
+
         return back()->with('success', 'Laporan berhasil diupload.');
     }
 
@@ -278,6 +288,16 @@ class KerjaPraktekController extends Controller
             'file_kartu_implementasi' => $path,
             'acc_pembimbing_lapangan' => false, // reset ACC lapangan
         ]);
+
+        // Kirim notifikasi ke dosen bahwa mahasiswa telah upload kartu implementasi
+        NotificationService::sendToRole(
+            'admin_dosen',
+            'Kartu Implementasi KP Diunggah',
+            'Mahasiswa ' . auth()->user()->name . ' telah mengunggah kartu implementasi kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
+            'info',
+            $kerjaPraktek->id,
+            route('admin.kerja-praktek.show', $kerjaPraktek->id)
+        );
 
         return back()->with('success', 'Kartu implementasi berhasil diupload. Menunggu ACC dari pembimbing lapangan.');
     }

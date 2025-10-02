@@ -107,6 +107,7 @@ Route::middleware(['auth', 'verified', 'role:admin_dosen'])
             // IPK dan ACC kartu implementasi
             Route::post('/{kerjaPraktek}/set-ipk',   [AdminKerjaPraktekController::class, 'setIpk'])->name('set-ipk');
             Route::post('/{kerjaPraktek}/acc-kartu', [AdminKerjaPraktekController::class, 'accKartu'])->name('acc-kartu');
+            Route::post('/{kerjaPraktek}/acc-laporan', [AdminKerjaPraktekController::class, 'accLaporan'])->name('acc-laporan');
         });
 
         // Bimbingan Management

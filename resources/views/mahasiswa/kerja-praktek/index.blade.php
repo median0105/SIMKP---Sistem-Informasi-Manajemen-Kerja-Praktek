@@ -123,7 +123,7 @@
                                                             </div>
                                                             <div class="text-sm text-gray-500">
                                                                 <i class="fas fa-users mr-1"></i>
-                                                                Kuota: <strong>{{ $sisa }}</strong> dari {{ $tempat->kuota_mahasiswa }} mahasiswa
+                                                                Kuota: <strong>{{ $sisa }}</strong> dari {{ $tempat->kuota_mahasiswa }} Mahasiswa
                                                             </div>
                                                         </div>
                                                     </label>
@@ -310,12 +310,17 @@
                                                 <div class="flex items-center space-x-2">
                                                     <i class="fas fa-file-pdf text-red-500"></i>
                                                     <a href="{{ Storage::url($kerjaPraktek->file_laporan) }}" target="_blank" class="text-unib-blue-600 hover:text-unib-blue-800">Lihat Laporan</a>
+                                                    @if($kerjaPraktek->acc_pembimbing_laporan)
+                                                        <span class="text-green-600 text-sm"><i class="fas fa-check-circle mr-1"></i>ACC Pembimbing</span>
+                                                    @else
+                                                        <span class="text-yellow-600 text-sm"><i class="fas fa-clock mr-1"></i>Menunggu ACC</span>
+                                                    @endif
                                                 </div>
                                             @else
                                                 <form method="POST" action="{{ route('mahasiswa.kerja-praktek.upload-laporan', $kerjaPraktek) }}" enctype="multipart/form-data" class="space-y-3">
                                                     @csrf
                                                     <input type="file" name="file_laporan" accept=".pdf" required
-                                                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-unib-blue-50 file:text-unib-blue-700 hover:file:bg-unib-blue-100">
+                                                        class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-unib-blue-50 file:text-unib-blue-700 hover:file:bg-unib-blue-100">
                                                     <button type="submit" class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
                                                         <i class="fas fa-upload mr-2"></i> Upload Laporan
                                                     </button>

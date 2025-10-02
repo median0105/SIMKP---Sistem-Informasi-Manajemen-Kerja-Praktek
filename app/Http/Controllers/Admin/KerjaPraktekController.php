@@ -166,18 +166,21 @@ class KerjaPraktekController extends Controller
     public function inputNilai(Request $request, KerjaPraktek $kerjaPraktek)
     {
         $request->validate([
-            'penilaian_detail' => 'required|array',
+            'penilaian_detail' => 'required|array|min:1',
             'penilaian_detail.*.indikator' => 'required|string',
             'penilaian_detail.*.nilai' => 'required|numeric|min:0|max:100',
-            'nilai_akhir' => 'required|numeric|min:0|max:100',
             'keterangan_penilaian' => 'required|string'
         ]);
 
-        $lulus = $request->nilai_akhir >= 70;
+        // Hitung nilai akhir sebagai rata-rata dari semua nilai indikator
+        $nilaiAkhir = collect($request->penilaian_detail)->avg('nilai');
+        $nilaiAkhir = round($nilaiAkhir, 2);
+
+        $lulus = $nilaiAkhir >= 70;
 
         $kerjaPraktek->update([
             'penilaian_detail' => $request->penilaian_detail,
-            'nilai_akhir' => $request->nilai_akhir,
+            'nilai_akhir' => $nilaiAkhir,
             'keterangan_penilaian' => $request->keterangan_penilaian,
             'lulus_ujian' => $lulus,
             'status' => $lulus ? KerjaPraktek::STATUS_SELESAI : KerjaPraktek::STATUS_SEDANG_KP
@@ -186,7 +189,7 @@ class KerjaPraktekController extends Controller
         Notifikasi::create([
             'user_id' => $kerjaPraktek->mahasiswa_id,
             'title' => 'Hasil Ujian KP',
-            'message' => "Hasil ujian KP Anda: ".($lulus ? 'LULUS' : 'TIDAK LULUS')." dengan nilai {$request->nilai_akhir}",
+            'message' => "Hasil ujian KP Anda: ".($lulus ? 'LULUS' : 'TIDAK LULUS')." dengan nilai {$nilaiAkhir}",
             'type' => $lulus ? 'success' : 'warning',
             'kerja_praktek_id' => $kerjaPraktek->id
         ]);
@@ -243,7 +246,7 @@ class KerjaPraktekController extends Controller
 
     return back()->with('success', 'IPK semester berhasil disimpan.');
 }
-public function accKartu(KerjaPraktek $kerjaPraktek)
+    public function accKartu(KerjaPraktek $kerjaPraktek)
 {
     // (opsional) $this->authorize('update', $kerjaPraktek);
 
@@ -266,5 +269,29 @@ public function accKartu(KerjaPraktek $kerjaPraktek)
 
     return back()->with('success', 'Kartu implementasi di-ACC dan notifikasi dikirim ke mahasiswa.');
 }
+
+    public function accLaporan(KerjaPraktek $kerjaPraktek)
+    {
+        // (opsional) $this->authorize('update', $kerjaPraktek);
+
+        if (!$kerjaPraktek->file_laporan) {
+            return back()->with('error', 'Mahasiswa belum mengunggah laporan.');
+        }
+
+        $kerjaPraktek->update([
+            'acc_pembimbing_laporan' => true,
+        ]);
+
+        Notifikasi::create([
+            'user_id'          => $kerjaPraktek->mahasiswa_id,
+            'title'            => 'Laporan KP Di-ACC',
+            'message'          => "Laporan KP '{$kerjaPraktek->judul_kp}' telah di-ACC oleh pembimbing.",
+            'type'             => 'success',
+            'kerja_praktek_id' => $kerjaPraktek->id,
+            'action_url'       => route('mahasiswa.kerja-praktek.index'),
+        ]);
+
+        return back()->with('success', 'Laporan di-ACC dan notifikasi dikirim ke mahasiswa.');
+    }
 
 }

@@ -37,9 +37,13 @@ class DashboardController extends Controller
     private function getMahasiswaDashboardData()
     {
         $userId = auth()->id();
-        
+
+        $kerjaPraktek = KerjaPraktek::with(['dosenAkademik.dosen'])
+                                   ->where('mahasiswa_id', $userId)
+                                   ->first();
+
         return [
-            'kerjaPraktek' => KerjaPraktek::where('mahasiswa_id', $userId)->first(),
+            'kerjaPraktek' => $kerjaPraktek,
             'totalBimbingan' => Bimbingan::where('mahasiswa_id', $userId)->count(),
             'totalKegiatan' => Kegiatan::where('mahasiswa_id', $userId)->count(),
             'bimbinganTerbaru' => Bimbingan::where('mahasiswa_id', $userId)
@@ -55,6 +59,8 @@ class DashboardController extends Controller
 
     private function getAdminDosenDashboardData()
     {
+        $dosenId = auth()->id();
+
         return [
             'totalMahasiswa' => User::where('role', User::ROLE_MAHASISWA)->count(),
             'pengajuanBaru' => KerjaPraktek::where('status', KerjaPraktek::STATUS_PENGAJUAN)->count(),
@@ -65,6 +71,15 @@ class DashboardController extends Controller
                                               ->latest()
                                               ->take(5)
                                               ->get(),
+            'mahasiswaBimbinganAcc' => KerjaPraktek::where('status', KerjaPraktek::STATUS_DISETUJUI)
+                                                  ->whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                                                      $q->where('dosen_id', $dosenId)
+                                                        ->where('jenis_pembimbingan', 'akademik');
+                                                  })
+                                                  ->with(['mahasiswa', 'tempatMagang'])
+                                                  ->latest()
+                                                  ->take(10)
+                                                  ->get(),
         ];
     }
 

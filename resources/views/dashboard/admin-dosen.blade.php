@@ -168,6 +168,30 @@
         </div>
     </div>
 
+    <!-- Mahasiswa Bimbingan ACC -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Mahasiswa Bimbingan yang Sudah ACC</h3>
+        </div>
+        <div class="p-6 max-h-96 overflow-y-auto">
+            @if($data['mahasiswaBimbinganAcc']->isEmpty())
+                <p class="text-center text-gray-500">Belum ada mahasiswa bimbingan yang di-ACC.</p>
+            @else
+                <ul class="divide-y divide-gray-200">
+                    @foreach($data['mahasiswaBimbinganAcc'] as $kp)
+                        <li class="py-3 flex justify-between items-center">
+                            <div>
+                                <p class="font-semibold text-gray-900">{{ $kp->mahasiswa->name }}</p>
+                                <p class="text-sm text-gray-600">{{ Str::limit($kp->judul_kp, 50) }}</p>
+                            </div>
+                            <a href="{{ route('admin.kerja-praktek.show', $kp->id) }}" class="text-blue-600 hover:underline text-sm">Detail</a>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+    </div>
+
     <!-- Timeline Today -->
     <div class="bg-white rounded-lg shadow">
         <div class="px-6 py-4 border-b border-gray-200">

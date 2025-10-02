@@ -160,6 +160,12 @@
                                     <i class="fas fa-microphone mr-2"></i>
                                     {{ $kerjaPraktek->acc_seminar ? 'Sudah ACC Seminar' : 'ACC Seminar' }}
                                 </button>
+                                @if(!$kerjaPraktek->acc_pembimbing_laporan)
+                                    <button onclick="accLaporan({{ $kerjaPraktek->id }})"
+                                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg ml-2">
+                                        <i class="fas fa-check mr-2"></i>ACC Laporan
+                                    </button>
+                                @endif
                             @endif
 
                             @if($kerjaPraktek->canTakeExam() && !$kerjaPraktek->lulus_ujian)
@@ -451,7 +457,7 @@
                                 <div>
                                     <input type="number" name="penilaian_detail[0][nilai]"
                                            placeholder="Nilai (0-100)" min="0" max="100" required
-                                           class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
+                                           class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 nilai-input">
                                 </div>
                             </div>
                         </div>
@@ -460,11 +466,16 @@
                             <i class="fas fa-plus mr-1"></i>Tambah Indikator
                         </button>
 
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Nilai Akhir</label>
-                                <input type="number" name="nilai_akhir" min="0" max="100" required
-                                       class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Nilai Akhir (Otomatis)</label>
+                                    <p class="text-xs text-gray-500">Rata-rata dari semua indikator penilaian</p>
+                                </div>
+                                <div class="text-right">
+                                    <span id="nilaiAkhirDisplay" class="text-2xl font-bold text-gray-900">0.00</span>
+                                    <p id="statusDisplay" class="text-sm text-gray-600">-</p>
+                                </div>
                             </div>
                         </div>
 
@@ -590,6 +601,15 @@
             document.body.appendChild(form);
             form.submit();
         }
+        function accLaporan(kpId) {
+            if (!confirm('Yakin ingin memberikan ACC laporan untuk mahasiswa ini?')) return;
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/kerja-praktek/${kpId}/acc-laporan`;
+            form.innerHTML = '@csrf';
+            document.body.appendChild(form);
+            form.submit();
+        }
         function sendReminder(kpId) {
             const form = document.createElement('form');
             form.method = 'POST';
@@ -610,6 +630,39 @@
             form.submit();
         }
 
+        // Fungsi untuk menghitung nilai akhir
+        function calculateNilaiAkhir() {
+            const nilaiInputs = document.querySelectorAll('input[name*="[nilai]"]');
+            let total = 0;
+            let count = 0;
+
+            nilaiInputs.forEach(input => {
+                const value = parseFloat(input.value);
+                if (!isNaN(value)) {
+                    total += value;
+                    count++;
+                }
+            });
+
+            const average = count > 0 ? (total / count).toFixed(2) : '0.00';
+            document.getElementById('nilaiAkhirDisplay').textContent = average;
+
+            const statusElement = document.getElementById('statusDisplay');
+            if (count === 0) {
+                statusElement.textContent = '-';
+                statusElement.className = 'text-sm text-gray-600';
+            } else {
+                const avgNum = parseFloat(average);
+                if (avgNum >= 70) {
+                    statusElement.textContent = 'LULUS';
+                    statusElement.className = 'text-sm text-green-600';
+                } else {
+                    statusElement.textContent = 'TIDAK LULUS';
+                    statusElement.className = 'text-sm text-red-600';
+                }
+            }
+        }
+
         // Dinamika baris penilaian
         function addPenilaian() {
             const container = document.getElementById('penilaianContainer');
@@ -624,14 +677,27 @@
                 <div class="flex space-x-2">
                     <input type="number" name="penilaian_detail[${penilaianIndex}][nilai]"
                            placeholder="Nilai (0-100)" min="0" max="100" required
-                           class="flex-1 border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
-                    <button type="button" onclick="this.closest('.penilaian-item').remove()" class="text-red-600 hover:text-red-800">
+                           class="flex-1 border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 nilai-input">
+                    <button type="button" onclick="this.closest('.penilaian-item').remove(); calculateNilaiAkhir();" class="text-red-600 hover:text-red-800">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
             `;
             penilaianIndex++;
             container.appendChild(row);
+
+            // Attach event listener to new input
+            const newInput = row.querySelector('.nilai-input');
+            newInput.addEventListener('input', calculateNilaiAkhir);
         }
+
+        // Attach event listeners to existing nilai inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            const nilaiInputs = document.querySelectorAll('.nilai-input');
+            nilaiInputs.forEach(input => {
+                input.addEventListener('input', calculateNilaiAkhir);
+            });
+            calculateNilaiAkhir(); // Initial calculation
+        });
     </script>
 </x-app-layout>

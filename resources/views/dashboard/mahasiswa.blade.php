@@ -4,6 +4,9 @@
         <div>
             <h3 class="text-2xl font-bold">Selamat Datang, {{ auth()->user()->name }}</h3>
             <p class="text-unib-blue-200 mt-1 font-bold">NPM: {{ auth()->user()->npm }}</p>
+            {{-- @if($data['kerjaPraktek'] && $data['kerjaPraktek']->dosenAkademik)
+                <p class="text-unib-blue-200">Dosen Pembimbing: {{ $data['kerjaPraktek']->dosenAkademik->dosen->name }}</p>
+            @endif --}}
             <p class="text-unib-blue-200">Sistem Informasi Manajemen Kerja Praktek</p>
         </div>
         <div class="hidden md:block">
@@ -13,13 +16,13 @@
 </div>
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ ($data['kerjaPraktek'] && $data['kerjaPraktek']->status === 'selesai') ? (($data['kerjaPraktek']->dosenAkademik) ? '6' : '5') : (($data['kerjaPraktek'] && $data['kerjaPraktek']->dosenAkademik) ? '5' : '4') }} gap-6 mb-6">
     <!-- Status KP -->
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-4">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-600">Status Kerja Praktek</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-2">
+                <p class="text-xs font-medium text-gray-600">Status Kerja Praktek</p>
+                <p class="text-xl font-semibold text-gray-900 mt-1">
                     @if($data['kerjaPraktek'])
                         <span class="
                             @switch($data['kerjaPraktek']->status)
@@ -33,66 +36,109 @@
                             {{ ucfirst(str_replace('_', ' ', $data['kerjaPraktek']->status)) }}
                         </span>
                     @else
-                        <span class="text-sm font-medium text-gray-400">Belum Mengajukan</span>
+                        <span class="text-xs font-medium text-gray-400">Belum Mengajukan</span>
                     @endif
                 </p>
             </div>
-            <div class="bg-unib-blue-100 rounded-full p-3">
-                <i class="fas fa-briefcase text-unib-blue-600 text-xl"></i>
+            <div class="bg-unib-blue-100 rounded-full p-2">
+                <i class="fas fa-briefcase text-unib-blue-600 text-lg"></i>
             </div>
         </div>
     </div>
 
     <!-- Total Bimbingan -->
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-4">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-600">Total Bimbingan</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-2">{{ $data['totalBimbingan'] }}</p>
+                <p class="text-xs font-medium text-gray-600">Total Bimbingan</p>
+                <p class="text-xl font-semibold text-gray-900 mt-1">{{ $data['totalBimbingan'] }}</p>
             </div>
-            <div class="bg-green-100 rounded-full p-3">
-                <i class="fas fa-chalkboard-teacher text-green-600 text-xl"></i>
+            <div class="bg-green-100 rounded-full p-2">
+                <i class="fas fa-chalkboard-teacher text-green-600 text-lg"></i>
             </div>
         </div>
     </div>
 
     <!-- Total Kegiatan -->
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-4">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-600">Total Kegiatan</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-2">{{ $data['totalKegiatan'] }}</p>
+                <p class="text-xs font-medium text-gray-600">Total Kegiatan</p>
+                <p class="text-xl font-semibold text-gray-900 mt-1">{{ $data['totalKegiatan'] }}</p>
             </div>
-            <div class="bg-teknik-orange-100 rounded-full p-3">
-                <i class="fas fa-tasks text-teknik-orange-600 text-xl"></i>
+            <div class="bg-teknik-orange-100 rounded-full p-2">
+                <i class="fas fa-tasks text-teknik-orange-600 text-lg"></i>
             </div>
         </div>
     </div>
 
     <!-- Quick Action -->
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-4">
         <div class="text-center">
-            <p class="text-sm font-medium text-gray-600 mb-3">Quick Action</p>
+            <p class="text-xs font-medium text-gray-600 mb-3">Quick Action</p>
             @if(!$data['kerjaPraktek'])
-                <a href="{{ route('mahasiswa.kerja-praktek.index') }}" class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
-                    <i class="fas fa-plus mr-2"></i>
+                <a href="{{ route('mahasiswa.kerja-praktek.index') }}" class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-3 py-1 rounded-lg text-xs font-medium transition duration-200">
+                    <i class="fas fa-plus mr-1"></i>
                     Ajukan KP
                 </a>
             @elseif($data['kerjaPraktek']->status === 'sedang_kp')
-                <a href="{{ route('mahasiswa.kegiatan.create') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
-                    <i class="fas fa-plus mr-2"></i>
+                <a href="{{ route('mahasiswa.kegiatan.create') }}" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs font-medium transition duration-200">
+                    <i class="fas fa-plus mr-1"></i>
                     Tambah Kegiatan
                 </a>
             @elseif($data['kerjaPraktek']->status === 'selesai' && !$data['kerjaPraktek']->kuisioner)
-                <a href="{{ route('mahasiswa.kerja-praktek.kuisioner', $data['kerjaPraktek']) }}" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
-                    <i class="fas fa-poll mr-2"></i>
+                <a href="{{ route('mahasiswa.kerja-praktek.kuisioner', $data['kerjaPraktek']) }}" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-lg text-xs font-medium transition duration-200">
+                    <i class="fas fa-poll mr-1"></i>
                     Isi Kuisioner
                 </a>
             @else
-                <span class="text-gray-500">-</span>
+                <span class="text-gray-500 text-xs">-</span>
             @endif
         </div>
     </div>
+
+    @if($data['kerjaPraktek'] && $data['kerjaPraktek']->status === 'selesai')
+    <!-- Nilai Akhir -->
+    <div class="bg-white rounded-lg shadow p-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-xs font-medium text-gray-600">Nilai Akhir KP</p>
+                <p class="text-xl font-semibold text-gray-900 mt-1">
+                    @if($data['kerjaPraktek']->nilai_akhir)
+                        {{ number_format($data['kerjaPraktek']->nilai_akhir, 2) }}
+                    @else
+                        -
+                    @endif
+                </p>
+                @if($data['kerjaPraktek']->nilai_akhir)
+                    <p class="text-xs {{ $data['kerjaPraktek']->lulus_ujian ? 'text-green-600' : 'text-red-600' }} mt-1">
+                        {{ $data['kerjaPraktek']->lulus_ujian ? 'LULUS' : 'TIDAK LULUS' }}
+                    </p>
+                @endif
+            </div>
+            <div class="bg-purple-100 rounded-full p-2">
+                <i class="fas fa-graduation-cap text-purple-600 text-lg"></i>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Dosen Pembimbing -->
+    @if($data['kerjaPraktek'] && $data['kerjaPraktek']->dosenAkademik)
+    <div class="bg-white rounded-lg shadow p-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-xs font-medium text-gray-600">Dosen Pembimbing</p>
+                <p class="text-xl font-semibold text-gray-900 mt-1">
+                    {{ $data['kerjaPraktek']->dosenAkademik->dosen->name }}
+                </p>
+            </div>
+            <div class="bg-blue-100 rounded-full p-2">
+                <i class="fas fa-chalkboard-teacher text-blue-600 text-lg"></i>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
 <!-- Additional Progress Details (if needed for more space) -->

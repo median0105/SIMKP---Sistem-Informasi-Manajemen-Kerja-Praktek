@@ -5,12 +5,8 @@
                 {{ __('Notifikasi') }}
             </h2>
 
-            {{-- Tampilkan tombol "Tandai semua" hanya bila ada yang belum dibaca --}}
-            @php
-                // Idealnya kirim $unreadCount dari controller.
-                $unreadCount = $unreadCount ?? $notifications->where('is_read', false)->count();
-            @endphp
-            @if($unreadCount > 0)
+            {{-- Tampilkan tombol "Tandai semua" hanya bila ada notifikasi --}}
+            @if($notifications->count() > 0)
                 <form method="POST" action="{{ route('notifications.mark-all-read') }}">
                     @csrf
                     <button type="submit" class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">

@@ -11,10 +11,13 @@ class NotificationController extends Controller
     public function index()
     {
         $notifications = Notifikasi::where('user_id', auth()->id())
+                                  ->where('is_read', false)
                                   ->orderBy('created_at', 'desc')
                                   ->paginate(20);
 
-        return view('notifications.index', compact('notifications'));
+        $unreadCount = $notifications->total();
+
+        return view('notifications.index', compact('notifications', 'unreadCount'));
     }
 
     public function markRead(Notifikasi $notification)
