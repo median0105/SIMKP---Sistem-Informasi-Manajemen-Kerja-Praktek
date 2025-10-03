@@ -82,12 +82,12 @@
 <div class="hidden sm:flex sm:items-center sm:space-x-4">
     <!-- Notification Bell -->
     <div class="relative">
-        <a href="{{ route('notifications.index') }}" 
+        @php
+            $unreadCount = App\Services\NotificationService::getUnreadCount(auth()->id());
+        @endphp
+        <a href="{{ route('notifications.index') }}"
         class="p-2 text-white hover:text-unib-blue-200 relative">
             <i class="fas fa-bell text-lg"></i>
-            @php
-                $unreadCount = App\Services\NotificationService::getUnreadCount(auth()->id());
-            @endphp
             @if($unreadCount > 0)
                 <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {{ $unreadCount > 99 ? '99+' : $unreadCount }}

@@ -70,7 +70,10 @@ Route::middleware(['auth', 'verified', 'role:mahasiswa'])
 
             // Upload laporan & kartu implementasi
             Route::post('{kerjaPraktek}/upload-laporan', [MahasiswaKerjaPraktekController::class, 'uploadLaporan'])->name('upload-laporan');
-            Route::post('{kerjaPraktek}/upload-kartu',   [MahasiswaKerjaPraktekController::class, 'uploadKartu'])->name('upload-kartu');
+            // Route::post('{kerjaPraktek}/upload-kartu',   [MahasiswaKerjaPraktekController::class, 'uploadKartu'])->name('upload-kartu'); // Removed kartu implementasi upload
+
+            // Seminar registration
+            Route::post('{kerjaPraktek}/daftar-seminar', [MahasiswaKerjaPraktekController::class, 'daftarSeminar'])->name('daftar-seminar');
 
             // Kuisioner
             Route::get('{kerjaPraktek}/kuisioner',  [MahasiswaKerjaPraktekController::class, 'kuisioner'])->name('kuisioner');
@@ -106,8 +109,14 @@ Route::middleware(['auth', 'verified', 'role:admin_dosen'])
 
             // IPK dan ACC kartu implementasi
             Route::post('/{kerjaPraktek}/set-ipk',   [AdminKerjaPraktekController::class, 'setIpk'])->name('set-ipk');
-            Route::post('/{kerjaPraktek}/acc-kartu', [AdminKerjaPraktekController::class, 'accKartu'])->name('acc-kartu');
+            // Route::post('/{kerjaPraktek}/acc-kartu', [AdminKerjaPraktekController::class, 'accKartu'])->name('acc-kartu'); // Removed kartu implementasi ACC
             Route::post('/{kerjaPraktek}/acc-laporan', [AdminKerjaPraktekController::class, 'accLaporan'])->name('acc-laporan');
+
+            // Seminar registration
+            Route::post('/{kerjaPraktek}/acc-pendaftaran-seminar', [AdminKerjaPraktekController::class, 'accPendaftaranSeminar'])->name('acc-pendaftaran-seminar');
+            Route::post('/{kerjaPraktek}/tolak-pendaftaran-seminar', [AdminKerjaPraktekController::class, 'tolakPendaftaranSeminar'])->name('tolak-pendaftaran-seminar');
+            Route::post('/{kerjaPraktek}/acc-proposal', [AdminKerjaPraktekController::class, 'accProposal'])->name('acc-proposal');
+            Route::post('/{kerjaPraktek}/reject-proposal', [AdminKerjaPraktekController::class, 'rejectProposal'])->name('reject-proposal');
         });
 
         // Bimbingan Management

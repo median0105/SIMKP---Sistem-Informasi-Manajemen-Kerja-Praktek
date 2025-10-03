@@ -148,7 +148,7 @@
             <h3 class="text-lg font-semibold text-gray-900">Detail Progress Seminar & Ujian</h3>
         </div>
         <div class="p-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Upload Laporan -->
                 <div class="text-center">
                     <div class="mx-auto w-12 h-12 bg-{{ $data['kerjaPraktek']->file_laporan ? 'green' : 'gray' }}-100 rounded-full flex items-center justify-center mb-3">
@@ -171,31 +171,14 @@
                     </p>
                 </div>
 
-                <!-- Kartu Implementasi -->
-                <div class="text-center">
-                    <div class="mx-auto w-12 h-12 bg-{{ $data['kerjaPraktek']->acc_pembimbing_lapangan ? 'green' : ($data['kerjaPraktek']->file_kartu_implementasi ? 'yellow' : 'gray') }}-100 rounded-full flex items-center justify-center mb-3">
-                        <i class="fas fa-id-card text-{{ $data['kerjaPraktek']->acc_pembimbing_lapangan ? 'green' : ($data['kerjaPraktek']->file_kartu_implementasi ? 'yellow' : 'gray') }}-600"></i>
-                    </div>
-                    <h4 class="font-medium text-gray-900">Lembar Penilaian KP</h4>
-                    <p class="text-sm text-gray-600 mt-1">
-                        @if($data['kerjaPraktek']->acc_pembimbing_lapangan)
-                            Sudah ACC
-                        @elseif($data['kerjaPraktek']->file_kartu_implementasi)
-                            Menunggu ACC
-                        @else
-                            Belum Upload
-                        @endif
-                    </p>
-                </div>
-
                 <!-- Ujian -->
                 <div class="text-center">
                     <div class="mx-auto w-12 h-12 bg-{{ $data['kerjaPraktek']->lulus_ujian ? 'green' : 'gray' }}-100 rounded-full flex items-center justify-center mb-3">
                         <i class="fas fa-graduation-cap text-{{ $data['kerjaPraktek']->lulus_ujian ? 'green' : 'gray' }}-600"></i>
                     </div>
-                    <h4 class="font-medium text-gray-900">Ujian</h4>
+                    <h4 class="font-medium text-gray-900">Hasil Akhir</h4>
                     <p class="text-sm text-gray-600 mt-1">
-                        {{ $data['kerjaPraktek']->lulus_ujian ? 'Lulus' : ($data['kerjaPraktek']->nilai_akhir ? 'Tidak Lulus' : 'Belum Ujian') }}
+                        {{ $data['kerjaPraktek']->lulus_ujian ? 'Lulus' : ($data['kerjaPraktek']->nilai_akhir ? 'Tidak Lulus' : 'Belum Ada') }}
                     </p>
                 </div>
             </div>

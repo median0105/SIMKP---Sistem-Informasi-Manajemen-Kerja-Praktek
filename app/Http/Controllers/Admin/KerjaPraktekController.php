@@ -246,29 +246,29 @@ class KerjaPraktekController extends Controller
 
     return back()->with('success', 'IPK semester berhasil disimpan.');
 }
-    public function accKartu(KerjaPraktek $kerjaPraktek)
-{
-    // (opsional) $this->authorize('update', $kerjaPraktek);
+    // public function accKartu(KerjaPraktek $kerjaPraktek) - REMOVED kartu implementasi ACC
+    // {
+    //     // (opsional) $this->authorize('update', $kerjaPraktek);
 
-    if (!$kerjaPraktek->file_kartu_implementasi) {
-        return back()->with('error', 'Mahasiswa belum mengunggah kartu implementasi.');
-    }
+    //     if (!$kerjaPraktek->file_kartu_implementasi) {
+    //         return back()->with('error', 'Mahasiswa belum mengunggah kartu implementasi.');
+    //     }
 
-    $kerjaPraktek->update([
-        'acc_pembimbing_lapangan' => true,
-    ]);
+    //     $kerjaPraktek->update([
+    //         'acc_pembimbing_lapangan' => true,
+    //     ]);
 
-    Notifikasi::create([
-        'user_id'          => $kerjaPraktek->mahasiswa_id,
-        'title'            => 'Kartu Implementasi Di-ACC',
-        'message'          => "Kartu implementasi untuk KP '{$kerjaPraktek->judul_kp}' telah di-ACC. Silakan bersiap untuk ujian.",
-        'type'             => 'success',
-        'kerja_praktek_id' => $kerjaPraktek->id,
-        'action_url'       => route('mahasiswa.kerja-praktek.index'),
-    ]);
+    //     Notifikasi::create([
+    //         'user_id'          => $kerjaPraktek->mahasiswa_id,
+    //         'title'            => 'Kartu Implementasi Di-ACC',
+    //         'message'          => "Kartu implementasi untuk KP '{$kerjaPraktek->judul_kp}' telah di-ACC. Silakan bersiap untuk ujian.",
+    //         'type'             => 'success',
+    //         'kerja_praktek_id' => $kerjaPraktek->id,
+    //         'action_url'       => route('mahasiswa.kerja-praktek.index'),
+    //     ]);
 
-    return back()->with('success', 'Kartu implementasi di-ACC dan notifikasi dikirim ke mahasiswa.');
-}
+    //     return back()->with('success', 'Kartu implementasi di-ACC dan notifikasi dikirim ke mahasiswa.');
+    // }
 
     public function accLaporan(KerjaPraktek $kerjaPraktek)
     {
@@ -292,6 +292,126 @@ class KerjaPraktekController extends Controller
         ]);
 
         return back()->with('success', 'Laporan di-ACC dan notifikasi dikirim ke mahasiswa.');
+    }
+
+    public function accPendaftaranSeminar(Request $request, KerjaPraktek $kerjaPraktek)
+    {
+        $request->validate([
+            'jadwal_seminar' => 'required|date|after:now',
+            'ruangan_seminar' => 'required|string|max:255',
+            'catatan_seminar' => 'nullable|string'
+        ]);
+
+        if (!$kerjaPraktek->pendaftaran_seminar) {
+            return back()->with('error', 'Mahasiswa belum mendaftar seminar.');
+        }
+
+        $kerjaPraktek->update([
+            'acc_pendaftaran_seminar' => true,
+            'jadwal_seminar' => $request->jadwal_seminar,
+            'ruangan_seminar' => $request->ruangan_seminar,
+            'catatan_seminar' => $request->catatan_seminar,
+        ]);
+
+        Notifikasi::create([
+            'user_id' => $kerjaPraktek->mahasiswa_id,
+            'title' => 'Jadwal Seminar KP Ditetapkan',
+            'message' => "Jadwal seminar KP Anda telah ditetapkan: " . \Carbon\Carbon::parse($request->jadwal_seminar)->format('d F Y H:i') . " di ruangan {$request->ruangan_seminar}",
+            'type' => 'success',
+            'kerja_praktek_id' => $kerjaPraktek->id,
+            'action_url' => route('mahasiswa.kerja-praktek.index'),
+        ]);
+
+        return back()->with('success', 'Pendaftaran seminar di-ACC dan jadwal telah ditetapkan.');
+    }
+
+    public function tolakPendaftaranSeminar(Request $request, KerjaPraktek $kerjaPraktek)
+    {
+        $request->validate(['catatan_seminar' => 'required|string']);
+
+        $kerjaPraktek->update([
+            'pendaftaran_seminar' => false,
+            'tanggal_daftar_seminar' => null,
+            'catatan_seminar' => $request->catatan_seminar,
+        ]);
+
+        Notifikasi::create([
+            'user_id' => $kerjaPraktek->mahasiswa_id,
+            'title' => 'Pendaftaran Seminar Ditolak',
+            'message' => "Pendaftaran seminar KP Anda ditolak. Alasan: {$request->catatan_seminar}",
+            'type' => 'error',
+            'kerja_praktek_id' => $kerjaPraktek->id,
+            'action_url' => route('mahasiswa.kerja-praktek.index'),
+        ]);
+
+        return back()->with('success', 'Pendaftaran seminar ditolak.');
+    }
+
+    public function accProposal(KerjaPraktek $kerjaPraktek)
+    {
+        if (!$kerjaPraktek->file_proposal) {
+            return back()->with('error', 'Mahasiswa belum mengunggah proposal.');
+        }
+
+        $kerjaPraktek->update([
+            'status' => KerjaPraktek::STATUS_DISETUJUI,
+        ]);
+
+        // tetapkan pembimbing akademik = dosen yang approve
+        DosenPembimbing::updateOrCreate(
+            ['kerja_praktek_id' => $kerjaPraktek->id, 'jenis_pembimbingan' => 'akademik'],
+            ['dosen_id' => auth()->id()]
+        );
+
+        Notifikasi::create([
+            'user_id'          => $kerjaPraktek->mahasiswa_id,
+            'title'            => 'Proposal KP Di-ACC',
+            'message'          => "Proposal KP '{$kerjaPraktek->judul_kp}' telah di-ACC oleh pembimbing.",
+            'type'             => 'success',
+            'kerja_praktek_id' => $kerjaPraktek->id,
+            'action_url'       => route('mahasiswa.kerja-praktek.index'),
+        ]);
+
+        return back()->with('success', 'Proposal di-ACC dan notifikasi dikirim ke mahasiswa.');
+    }
+
+    public function rejectProposal(Request $request, KerjaPraktek $kerjaPraktek)
+    {
+        $request->validate(['catatan_dosen' => 'required|string']);
+
+        // Ubah status menjadi ditolak
+        $kerjaPraktek->update([
+            'status' => KerjaPraktek::STATUS_DITOLAK,
+            'catatan_dosen' => $request->catatan_dosen
+        ]);
+
+        // Notifikasi penolakan proposal
+        Notifikasi::create([
+            'user_id' => $kerjaPraktek->mahasiswa_id,
+            'title' => 'Proposal KP Ditolak',
+            'message' => "Proposal KP Anda ditolak. Alasan: {$request->catatan_dosen}",
+            'type' => 'error',
+            'kerja_praktek_id' => $kerjaPraktek->id,
+            'action_url' => route('mahasiswa.kerja-praktek.index')
+        ]);
+
+        // Jika ini penolakan ke-2, kirim notifikasi khusus untuk menemui dosen pembimbing
+        $rejectedCount = KerjaPraktek::where('mahasiswa_id', $kerjaPraktek->mahasiswa_id)
+            ->where('status', KerjaPraktek::STATUS_DITOLAK)
+            ->count();
+
+        if ($rejectedCount >= 2) {
+            Notifikasi::create([
+                'user_id' => $kerjaPraktek->mahasiswa_id,
+                'title' => 'Mohon Temui Dosen Pembimbing',
+                'message' => 'Proposal KP Anda telah ditolak sebanyak 2 kali. Silakan segera menemui dosen pembimbing untuk konsultasi sebelum pengajuan berikutnya.',
+                'type' => 'warning',
+                'kerja_praktek_id' => $kerjaPraktek->id,
+                'action_url' => route('mahasiswa.kerja-praktek.index'),
+            ]);
+        }
+
+        return back()->with('success', 'Proposal KP ditolak dengan alasan yang diberikan.');
     }
 
 }

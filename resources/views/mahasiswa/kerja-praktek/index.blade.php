@@ -71,6 +71,15 @@
                                 @error('file_krs') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                             </div>
 
+                            {{-- UPLOAD PROPOSAL --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Upload Proposal Kerja Praktek *</label>
+                                <input type="file" name="file_proposal" accept=".pdf" required
+                                       class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                                <p class="text-xs text-gray-500 mt-1">Format: PDF, Maksimal 10MB</p>
+                                @error('file_proposal') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            </div>
+
                             {{-- PILIHAN TEMPAT --}}
                             <div x-data="{ q: '' }">
                                 <label class="block text-sm font-medium text-gray-700 mb-4">Pilihan Tempat Kerja Praktek *</label>
@@ -330,34 +339,53 @@
                                     </div>
                                 @endif
 
-                                {{-- Upload Kartu Implementasi --}}
-                                @if($kerjaPraktek->acc_seminar)
+                                {{-- Seminar Registration --}}
+                                @if($kerjaPraktek->acc_pembimbing_laporan && $kerjaPraktek->file_laporan)
                                     <div>
-                                        <label class="text-sm font-medium text-gray-600">Lembar Penilaian Kerja Praktek</label>
+                                        <label class="text-sm font-medium text-gray-600">Pendaftaran Seminar</label>
                                         <div class="mt-2">
-                                            @if($kerjaPraktek->file_kartu_implementasi)
-                                                <div class="flex items-center space-x-2 mb-2">
-                                                    <i class="fas fa-file-pdf text-red-500"></i>
-                                                    <a href="{{ Storage::url($kerjaPraktek->file_kartu_implementasi) }}" target="_blank" class="text-unib-blue-600 hover:text-unib-blue-800">Lihat penilaian</a>
-                                                    @if($kerjaPraktek->acc_pembimbing_lapangan)
-                                                        <span class="text-green-600 text-sm"><i class="fas fa-check-circle mr-1"></i>ACC Pembimbing </span>
-                                                    @else
-                                                        <span class="text-yellow-600 text-sm"><i class="fas fa-clock mr-1"></i>Menunggu ACC</span>
+                                            @if($kerjaPraktek->pendaftaran_seminar)
+                                                @if($kerjaPraktek->acc_pendaftaran_seminar)
+                                                    <div class="space-y-2">
+                                                        <span class="inline-flex items-center text-green-600">
+                                                            <i class="fas fa-check-circle mr-2"></i> Pendaftaran Seminar Disetujui
+                                                        </span>
+                                                        @if($kerjaPraktek->jadwal_seminar)
+                                                            <div class="text-sm text-gray-600">
+                                                                <i class="fas fa-calendar mr-1"></i> Jadwal: {{ $kerjaPraktek->jadwal_seminar->format('d F Y H:i') }}
+                                                                @if($kerjaPraktek->ruangan_seminar)
+                                                                    <br><i class="fas fa-map-marker-alt mr-1"></i> Ruangan: {{ $kerjaPraktek->ruangan_seminar }}
+                                                                @endif
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    <span class="inline-flex items-center text-yellow-600">
+                                                        <i class="fas fa-clock mr-2"></i> Menunggu ACC Pendaftaran Seminar
+                                                    </span>
+                                                    @if($kerjaPraktek->tanggal_daftar_seminar)
+                                                        <div class="text-sm text-gray-500 mt-1">
+                                                            Didaftarkan pada: {{ $kerjaPraktek->tanggal_daftar_seminar->format('d/m/Y') }}
+                                                        </div>
                                                     @endif
-                                                </div>
+                                                @endif
                                             @else
-                                                <form method="POST" action="{{ route('mahasiswa.kerja-praktek.upload-kartu', $kerjaPraktek) }}" enctype="multipart/form-data" class="space-y-3">
-                                                    @csrf
-                                                    <input type="file" name="file_kartu_implementasi" accept=".pdf,.jpg,.jpeg,.png" required
-                                                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
-                                                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
-                                                        <i class="fas fa-upload mr-2"></i> Upload Lembar Penilaian Kerja Praktek
-                                                    </button>
-                                                </form>
+                                                @if($kerjaPraktek->canRegisterSeminar())
+                                                    <form method="POST" action="{{ route('mahasiswa.kerja-praktek.daftar-seminar', $kerjaPraktek) }}" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
+                                                            <i class="fas fa-calendar-plus mr-2"></i> Daftar Seminar
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <span class="text-gray-500 text-sm">Belum memenuhi syarat untuk mendaftar seminar</span>
+                                                @endif
                                             @endif
                                         </div>
                                     </div>
                                 @endif
+
+
 
                                 {{-- Kuisioner --}}
                                 @if($kerjaPraktek->status === \App\Models\KerjaPraktek::STATUS_SELESAI && $kerjaPraktek->file_laporan)

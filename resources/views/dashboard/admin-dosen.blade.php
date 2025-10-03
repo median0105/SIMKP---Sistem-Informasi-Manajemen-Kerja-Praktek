@@ -85,7 +85,7 @@
                 <i class="fas fa-comments mr-3"></i>
                 Verifikasi Bimbingan
             </a>
-            <a href="{{ route('admin.mahasiswa.index') }}" 
+            <a href="{{ route('admin.mahasiswa.index') }}"
                class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium transition duration-200 flex items-center">
                 <i class="fas fa-users mr-3"></i>
                 Lihat Mahasiswa
@@ -110,7 +110,7 @@
                         <div class="flex items-center justify-between mt-2">
                             <p class="text-xs text-gray-500">{{ $pengajuan->created_at->diffForHumans() }}</p>
                             <div class="flex space-x-2">
-                                <a href="{{ route('admin.kerja-praktek.show', $pengajuan) }}" 
+                                <a href="{{ route('admin.kerja-praktek.show', $pengajuan) }}"
                                    class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
                                     Detail
                                 </a>
@@ -127,6 +127,54 @@
         </div>
     </div>
 </div>
+
+<!-- Seminar Registrations -->
+@if($data['seminarRegistrations']->count() > 0)
+<div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Pendaftaran Seminar Terbaru</h3>
+        </div>
+        <div class="p-6">
+            @forelse($data['seminarRegistrations'] as $registration)
+                <div class="flex items-start space-x-3 mb-4 last:mb-0">
+                    <div class="bg-blue-100 rounded-full p-2 mt-1">
+                        <i class="fas fa-graduation-cap text-blue-600 text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-medium text-gray-900">{{ $registration->mahasiswa->name }}</p>
+                        <p class="text-sm text-gray-600">telah mendaftar seminar kerja praktek</p>
+                        <p class="text-sm text-gray-600 font-medium">{{ Str::limit($registration->judul_kp, 50) }}</p>
+                        <div class="flex items-center justify-between mt-2">
+                            <p class="text-xs text-gray-500">{{ $registration->updated_at->diffForHumans() }}</p>
+                            <div class="flex space-x-2">
+                                @if(!$registration->acc_pendaftaran_seminar)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        Menunggu ACC
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Sudah ACC
+                                    </span>
+                                @endif
+                                <a href="{{ route('admin.kerja-praktek.show', $registration) }}"
+                                   class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
+                                    Detail
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center text-gray-500 py-4">
+                    <i class="fas fa-graduation-cap text-3xl text-gray-300 mb-2"></i>
+                    <p>Tidak ada pendaftaran seminar baru</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</div>
+@endif
 
 <!-- Charts Row -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -169,7 +217,7 @@
     </div>
 
     <!-- Mahasiswa Bimbingan ACC -->
-    <div class="bg-white rounded-lg shadow">
+    {{-- <div class="bg-white rounded-lg shadow">
         <div class="px-6 py-4 border-b border-gray-200">
             <h3 class="text-lg font-semibold text-gray-900">Mahasiswa Bimbingan yang Sudah ACC</h3>
         </div>
@@ -190,7 +238,7 @@
                 </ul>
             @endif
         </div>
-    </div>
+    </div> --}}
 
     <!-- Timeline Today -->
     <div class="bg-white rounded-lg shadow">

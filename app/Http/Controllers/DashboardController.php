@@ -61,6 +61,26 @@ class DashboardController extends Controller
     {
         $dosenId = auth()->id();
 
+        // Hitung jumlah mahasiswa yang sudah mendaftar seminar tapi belum di-ACC
+        $seminarPendingCount = KerjaPraktek::where('pendaftaran_seminar', true)
+            ->where('acc_pendaftaran_seminar', false)
+            ->whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                $q->where('dosen_id', $dosenId)
+                  ->where('jenis_pembimbingan', 'akademik');
+            })
+            ->count();
+
+        // Get recent seminar registrations for this dosen
+        $seminarRegistrations = KerjaPraktek::where('pendaftaran_seminar', true)
+            ->whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                $q->where('dosen_id', $dosenId)
+                  ->where('jenis_pembimbingan', 'akademik');
+            })
+            ->with('mahasiswa')
+            ->latest('updated_at')
+            ->take(5)
+            ->get();
+
         return [
             'totalMahasiswa' => User::where('role', User::ROLE_MAHASISWA)->count(),
             'pengajuanBaru' => KerjaPraktek::where('status', KerjaPraktek::STATUS_PENGAJUAN)->count(),
@@ -80,6 +100,8 @@ class DashboardController extends Controller
                                                   ->latest()
                                                   ->take(10)
                                                   ->get(),
+            'seminarPendingCount' => $seminarPendingCount,
+            'seminarRegistrations' => $seminarRegistrations,
         ];
     }
 

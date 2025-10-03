@@ -25,7 +25,6 @@ class KerjaPraktek extends Model
         'tanggal_selesai',
         'status',
         'file_laporan',
-        'file_kartu_implementasi',
         'acc_seminar',
         'tanggal_seminar',
         'acc_pembimbing_lapangan',
@@ -38,16 +37,29 @@ class KerjaPraktek extends Model
         'catatan_dosen',
         'catatan_pengawas',
 
+        // Seminar registration fields
+        'pendaftaran_seminar',
+        'tanggal_daftar_seminar',
+        'acc_pendaftaran_seminar',
+        'jadwal_seminar',
+        'ruangan_seminar',
+        'catatan_seminar',
+
         // ✅ Tambahan:
         'ipk_semester',
         'semester_ke',
         'file_krs',
+        'file_proposal',
     ];
 
     protected $casts = [
         'tanggal_mulai' => 'date',
         'tanggal_selesai' => 'date',
         'tanggal_seminar' => 'datetime',
+        'pendaftaran_seminar' => 'boolean',
+        'tanggal_daftar_seminar' => 'datetime',
+        'acc_pendaftaran_seminar' => 'boolean',
+        'jadwal_seminar' => 'datetime',
         'pilihan_tempat' => 'integer',
         'acc_seminar' => 'boolean',
         'acc_pembimbing_lapangan' => 'boolean',
@@ -96,11 +108,14 @@ class KerjaPraktek extends Model
         return $this->tanggal_mulai->diffInMonths(now()) > 12;
     }
 
+    public function canRegisterSeminar()
+    {
+        return $this->acc_pembimbing_laporan && $this->file_laporan && !$this->pendaftaran_seminar;
+    }
+
     public function canTakeExam()
     {
-        return $this->acc_seminar
-            && $this->file_kartu_implementasi
-            && $this->acc_pembimbing_lapangan;
+        return $this->acc_pendaftaran_seminar && $this->jadwal_seminar;
     }
 
     // App\Models\KerjaPraktek.php

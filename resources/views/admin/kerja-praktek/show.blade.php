@@ -128,6 +128,18 @@
                                     </div>
                                 </div>
                             @endif
+
+                            {{-- PROPOSAL --}}
+                            @if($kerjaPraktek->file_proposal)
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600">Proposal Kerja Praktek</label>
+                                    <div class="mt-1">
+                                        <a href="{{ Storage::url($kerjaPraktek->file_proposal) }}" target="_blank" class="text-purple-600 hover:text-purple-800">
+                                            <i class="fas fa-file-pdf text-red-500 mr-1"></i> Lihat Proposal
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -135,14 +147,14 @@
                     <div class="mt-6 pt-6 border-t border-gray-200">
                         <div class="flex flex-wrap gap-3">
                             @if($kerjaPraktek->status === 'pengajuan')
-                                <button onclick="openApprove({{ $kerjaPraktek->id }})"
+                                <button onclick="accProposal({{ $kerjaPraktek->id }})"
                                         class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg {{ !empty($isDuplicate) ? 'opacity-50 cursor-not-allowed' : '' }}"
                                         {{ !empty($isDuplicate) ? 'disabled' : '' }}>
-                                    <i class="fas fa-check mr-2"></i>Setujui
+                                    <i class="fas fa-check mr-2"></i>ACC Proposal
                                 </button>
-                                <button onclick="openReject({{ $kerjaPraktek->id }})"
+                                <button onclick="openRejectProposal({{ $kerjaPraktek->id }})"
                                         class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
-                                    <i class="fas fa-times mr-2"></i>Tolak
+                                    <i class="fas fa-times mr-2"></i>Tolak Proposal
                                 </button>
                             @endif
 
@@ -154,24 +166,41 @@
                             @endif
 
                             @if(in_array($kerjaPraktek->status, ['sedang_kp','selesai']) && $kerjaPraktek->file_laporan)
-                                <button onclick="accSeminar({{ $kerjaPraktek->id }})"
-                                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg {{ $kerjaPraktek->acc_seminar ? 'opacity-50' : '' }}"
-                                        {{ $kerjaPraktek->acc_seminar ? 'disabled' : '' }}>
-                                    <i class="fas fa-microphone mr-2"></i>
-                                    {{ $kerjaPraktek->acc_seminar ? 'Sudah ACC Seminar' : 'ACC Seminar' }}
-                                </button>
                                 @if(!$kerjaPraktek->acc_pembimbing_laporan)
                                     <button onclick="accLaporan({{ $kerjaPraktek->id }})"
-                                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg ml-2">
+                                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
                                         <i class="fas fa-check mr-2"></i>ACC Laporan
                                     </button>
                                 @endif
+                            @endif
+
+                            {{-- ACC Seminar - muncul setelah ACC Laporan DAN ACC Pendaftaran Seminar --}}
+                            @if($kerjaPraktek->acc_pembimbing_laporan && $kerjaPraktek->acc_pendaftaran_seminar && !$kerjaPraktek->acc_seminar)
+                                <button onclick="accSeminar({{ $kerjaPraktek->id }})"
+                                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                                    <i class="fas fa-microphone mr-2"></i>ACC Seminar
+                                </button>
+                            @elseif($kerjaPraktek->acc_seminar)
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                                    <i class="fas fa-microphone mr-2"></i>Seminar Sudah Di-ACC
+                                </span>
                             @endif
 
                             @if($kerjaPraktek->canTakeExam() && !$kerjaPraktek->lulus_ujian)
                                 <button onclick="openNilai({{ $kerjaPraktek->id }})"
                                         class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg">
                                     <i class="fas fa-edit mr-2"></i>Input Nilai
+                                </button>
+                            @endif
+
+                            @if($kerjaPraktek->pendaftaran_seminar && !$kerjaPraktek->acc_pendaftaran_seminar)
+                                <button onclick="openAccSeminar({{ $kerjaPraktek->id }})"
+                                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                                    <i class="fas fa-calendar-check mr-2"></i>ACC Pendaftaran Seminar
+                                </button>
+                                <button onclick="openTolakSeminar({{ $kerjaPraktek->id }})"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                                    <i class="fas fa-times mr-2"></i>Tolak Pendaftaran Seminar
                                 </button>
                             @endif
 
@@ -193,7 +222,7 @@
                         <h3 class="text-lg font-semibold text-gray-900">Progress Seminar & Ujian</h3>
                     </div>
                     <div class="p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                             {{-- Laporan --}}
                             <div class="text-center">
                                 <div class="mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-3
@@ -212,6 +241,29 @@
                                 @endif
                             </div>
 
+                            {{-- Pendaftaran Seminar --}}
+                            <div class="text-center">
+                                <div class="mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-3
+                                    {{ $kerjaPraktek->pendaftaran_seminar ? 'bg-green-100' : 'bg-gray-100' }}">
+                                    <i class="fas fa-calendar-plus {{ $kerjaPraktek->pendaftaran_seminar ? 'text-green-600' : 'text-gray-600' }}"></i>
+                                </div>
+                                <h4 class="font-medium text-gray-900">Pendaftaran Seminar</h4>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    @if($kerjaPraktek->pendaftaran_seminar)
+                                        @if($kerjaPraktek->acc_pendaftaran_seminar)
+                                            Sudah ACC
+                                        @else
+                                            Menunggu ACC
+                                        @endif
+                                    @else
+                                        Belum Daftar
+                                    @endif
+                                </p>
+                                @if($kerjaPraktek->tanggal_daftar_seminar)
+                                    <p class="text-xs text-gray-500 mt-1">{{ $kerjaPraktek->tanggal_daftar_seminar->format('d M Y') }}</p>
+                                @endif
+                            </div>
+
                             {{-- ACC Seminar --}}
                             <div class="text-center">
                                 <div class="mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-3
@@ -222,7 +274,12 @@
                                 <p class="text-sm text-gray-600 mt-1">
                                     {{ $kerjaPraktek->acc_seminar ? 'Sudah ACC' : 'Belum ACC' }}
                                 </p>
-                                @if($kerjaPraktek->tanggal_seminar)
+                                @if($kerjaPraktek->jadwal_seminar)
+                                    <p class="text-xs text-gray-500 mt-1">{{ $kerjaPraktek->jadwal_seminar->format('d M Y H:i') }}</p>
+                                    @if($kerjaPraktek->ruangan_seminar)
+                                        <p class="text-xs text-gray-500">{{ $kerjaPraktek->ruangan_seminar }}</p>
+                                    @endif
+                                @elseif($kerjaPraktek->tanggal_seminar)
                                     <p class="text-xs text-gray-500 mt-1">{{ $kerjaPraktek->tanggal_seminar->format('d M Y') }}</p>
                                 @endif
                             </div>
@@ -233,9 +290,9 @@
                                     {{ $kerjaPraktek->lulus_ujian ? 'bg-green-100' : 'bg-gray-100' }}">
                                     <i class="fas fa-graduation-cap {{ $kerjaPraktek->lulus_ujian ? 'text-green-600' : 'text-gray-600' }}"></i>
                                 </div>
-                                <h4 class="font-medium text-gray-900">Ujian</h4>
+                                <h4 class="font-medium text-gray-900">Hasil Akhir</h4>
                                 <p class="text-sm text-gray-600 mt-1">
-                                    {{ $kerjaPraktek->lulus_ujian ? 'Lulus' : ($kerjaPraktek->nilai_akhir ? 'Tidak Lulus' : 'Belum Ujian') }}
+                                    {{ $kerjaPraktek->lulus_ujian ? 'Lulus' : ($kerjaPraktek->nilai_akhir ? 'Tidak Lulus' : 'Belum Ada') }}
                                 </p>
                                 @if($kerjaPraktek->nilai_akhir)
                                     <p class="text-xs text-gray-500 mt-1">Nilai: {{ $kerjaPraktek->nilai_akhir }}</p>
@@ -246,46 +303,7 @@
                 </div>
             @endif
 
-            {{-- Kartu Implementasi --}}
-            @if($kerjaPraktek->acc_seminar)
-                <div class="bg-white rounded-lg shadow">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900">Lembar Penilaian Kerja Praktek</h3>
-                    </div>
-                    <div class="p-6">
-                        @if($kerjaPraktek->file_kartu_implementasi)
-                            <div class="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg p-4">
-                                <div class="flex items-center">
-                                    <i class="fas fa-file-pdf text-green-600 text-2xl mr-3"></i>
-                                    <div>
-                                        <h4 class="font-medium text-green-800">Lembar Penilaian Kerja Praktek</h4>
-                                        <p class="text-sm text-green-600">
-                                            Status: {{ $kerjaPraktek->acc_pembimbing_lapangan ? 'ACC Pembimbing' : 'Pending ACC' }}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <a href="{{ Storage::url($kerjaPraktek->file_kartu_implementasi) }}" target="_blank"
-                                       class="text-green-600 hover:text-green-800">
-                                        <i class="fas fa-download"></i>
-                                    </a>
-                                    @if(!$kerjaPraktek->acc_pembimbing_lapangan)
-                                        <button type="button" onclick="accKartu({{ $kerjaPraktek->id }})"
-                                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
-                                            <i class="fas fa-check mr-2"></i>ACC 
-                                        </button>
-                                    @endif
-                                </div>
-                            </div>
-                        @else
-                            <div class="text-center py-6 text-gray-500">
-                                <i class="fas fa-file-upload text-4xl mb-2"></i>
-                                <p>Mahasiswa belum upload Lembar Penilaian Kerja Praktek</p>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            @endif
+
 
             {{-- IPK Semester --}}
             <div class="bg-white rounded-lg shadow">
@@ -548,6 +566,108 @@
         </div>
     </div>
 
+    {{-- Modal Reject Proposal --}}
+    <div id="rejectProposalModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-md w-full">
+                <form id="rejectProposalForm" method="POST">
+                    @csrf
+                    <div class="p-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Tolak Proposal KP</h3>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Alasan Penolakan</label>
+                            <textarea name="catatan_dosen" rows="4" required
+                                      class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                      placeholder="Berikan alasan penolakan proposal..."></textarea>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                                Tolak Proposal
+                            </button>
+                            <button type="button" onclick="closeModal('rejectProposalModal')" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg">
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal ACC Pendaftaran Seminar --}}
+    <div id="accSeminarModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-md w-full">
+                <form id="accSeminarForm" method="POST">
+                    @csrf
+                    <div class="p-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-6">ACC Pendaftaran Seminar</h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Jadwal Seminar *</label>
+                                <input type="datetime-local" name="jadwal_seminar" required
+                                       class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
+                                <p class="text-xs text-gray-500 mt-1">Pilih tanggal dan waktu seminar</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Ruangan Seminar *</label>
+                                <input type="text" name="ruangan_seminar" required
+                                       class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                       placeholder="Contoh: Ruang Seminar 101">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Catatan Seminar</label>
+                                <textarea name="catatan_seminar" rows="3"
+                                          class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                          placeholder="Catatan tambahan untuk mahasiswa (opsional)"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="flex space-x-3 mt-6">
+                            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">
+                                <i class="fas fa-check mr-2"></i>ACC & Tetapkan Jadwal
+                            </button>
+                            <button type="button" onclick="closeModal('accSeminarModal')" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg">
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Tolak Pendaftaran Seminar --}}
+    <div id="tolakSeminarModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-md w-full">
+                <form id="tolakSeminarForm" method="POST">
+                    @csrf
+                    <div class="p-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Tolak Pendaftaran Seminar</h3>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Alasan Penolakan *</label>
+                            <textarea name="catatan_seminar" rows="4" required
+                                      class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                      placeholder="Berikan alasan penolakan pendaftaran seminar..."></textarea>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                                Tolak Pendaftaran
+                            </button>
+                            <button type="button" onclick="closeModal('tolakSeminarModal')" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg">
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     {{-- Scripts --}}
     <script>
         let currentKpId = null;
@@ -562,6 +682,22 @@
             const form = document.getElementById('rejectForm');
             form.action = `/admin/kerja-praktek/${kpId}/reject`;
             document.getElementById('rejectModal').classList.remove('hidden');
+        }
+
+        function accProposal(kpId) {
+            if (!confirm('ACC Proposal Kerja Praktek mahasiswa ini?')) return;
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/kerja-praktek/${kpId}/acc-proposal`;
+            form.innerHTML = '@csrf';
+            document.body.appendChild(form);
+            form.submit();
+        }
+        function openRejectProposal(kpId) {
+            currentKpId = kpId;
+            const form = document.getElementById('rejectProposalForm');
+            form.action = `/admin/kerja-praktek/${kpId}/reject-proposal`;
+            document.getElementById('rejectProposalModal').classList.remove('hidden');
         }
 
         // Tampilkan modal nilai (action form sudah benar dari Blade)
@@ -619,16 +755,21 @@
             form.submit();
         }
 
-        // ACC kartu implementasi oleh Admin/Dosen
-        function accKartu(kpId) {
-            if (!confirm('ACC Lembar Penilaian Kerja Praktek mahasiswa ini?')) return;
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `/admin/kerja-praktek/${kpId}/acc-kartu`;
-            form.innerHTML = '@csrf';
-            document.body.appendChild(form);
-            form.submit();
+        function openAccSeminar(kpId) {
+            currentKpId = kpId;
+            const form = document.getElementById('accSeminarForm');
+            form.action = `/admin/kerja-praktek/${kpId}/acc-pendaftaran-seminar`;
+            document.getElementById('accSeminarModal').classList.remove('hidden');
         }
+
+        function openTolakSeminar(kpId) {
+            currentKpId = kpId;
+            const form = document.getElementById('tolakSeminarForm');
+            form.action = `/admin/kerja-praktek/${kpId}/tolak-pendaftaran-seminar`;
+            document.getElementById('tolakSeminarModal').classList.remove('hidden');
+        }
+
+
 
         // Fungsi untuk menghitung nilai akhir
         function calculateNilaiAkhir() {

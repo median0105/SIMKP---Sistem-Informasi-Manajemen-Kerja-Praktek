@@ -65,6 +65,7 @@ class KerjaPraktekController extends Controller
             'ipk_semester' => ['required','numeric','between:0,4.00'],
             'semester_ke'  => ['required','integer','min:1','max:14'],
             'file_krs'     => ['required','file','mimes:pdf','max:5120'],
+            'file_proposal' => ['required','file','mimes:pdf','max:10240'], // 10MB
         ];
 
         $messages = [
@@ -124,6 +125,7 @@ class KerjaPraktekController extends Controller
 
         // Build payload tersanitasi
         $fileKrsPath = $request->file('file_krs')->store('krs', 'public');
+        $fileProposalPath = $request->file('file_proposal')->store('proposal-kp', 'public');
 
         $payload = [
             'mahasiswa_id'   => $mahasiswaId,
@@ -133,6 +135,7 @@ class KerjaPraktekController extends Controller
             'ipk_semester'   => (float) $dataValid['ipk_semester'],
             'semester_ke'    => (int) $dataValid['semester_ke'],
             'file_krs'       => $fileKrsPath,
+            'file_proposal'  => $fileProposalPath,
         ];
 
         if ($choice === 1) {
@@ -197,6 +200,33 @@ class KerjaPraktekController extends Controller
         );
 
         return back()->with('success', 'Laporan berhasil diupload.');
+    }
+
+    /** Daftar Seminar */
+    public function daftarSeminar(Request $request, KerjaPraktek $kerjaPraktek)
+    {
+        $this->authorize('update', $kerjaPraktek);
+
+        if (!$kerjaPraktek->canRegisterSeminar()) {
+            return back()->with('error', 'Anda belum memenuhi syarat untuk mendaftar seminar.');
+        }
+
+        $kerjaPraktek->update([
+            'pendaftaran_seminar' => true,
+            'tanggal_daftar_seminar' => now(),
+        ]);
+
+        // Kirim notifikasi ke dosen bahwa mahasiswa telah mendaftar seminar
+        NotificationService::sendToRole(
+            'admin_dosen',
+            'Pendaftaran Seminar KP',
+            'Mahasiswa ' . auth()->user()->name . ' telah mendaftar seminar kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
+            'info',
+            $kerjaPraktek->id,
+            route('admin.kerja-praktek.show', $kerjaPraktek->id)
+        );
+
+        return back()->with('success', 'Pendaftaran seminar berhasil. Menunggu jadwal dari dosen pembimbing.');
     }
 
     /** Halaman kuisioner */
@@ -265,42 +295,42 @@ class KerjaPraktekController extends Controller
         return back()->with('success', 'Kuisioner berhasil disimpan.');
     }
 
-    /** Upload kartu implementasi (setelah ACC seminar) */
-    public function uploadKartu(Request $request, KerjaPraktek $kerjaPraktek)
-    {
-        $this->authorize('update', $kerjaPraktek);
+    // /** Upload kartu implementasi (setelah ACC seminar) - REMOVED */
+    // public function uploadKartu(Request $request, KerjaPraktek $kerjaPraktek)
+    // {
+    //     $this->authorize('update', $kerjaPraktek);
 
-        if (!$kerjaPraktek->acc_seminar) {
-            return back()->with('error', 'Anda hanya dapat upload kartu implementasi setelah mendapat ACC seminar.');
-        }
+    //     if (!$kerjaPraktek->acc_seminar) {
+    //         return back()->with('error', 'Anda hanya dapat upload kartu implementasi setelah mendapat ACC seminar.');
+    //     }
 
-        $request->validate([
-            'file_kartu_implementasi' => ['required','file','mimes:pdf,jpg,jpeg,png','max:5120'], // 5MB
-        ]);
+    //     $request->validate([
+    //         'file_kartu_implementasi' => ['required','file','mimes:pdf,jpg,jpeg,png','max:5120'], // 5MB
+    //     ]);
 
-        if ($kerjaPraktek->file_kartu_implementasi) {
-            Storage::disk('public')->delete($kerjaPraktek->file_kartu_implementasi);
-        }
+    //     if ($kerjaPraktek->file_kartu_implementasi) {
+    //         Storage::disk('public')->delete($kerjaPraktek->file_kartu_implementasi);
+    //     }
 
-        $path = $request->file('file_kartu_implementasi')->store('kartu-implementasi', 'public');
+    //     $path = $request->file('file_kartu_implementasi')->store('kartu-implementasi', 'public');
 
-        $kerjaPraktek->update([
-            'file_kartu_implementasi' => $path,
-            'acc_pembimbing_lapangan' => false, // reset ACC lapangan
-        ]);
+    //     $kerjaPraktek->update([
+    //         'file_kartu_implementasi' => $path,
+    //         'acc_pembimbing_lapangan' => false, // reset ACC lapangan
+    //     ]);
 
-        // Kirim notifikasi ke dosen bahwa mahasiswa telah upload kartu implementasi
-        NotificationService::sendToRole(
-            'admin_dosen',
-            'Kartu Implementasi KP Diunggah',
-            'Mahasiswa ' . auth()->user()->name . ' telah mengunggah kartu implementasi kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
-            'info',
-            $kerjaPraktek->id,
-            route('admin.kerja-praktek.show', $kerjaPraktek->id)
-        );
+    //     // Kirim notifikasi ke dosen bahwa mahasiswa telah upload kartu implementasi
+    //     NotificationService::sendToRole(
+    //         'admin_dosen',
+    //         'Kartu Implementasi KP Diunggah',
+    //         'Mahasiswa ' . auth()->user()->name . ' telah mengunggah kartu implementasi kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
+    //         'info',
+    //         $kerjaPraktek->id,
+    //         route('admin.kerja-praktek.show', $kerjaPraktek->id)
+    //     );
 
-        return back()->with('success', 'Kartu implementasi berhasil diupload. Menunggu ACC dari pembimbing lapangan.');
-    }
+    //     return back()->with('success', 'Kartu implementasi berhasil diupload. Menunggu ACC dari pembimbing lapangan.');
+    // }
 
     /** Endpoint untuk cek KP terbaru (untuk polling auto-refresh) */
     public function checkLatestKP()
