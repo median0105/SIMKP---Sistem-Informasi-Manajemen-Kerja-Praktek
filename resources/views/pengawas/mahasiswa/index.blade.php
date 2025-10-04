@@ -82,7 +82,7 @@
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">NPM</th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Judul KP</th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Status</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Periode</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Tanggal</th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Aksi</th>
                             </tr>
                         </thead>
@@ -99,31 +99,36 @@
                                         {{ $item->judul_kp ?? '-' }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        @php $s = $item->status ?? 'pengajuan'; @endphp
-                                        @if($s === \App\Models\KerjaPraktek::STATUS_DISETUJUI || $s === 'disetujui')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                                <i class="fas fa-check-circle mr-1"></i> Disetujui
-                                            </span>
-                                        @elseif($s === \App\Models\KerjaPraktek::STATUS_DITOLAK || $s === 'ditolak')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                                <i class="fas fa-times-circle mr-1"></i> Ditolak
-                                            </span>
-                                        @elseif($s === \App\Models\KerjaPraktek::STATUS_SEDANG_KP || $s === 'sedang_kp')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                                                <i class="fas fa-play-circle mr-1"></i> Sedang KP
-                                            </span>
-                                        @elseif($s === \App\Models\KerjaPraktek::STATUS_SELESAI || $s === 'selesai')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                                <i class="fas fa-flag-checkered mr-1"></i> Selesai
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                <i class="fas fa-clock mr-1"></i> Pengajuan
-                                            </span>
-                                        @endif
+                                    @php
+                                        $displayStatus = $item->status ?? 'pengajuan';
+                                        if ($item->status === 'sedang_kp' && $item->nilai_akhir && $item->file_laporan) {
+                                            $displayStatus = 'selesai';
+                                        }
+                                    @endphp
+                                    @if($displayStatus === \App\Models\KerjaPraktek::STATUS_DISETUJUI || $displayStatus === 'disetujui')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            <i class="fas fa-check-circle mr-1"></i> Disetujui
+                                        </span>
+                                    @elseif($displayStatus === \App\Models\KerjaPraktek::STATUS_DITOLAK || $displayStatus === 'ditolak')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            <i class="fas fa-times-circle mr-1"></i> Ditolak
+                                        </span>
+                                    @elseif($displayStatus === \App\Models\KerjaPraktek::STATUS_SEDANG_KP || $displayStatus === 'sedang_kp')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                            <i class="fas fa-play-circle mr-1"></i> Sedang KP
+                                        </span>
+                                    @elseif($displayStatus === \App\Models\KerjaPraktek::STATUS_SELESAI || $displayStatus === 'selesai')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            <i class="fas fa-flag-checkered mr-1"></i> Selesai
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <i class="fas fa-clock mr-1"></i> Pengajuan
+                                        </span>
+                                    @endif
                                     </td>
                                     <td class="px-4 py-2 text-sm text-gray-700">
-                                        {{ optional($item->tanggal_mulai)->format('d M Y') ?? '-' }}
+                                        {{ optional($item->tanggal_mulai)->locale('id')->translatedFormat('d F Y') }}
                                         —
                                         {{ optional($item->tanggal_selesai)->format('d M Y') ?? '-' }}
                                     </td>

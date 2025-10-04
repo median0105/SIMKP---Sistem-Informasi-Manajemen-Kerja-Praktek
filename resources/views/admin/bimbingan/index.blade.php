@@ -54,11 +54,11 @@
                                             </h4>
                                             @if($item->status_verifikasi)
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                    <i class="fas fa-check mr-1"></i>Verified
+                                                    <i class="fas fa-check mr-1"></i>Terverifikasi
                                                 </span>
                                             @else
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                    <i class="fas fa-clock mr-1"></i>Pending
+                                                    <i class="fas fa-clock mr-1"></i>Menunggu
                                                 </span>
                                             @endif
                                         </div>
@@ -77,7 +77,7 @@
                                             Tanggal:
                                             <span class="font-medium text-gray-900">
                                                 @if($item->tanggal_bimbingan)
-                                                    {{ \Illuminate\Support\Carbon::parse($item->tanggal_bimbingan)->format('d M Y H:i') }}
+                                                    {{ \Illuminate\Support\Carbon::parse($item->tanggal_bimbingan)->locale('id')->translatedFormat('d F Y') }}
                                                 @else
                                                     -
                                                 @endif

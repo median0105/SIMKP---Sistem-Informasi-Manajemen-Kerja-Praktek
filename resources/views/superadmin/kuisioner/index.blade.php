@@ -111,7 +111,7 @@
                                     @endif
                                 </td>
                                 <td class="px-4 py-2 text-sm text-gray-700">
-                                    {{ $it->created_at->format('d/m/Y') }}
+                                    {{ $it->created_at->locale('id')->translatedFormat('d F Y') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <a href="{{ route('superadmin.kuisioner.show', $it) }}"

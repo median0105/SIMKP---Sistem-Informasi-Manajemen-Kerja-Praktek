@@ -64,7 +64,7 @@
                                     <td class="px-4 py-2">{{ $row->tempatMagang->nama_perusahaan ?? $row->tempat_magang_sendiri ?? '-' }}</td>
                                     <td class="px-4 py-2 capitalize">{{ str_replace('_',' ',$row->status) }}</td>
                                     <td class="px-4 py-2">{{ $row->nilai_akhir ?? '-' }}</td>
-                                    <td class="px-4 py-2 text-sm text-gray-600">{{ $row->created_at->format('d/m/Y') }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-600">{{ $row->created_at->locale('id')->translatedFormat('d F Y') }}</td>
                                 </tr>
                             @empty
                                 <tr>

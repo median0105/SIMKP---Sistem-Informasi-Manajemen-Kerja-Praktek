@@ -15,6 +15,7 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div class="md:col-span-2">
+                        <label class="block text-xs text-gray-500 mb-1">Cari</label>
                         <input type="text" name="search" value="{{ request('search') }}"
                                placeholder="Cari deskripsi/mahasiswa/perusahaan…"
                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
@@ -31,7 +32,7 @@
                     </div>
                     <div class="flex items-end gap-2">
                         <button class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-md">Filter</button>
-                        <a href="{{ route('admin.kegiatan.index') }}" class="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Reset</a>
+                        <a href="{{ route('admin.kegiatan.index') }}" class="ml-3 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md">Reset</a>
                     </div>
                 </form>
             </div>
@@ -53,7 +54,7 @@
                     @forelse($kegiatan as $row)
                         <tr>
                             <td class="px-4 py-2 text-sm text-gray-900">
-                                {{ \Illuminate\Support\Carbon::parse($row->tanggal_kegiatan)->format('d M Y') }}
+                                {{ \Illuminate\Support\Carbon::parse($row->tanggal_kegiatan)->locale('id')->translatedFormat('d F Y') }}
                             </td>
                             <td class="px-4 py-2">
                                 <div class="text-gray-900 font-medium">{{ $row->mahasiswa->name ?? '-' }}</div>
@@ -70,9 +71,8 @@
                             </td>
                             <td class="px-4 py-2 text-sm">
                                 @if($row->file_dokumentasi)
-                                    <a class="text-unib-blue-600 hover:text-unib-blue-800" target="_blank"
-                                       href="{{ \Illuminate\Support\Facades\Storage::url($row->file_dokumentasi) }}">
-                                        <i class="fas fa-paperclip mr-1"></i>Lihat
+                                    <a href="{{ \Illuminate\Support\Facades\Storage::url($row->file_dokumentasi) }}" target="_blank">
+                                        <img src="{{ \Illuminate\Support\Facades\Storage::url($row->file_dokumentasi) }}" alt="Bukti" class="w-16 h-16 object-cover rounded cursor-pointer hover:opacity-75">
                                     </a>
                                 @else
                                     <span class="text-gray-400">-</span>

@@ -188,6 +188,9 @@ Route::middleware(['auth', 'verified', 'role:pengawas_lapangan'])
         Route::post('mahasiswa/{kerjaPraktek}/acc-kartu', [PengawasMahasiswaController::class, 'accKartuImplementasi'])->name('mahasiswa.acc-kartu');
         Route::post('mahasiswa/{kerjaPraktek}/feedback',  [PengawasMahasiswaController::class, 'addFeedback'])->name('mahasiswa.feedback');
 
+        // Kegiatan
+        Route::resource('kegiatan', \App\Http\Controllers\PengawasLapangan\KegiatanController::class)->only(['index']);
+
         // Alihkan menu kuisioner pengawas ke daftar mahasiswa
         Route::get('kuisioner', fn () => redirect()->route('pengawas.mahasiswa.index'))->name('kuisioner.index');
     });

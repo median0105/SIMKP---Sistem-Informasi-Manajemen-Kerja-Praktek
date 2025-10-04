@@ -16,12 +16,18 @@
                     <h3 class="text-lg font-semibold text-gray-900">{{ $kp->mahasiswa->name }} ({{ $kp->mahasiswa->npm }})</h3>
                     <p class="text-sm text-gray-600">{{ $kp->judul_kp }}</p>
                     <div class="mt-2">
-                        @include('components.kp-status-badge',['status'=>$kp->status])
+                        @php
+                            $displayStatus = $kp->status ?? 'pengajuan';
+                            if ($kp->status === 'sedang_kp' && $kp->nilai_akhir && $kp->file_laporan) {
+                                $displayStatus = 'selesai';
+                            }
+                        @endphp
+                        @include('components.kp-status-badge',['status'=>$displayStatus])
                     </div>
                 </div>
                 <div class="text-sm text-gray-500">
-                    <div>Mulai: {{ optional($kp->tanggal_mulai)->format('d M Y') ?: '-' }}</div>
-                    <div>Selesai: {{ optional($kp->tanggal_selesai)->format('d M Y') ?: '-' }}</div>
+                    <div>Mulai: {{ optional($kp->tanggal_mulai)->locale('id')->translatedFormat('d F Y') }}</div>
+                    {{-- <div>Selesai: {{ optional($kp->tanggal_selesai)->format('d M Y') ?: '-' }}</div> --}}
                 </div>
             </div>
 
@@ -35,26 +41,31 @@
                 </div>
 
                 <div class="text-center border rounded-lg p-4">
-                    <div class="w-10 h-10 mx-auto rounded-full flex items-center justify-center {{ $kp->file_kartu_implementasi ? 'bg-yellow-100 text-yellow-700':'bg-gray-100 text-gray-500' }}">
-                        <i class="fas fa-id-card"></i>
+                    <div class="w-10 h-10 mx-auto rounded-full flex items-center justify-center {{ $kp->acc_seminar ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
+                        <i class="fas fa-microphone"></i>
                     </div>
-                    <div class="mt-2 font-medium">Kartu Implementasi</div>
+                    <div class="mt-2 font-medium">Seminar</div>
                     <div class="text-sm text-gray-600">
-                        @if($kp->acc_pembimbing_lapangan)
-                            ACC Pembimbing Lapangan
-                        @elseif($kp->file_kartu_implementasi)
-                            Menunggu ACC
-                        @else
-                            Belum upload
+                        @if(!$kp->pendaftaran_seminar)
+                            Belum mendaftar seminar
+                        @elseif($kp->pendaftaran_seminar && !$kp->acc_pendaftaran_seminar)
+                            Menunggu ACC pendaftaran seminar
+                        @elseif($kp->acc_pendaftaran_seminar && !$kp->acc_seminar)
+                            Menunggu ACC seminar
+                        @elseif($kp->acc_seminar)
+                            Seminar disetujui
                         @endif
                     </div>
-                    @if($kp->file_kartu_implementasi && !$kp->acc_pembimbing_lapangan)
-                        <form class="mt-3" method="POST" action="{{ route('pengawas.mahasiswa.acc-kartu', $kp) }}">
-                            @csrf
-                            <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-sm" onclick="return confirm('ACC kartu implementasi?')">
-                                ACC Kartu
-                            </button>
-                        </form>
+                    @if($kp->tanggal_daftar_seminar)
+                        <p class="text-xs text-gray-500 mt-1">Tanggal daftar: {{ $kp->tanggal_daftar_seminar->locale('id')->translatedFormat('d F Y') }}</p>
+                    @endif
+                    @if($kp->jadwal_seminar)
+                        <p class="text-xs text-gray-500 mt-1">
+                            Jadwal: {{ $kp->jadwal_seminar->locale('id')->translatedFormat('d F Y \p\u\k\u\l H:i') }} WIB
+                        </p>
+                    @endif
+                    @if($kp->ruangan_seminar)
+                        <p class="text-xs text-gray-500">{{ $kp->ruangan_seminar }}</p>
                     @endif
                 </div>
 
@@ -62,12 +73,12 @@
                     <div class="w-10 h-10 mx-auto rounded-full flex items-center justify-center {{ $kp->nilai_akhir ? 'bg-blue-100 text-blue-700':'bg-gray-100 text-gray-500' }}">
                         <i class="fas fa-graduation-cap"></i>
                     </div>
-                    <div class="mt-2 font-medium">Ujian</div>
+                    <div class="mt-2 font-medium">Hasil Akhir</div>
                     <div class="text-sm text-gray-600">
                         @if($kp->nilai_akhir)
                             Nilai: {{ $kp->nilai_akhir }} — {{ $kp->lulus_ujian ? 'Lulus' : 'Tidak lulus' }}
                         @else
-                            Belum ujian
+                            Belum Ada
                         @endif
                     </div>
                 </div>
@@ -82,6 +93,43 @@
                         Simpan Feedback
                     </button>
                 </form>
+            </div>
+        </div>
+
+        <!-- Activity Kegiatan -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Kegiatan Terbaru</h3>
+            </div>
+            <div class="p-6">
+                @if($kp->mahasiswa->kegiatan->count() > 0)
+                    <div class="space-y-3">
+                        @foreach($kp->mahasiswa->kegiatan as $kegiatan)
+                            <div class="flex items-start space-x-3 py-3 border-b border-gray-100 last:border-0">
+                                <div class="bg-purple-100 rounded-full p-2 mt-1">
+                                    <i class="fas fa-tasks text-purple-600 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-gray-900">{{ Str::limit($kegiatan->deskripsi_kegiatan, 100) }}</p>
+                                    <p class="text-sm text-gray-600">
+                                        {{ $kegiatan->tanggal_kegiatan->locale('id')->translatedFormat('d F Y') }} • {{ $kegiatan->durasi_jam }} jam
+                                    </p>
+                                </div>
+                                @if($kegiatan->file_dokumentasi)
+                                    <a href="{{ Storage::url($kegiatan->file_dokumentasi) }}" target="_blank"
+                                       class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
+                                        <i class="fas fa-paperclip"></i>
+                                    </a>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-tasks text-4xl text-gray-300 mb-4"></i>
+                        <p>Belum ada kegiatan tercatat</p>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

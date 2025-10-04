@@ -24,8 +24,16 @@
                 <p class="text-xs font-medium text-gray-600">Status Kerja Praktek</p>
                 <p class="text-xl font-semibold text-gray-900 mt-1">
                     @if($data['kerjaPraktek'])
+                        @php
+                            $status = $data['kerjaPraktek']->status;
+                            $displayStatus = $status;
+                            if ($status === 'sedang_kp' && $data['kerjaPraktek']->nilai_akhir && $data['kerjaPraktek']->file_laporan) {
+                                // If KP is ongoing but student has uploaded laporan and has final grade, show 'selesai' status
+                                $displayStatus = 'selesai';
+                            }
+                        @endphp
                         <span class="
-                            @switch($data['kerjaPraktek']->status)
+                            @switch($displayStatus)
                                 @case('pengajuan') text-yellow-600 @break
                                 @case('disetujui') text-blue-600 @break
                                 @case('sedang_kp') text-green-600 @break
@@ -33,8 +41,13 @@
                                 @case('ditolak') text-red-600 @break
                             @endswitch
                         ">
-                            {{ ucfirst(str_replace('_', ' ', $data['kerjaPraktek']->status)) }}
+                            {{ ucfirst(str_replace('_', ' ', $displayStatus)) }}
                         </span>
+                        @if($displayStatus === 'selesai' && $data['kerjaPraktek']->lulus_ujian === false)
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 ml-2">
+                                <i class="fas fa-times-circle mr-2"></i> TIDAK LULUS
+                            </span>
+                        @endif
                     @else
                         <span class="text-xs font-medium text-gray-400">Belum Mengajukan</span>
                     @endif
@@ -97,7 +110,7 @@
         </div>
     </div>
 
-    @if($data['kerjaPraktek'] && $data['kerjaPraktek']->status === 'selesai')
+    @if($data['kerjaPraktek'] && ($data['kerjaPraktek']->status === 'selesai' || ($data['kerjaPraktek']->status === 'sedang_kp' && $data['kerjaPraktek']->nilai_akhir)))
     <!-- Nilai Akhir -->
     <div class="bg-white rounded-lg shadow p-4">
         <div class="flex items-center justify-between">
@@ -206,7 +219,7 @@
                     </div>
                     <div class="flex-1">
                         <p class="font-medium text-gray-900">{{ $bimbingan->topik_bimbingan }}</p>
-                        <p class="text-sm text-gray-600 mt-1">{{ $bimbingan->tanggal_bimbingan->format('d M Y') }}</p>
+                        <p class="text-sm text-gray-600 mt-1">{{ $bimbingan->tanggal_bimbingan->locale('id')->translatedFormat('d F Y') }}</p>
                         <div class="mt-2">
                             @if($bimbingan->status_verifikasi)
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -250,7 +263,7 @@
                     <div class="flex-1">
                         <p class="font-medium text-gray-900">{{ Str::limit($kegiatan->deskripsi_kegiatan, 50) }}</p>
                         <p class="text-sm text-gray-600 mt-1">
-                            {{ $kegiatan->tanggal_kegiatan->format('d M Y') }} • {{ $kegiatan->durasi_jam }} jam
+                            {{ $kegiatan->tanggal_kegiatan->locale('id')->translatedFormat('d F Y') }} • {{ $kegiatan->durasi_jam }} jam
                         </p>
                     </div>
                 </div>

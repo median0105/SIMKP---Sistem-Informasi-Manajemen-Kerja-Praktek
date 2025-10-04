@@ -14,10 +14,19 @@ class TempatMagangController extends Controller
 {
     public function index(Request $request)
 {
-    // Hitung "terpakai" hanya dari status disetujui/sedang_kp
+    // Hitung "terpakai" hanya dari status disetujui/sedang_kp, tapi exclude yang sudah selesai (nilai_akhir dan file_laporan ada)
     $query = TempatMagang::withCount([
         'kerjaPraktek as terpakai_count' => function ($q) {
-            $q->whereIn('status', ['disetujui', 'sedang_kp']);
+            $q->where(function ($qq) {
+                $qq->where('status', 'disetujui')
+                   ->orWhere(function ($qqq) {
+                       $qqq->where('status', 'sedang_kp')
+                           ->where(function ($qqqq) {
+                               $qqqq->whereNull('nilai_akhir')
+                                     ->orWhereNull('file_laporan');
+                           });
+                   });
+            });
         },
         'kerjaPraktek' // total semua KP (untuk informasi tambahan bila perlu)
     ]);

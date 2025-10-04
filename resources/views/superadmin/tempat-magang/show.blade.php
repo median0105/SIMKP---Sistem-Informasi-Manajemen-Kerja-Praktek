@@ -34,7 +34,9 @@
                     <div class="space-y-2">
                         <div>
                             @php
-                                $terpakai = $tempatMagang->kerjaPraktek->whereIn('status',['disetujui','sedang_kp'])->count();
+                                $terpakai = $tempatMagang->kerjaPraktek->filter(function ($kp) {
+                                    return in_array($kp->status, ['disetujui', 'sedang_kp']) && !($kp->nilai_akhir && $kp->file_laporan);
+                                })->count();
                                 $sisa = max(0, $tempatMagang->kuota_mahasiswa - $terpakai);
                             @endphp
                             <div class="text-sm text-gray-600">Kuota</div>
@@ -53,9 +55,20 @@
                             @endif
                         </div>
                         <div class="text-sm text-gray-600">
+                            @php
+                                $displayCounts = $tempatMagang->kerjaPraktek->map(function ($kp) {
+                                    $displayStatus = $kp->status ?? 'pengajuan';
+                                    if ($kp->status === 'sedang_kp' && $kp->nilai_akhir && $kp->file_laporan) {
+                                        $displayStatus = 'selesai';
+                                    }
+                                    return $displayStatus;
+                                })->countBy();
+                                $sedangCount = $displayCounts->get('sedang_kp', 0);
+                                $selesaiCount = $displayCounts->get('selesai', 0);
+                            @endphp
                             Total KP: {{ $tempatMagang->kerjaPraktek->count() }}<br>
-                            Sedang KP: {{ $tempatMagang->kerjaPraktek->where('status','sedang_kp')->count() }}<br>
-                            Selesai : {{ $tempatMagang->kerjaPraktek->where('status','selesai')->count() }}
+                            Sedang KP: {{ $sedangCount }}<br>
+                            Selesai : {{ $selesaiCount }}
                         </div>
                     </div>
                 </div>
@@ -81,8 +94,14 @@
                                     <td class="px-6 py-4 text-sm text-gray-900">{{ $kp->mahasiswa->name ?? '-' }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-700">{{ $kp->judul_kp }}</td>
                                     <td class="px-6 py-4 text-sm">
+                                        @php
+                                            $displayStatus = $kp->status ?? 'pengajuan';
+                                            if ($kp->status === 'sedang_kp' && $kp->nilai_akhir && $kp->file_laporan) {
+                                                $displayStatus = 'selesai';
+                                            }
+                                        @endphp
                                         <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                            {{ ucfirst(str_replace('_',' ',$kp->status)) }}
+                                            {{ ucfirst(str_replace('_',' ',$displayStatus)) }}
                                         </span>
                                     </td>
                                 </tr>

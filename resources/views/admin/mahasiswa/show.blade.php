@@ -58,7 +58,7 @@
                                     </div>
                                     <div>
                                         <label class="text-sm font-medium text-gray-600">Bergabung</label>
-                                        <p class="text-gray-900">{{ $mahasiswa->created_at->format('d F Y') }}</p>
+                                        <p class="text-gray-900">{{ $mahasiswa->created_at->locale('id')->translatedFormat('d F Y') }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +120,13 @@
 
             <!-- Status Kerja Praktek -->
             @if($mahasiswa->kerjaPraktek->first())
-                @php $kp = $mahasiswa->kerjaPraktek->first(); @endphp
+                @php
+                    $kp = $mahasiswa->kerjaPraktek->first();
+                    $displayStatus = $kp->status;
+                    if ($kp->status === 'sedang_kp' && $kp->nilai_akhir && $kp->file_laporan) {
+                        $displayStatus = 'selesai';
+                    }
+                @endphp
                 <div class="bg-white rounded-lg shadow">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900">Status Kerja Praktek</h3>
@@ -145,7 +151,7 @@
                                 <div>
                                     <label class="text-sm font-medium text-gray-600">Status</label>
                                     <div class="mt-1">
-                                        @switch($kp->status)
+                                        @switch($displayStatus)
                                             @case('pengajuan')
                                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
                                                     Pengajuan
@@ -174,13 +180,13 @@
                                 @if($kp->tanggal_mulai)
                                     <div>
                                         <label class="text-sm font-medium text-gray-600">Tanggal Mulai</label>
-                                        <p class="text-gray-900">{{ $kp->tanggal_mulai->format('d F Y') }}</p>
+                                        <p class="text-gray-900">{{ $kp->tanggal_mulai->locale('id')->translatedFormat('d F Y') }}</p>
                                     </div>
                                 @endif
                                 @if($kp->tanggal_selesai)
                                     <div>
                                         <label class="text-sm font-medium text-gray-600">Tanggal Selesai</label>
-                                        <p class="text-gray-900">{{ $kp->tanggal_selesai->format('d F Y') }}</p>
+                                        <p class="text-gray-900">{{ $kp->tanggal_selesai->locale('id')->translatedFormat('d F Y') }}</p>
                                     </div>
                                 @endif
                                 @if($kp->nilai_akhir)
@@ -263,7 +269,7 @@
                                     <div class="flex justify-between items-start mb-2">
                                         <h4 class="font-medium text-gray-900">{{ $bimbingan->topik_bimbingan }}</h4>
                                         <div class="flex items-center space-x-2">
-                                            <span class="text-sm text-gray-500">{{ $bimbingan->tanggal_bimbingan->format('d/m/Y') }}</span>
+                                            <span class="text-sm text-gray-500">{{ $bimbingan->tanggal_bimbingan->locale('id')->translatedFormat('d F Y') }}</span>
                                             @if($bimbingan->status_verifikasi)
                                                 <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">Verified</span>
                                             @else
@@ -318,7 +324,7 @@
                                     <div class="flex-1">
                                         <p class="text-gray-900">{{ Str::limit($kegiatan->deskripsi_kegiatan, 100) }}</p>
                                         <p class="text-sm text-gray-600">
-                                            {{ $kegiatan->tanggal_kegiatan->format('d M Y') }} • {{ $kegiatan->durasi_jam }} jam
+                                            Tanggal : {{ $kegiatan->tanggal_kegiatan->locale('id')->translatedFormat('d F Y') }} • {{ $kegiatan->durasi_jam }} jam
                                         </p>
                                     </div>
                                     @if($kegiatan->file_dokumentasi)

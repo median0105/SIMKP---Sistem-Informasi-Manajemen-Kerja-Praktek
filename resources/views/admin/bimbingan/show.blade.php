@@ -43,9 +43,7 @@
                             <dt class="text-sm text-gray-500">Tanggal</dt>
                             <dd class="text-gray-900 font-medium">
                                 {{-- tampilkan salah satu field tanggal yang ada --}}
-                                {{ $bimbingan->tanggal_bimbingan
-                                    ?? $bimbingan->tanggal
-                                    ?? ($bimbingan->created_at?->format('d M Y H:i') ?? '-') }}
+                                {{ $bimbingan->tanggal_bimbingan->locale('id')->translatedFormat('d F Y ')}}
                             </dd>
                         </div>
 
@@ -74,7 +72,7 @@
                         <div>
                             <dt class="text-sm text-gray-500">Status Verifikasi</dt>
                             <dd>
-                                @if(!empty($bimbingan->is_verified))
+                                @if(!empty($bimbingan->status_verifikasi))
                                     <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
                                         Terverifikasi
                                     </span>

@@ -118,6 +118,10 @@
                                         @php
                                             $kp = $mhs->kpTerakhir; // BUKAN $mhs->kerjaPraktek
                                             $status = $kp->status ?? null;
+                                            $displayStatus = $status;
+                                            if ($status === 'sedang_kp' && $kp->nilai_akhir && $kp->file_laporan) {
+                                                $displayStatus = 'selesai';
+                                            }
                                             $map = [
                                                 'pengajuan' => 'bg-yellow-100 text-yellow-800',
                                                 'disetujui' => 'bg-blue-100 text-blue-800',
@@ -125,7 +129,7 @@
                                                 'selesai'   => 'bg-gray-100 text-gray-800',
                                                 'ditolak'   => 'bg-red-100 text-red-800',
                                             ];
-                                            $cls = $map[$status] ?? 'bg-gray-100 text-gray-800';
+                                            $cls = $map[$displayStatus] ?? 'bg-gray-100 text-gray-800';
                                         @endphp
 
                                         <tr class="hover:bg-gray-50">
@@ -138,7 +142,7 @@
                                             <td class="px-6 py-4 text-sm">
                                                 @if($status)
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $cls }}">
-                                                        {{ ucfirst(str_replace('_',' ',$status)) }}
+                                                        {{ ucfirst(str_replace('_',' ',$displayStatus)) }}
                                                     </span>
                                                 @else
                                                     <span class="text-gray-500">-</span>

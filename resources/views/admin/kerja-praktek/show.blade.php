@@ -75,7 +75,13 @@
                             <div>
                                 <label class="text-sm font-medium text-gray-600">Status</label>
                                 <div class="mt-1">
-                                    @switch($kerjaPraktek->status)
+                                    @php
+                                        $displayStatus = $kerjaPraktek->status;
+                                        if ($kerjaPraktek->status === 'sedang_kp' && $kerjaPraktek->nilai_akhir && $kerjaPraktek->file_laporan) {
+                                            $displayStatus = 'selesai';
+                                        }
+                                    @endphp
+                                    @switch($displayStatus)
                                         @case('pengajuan')
                                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
                                                 <i class="fas fa-clock mr-2"></i>Menunggu Persetujuan
@@ -107,13 +113,13 @@
                             @if($kerjaPraktek->tanggal_mulai)
                                 <div>
                                     <label class="text-sm font-medium text-gray-600">Tanggal Mulai</label>
-                                    <p class="text-gray-900 mt-1">{{ $kerjaPraktek->tanggal_mulai->format('d F Y') }}</p>
+                                    <p class="text-gray-900 mt-1">{{ $kerjaPraktek->tanggal_mulai->locale('id')->translatedFormat('d F Y') }}</p>
                                 </div>
                             @endif
                             @if($kerjaPraktek->tanggal_selesai)
                                 <div>
                                     <label class="text-sm font-medium text-gray-600">Tanggal Selesai</label>
-                                    <p class="text-gray-900 mt-1">{{ $kerjaPraktek->tanggal_selesai->format('d F Y') }}</p>
+                                    <p class="text-gray-900 mt-1">{{ $kerjaPraktek->tanggal_selesai->locale('id')->translatedFormat('d F Y') }}</p>
                                 </div>
                             @endif
 
@@ -186,7 +192,7 @@
                                 </span>
                             @endif
 
-                            @if($kerjaPraktek->canTakeExam() && !$kerjaPraktek->lulus_ujian)
+                            @if($kerjaPraktek->canTakeExam() && !$kerjaPraktek->lulus_ujian && !$kerjaPraktek->nilai_akhir)
                                 <button onclick="openNilai({{ $kerjaPraktek->id }})"
                                         class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg">
                                     <i class="fas fa-edit mr-2"></i>Input Nilai
@@ -260,7 +266,7 @@
                                     @endif
                                 </p>
                                 @if($kerjaPraktek->tanggal_daftar_seminar)
-                                    <p class="text-xs text-gray-500 mt-1">{{ $kerjaPraktek->tanggal_daftar_seminar->format('d M Y') }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ $kerjaPraktek->tanggal_daftar_seminar->locale('id')->translatedFormat('d F Y \p\u\k\u\l H:i') }} WIB</p>
                                 @endif
                             </div>
 
@@ -275,12 +281,12 @@
                                     {{ $kerjaPraktek->acc_seminar ? 'Sudah ACC' : 'Belum ACC' }}
                                 </p>
                                 @if($kerjaPraktek->jadwal_seminar)
-                                    <p class="text-xs text-gray-500 mt-1">{{ $kerjaPraktek->jadwal_seminar->format('d M Y H:i') }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ $kerjaPraktek->jadwal_seminar->locale('id')->translatedFormat('d F Y \p\u\k\u\l H:i') }} WIB</p>
                                     @if($kerjaPraktek->ruangan_seminar)
                                         <p class="text-xs text-gray-500">{{ $kerjaPraktek->ruangan_seminar }}</p>
                                     @endif
                                 @elseif($kerjaPraktek->tanggal_seminar)
-                                    <p class="text-xs text-gray-500 mt-1">{{ $kerjaPraktek->tanggal_seminar->format('d M Y') }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ $kerjaPraktek->tanggal_seminar->locale('id')->translatedFormat('d F Y') }}</p>
                                 @endif
                             </div>
 
@@ -341,7 +347,7 @@
                     </div>
 
                     @isset($canUpdateIpk)
-                        @if($canUpdateIpk)
+                        @if($canUpdateIpk && !($kerjaPraktek->nilai_akhir && !$kerjaPraktek->lulus_ujian))
                             <form method="POST" action="{{ route('admin.kerja-praktek.set-ipk', $kerjaPraktek) }}"
                                   class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 @csrf
@@ -438,7 +444,7 @@
                                             <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">Pending</span>
                                         @endif
                                     </div>
-                                    <p class="text-sm text-gray-600 mb-2">{{ $bimbingan->tanggal_bimbingan->format('d F Y') }}</p>
+                                    <p class="text-sm text-gray-600 mb-2">{{ $bimbingan->tanggal_bimbingan->locale('id')->translatedFormat('d F Y') }}</p>
                                     <p class="text-gray-900">{{ \Illuminate\Support\Str::limit($bimbingan->catatan_mahasiswa, 100) }}</p>
                                     @if($bimbingan->catatan_dosen)
                                         <div class="mt-3 p-3 bg-gray-50 rounded">

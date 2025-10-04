@@ -180,8 +180,13 @@
                                             <div class="text-sm text-gray-500">{{ $tempat->telepon_perusahaan }}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-semibold text-gray-900">{{ $tempat->kuota_mahasiswa }}</div>
-                                            <div class="text-xs text-gray-500">Mahasiswa</div>
+                                            @php
+                                                $terpakaiCount = $tempat->kerjaPraktek->filter(function ($kp) {
+                                                    return !($kp->nilai_akhir && $kp->file_laporan);
+                                                })->count();
+                                            @endphp
+                                            <div class="text-sm font-semibold text-gray-900">{{ $tempat->kuota_mahasiswa - $terpakaiCount }}</div>
+                                            <div class="text-xs text-gray-500">Kuota Tersisa</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @if($tempat->is_active)

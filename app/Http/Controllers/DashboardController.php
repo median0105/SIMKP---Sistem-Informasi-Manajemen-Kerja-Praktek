@@ -84,8 +84,17 @@ class DashboardController extends Controller
         return [
             'totalMahasiswa' => User::where('role', User::ROLE_MAHASISWA)->count(),
             'pengajuanBaru' => KerjaPraktek::where('status', KerjaPraktek::STATUS_PENGAJUAN)->count(),
-            'sedangKP' => KerjaPraktek::where('status', KerjaPraktek::STATUS_SEDANG_KP)->count(),
-            'selesaiKP' => KerjaPraktek::where('status', KerjaPraktek::STATUS_SELESAI)->count(),
+            'sedangKP' => KerjaPraktek::where('status', KerjaPraktek::STATUS_SEDANG_KP)
+                ->where(function($q) {
+                    $q->whereNull('nilai_akhir')
+                      ->orWhereNull('file_laporan');
+                })->count(),
+            'selesaiKP' => KerjaPraktek::where('status', KerjaPraktek::STATUS_SELESAI)
+                ->orWhere(function($q) {
+                    $q->where('status', KerjaPraktek::STATUS_SEDANG_KP)
+                      ->whereNotNull('nilai_akhir')
+                      ->whereNotNull('file_laporan');
+                })->count(),
             'pengajuanTerbaru' => KerjaPraktek::where('status', KerjaPraktek::STATUS_PENGAJUAN)
                                               ->with('mahasiswa')
                                               ->latest()

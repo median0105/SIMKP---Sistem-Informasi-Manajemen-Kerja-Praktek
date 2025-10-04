@@ -35,8 +35,14 @@ class MahasiswaController extends Controller
             'total'     => KerjaPraktek::where('tempat_magang_id', $pengawas->tempat_magang_id)->count(),
             'pengajuan' => KerjaPraktek::where('tempat_magang_id', $pengawas->tempat_magang_id)->where('status', KerjaPraktek::STATUS_PENGAJUAN)->count(),
             'disetujui' => KerjaPraktek::where('tempat_magang_id', $pengawas->tempat_magang_id)->where('status', KerjaPraktek::STATUS_DISETUJUI)->count(),
-            'sedang'    => KerjaPraktek::where('tempat_magang_id', $pengawas->tempat_magang_id)->where('status', KerjaPraktek::STATUS_SEDANG_KP)->count(),
-            'selesai'   => KerjaPraktek::where('tempat_magang_id', $pengawas->tempat_magang_id)->where('status', KerjaPraktek::STATUS_SELESAI)->count(),
+            'sedang'    => KerjaPraktek::where('tempat_magang_id', $pengawas->tempat_magang_id)->where('status', KerjaPraktek::STATUS_SEDANG_KP)->where(function ($q) {
+                $q->whereNull('nilai_akhir')->orWhereNull('file_laporan');
+            })->count(),
+            'selesai'   => KerjaPraktek::where('tempat_magang_id', $pengawas->tempat_magang_id)->where(function ($q) {
+                $q->where('status', KerjaPraktek::STATUS_SELESAI)->orWhere(function ($qq) {
+                    $qq->where('status', KerjaPraktek::STATUS_SEDANG_KP)->whereNotNull('nilai_akhir')->whereNotNull('file_laporan');
+                });
+            })->count(),
         ];
 
         return view('pengawas.mahasiswa.index', [

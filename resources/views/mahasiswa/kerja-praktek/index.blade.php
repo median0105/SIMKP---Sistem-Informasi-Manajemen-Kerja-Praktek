@@ -240,14 +240,14 @@
                                 @if($kerjaPraktek->tanggal_mulai)
                                     <div>
                                         <label class="text-sm font-medium text-gray-600">Tanggal Mulai</label>
-                                        <p class="text-gray-900 mt-1">{{ $kerjaPraktek->tanggal_mulai->format('d F Y') }}</p>
+                                        <p class="text-gray-900 mt-1">{{ $kerjaPraktek->tanggal_mulai->locale('id')->translatedFormat('d F Y') }}</p>
                                     </div>
                                 @endif
 
                                 @if($kerjaPraktek->tanggal_selesai)
                                     <div>
                                         <label class="text-sm font-medium text-gray-600">Tanggal Selesai</label>
-                                        <p class="text-gray-900 mt-1">{{ $kerjaPraktek->tanggal_selesai->format('d F Y') }}</p>
+                                        <p class="text-gray-900 mt-1">{{ $kerjaPraktek->tanggal_selesai->locale('id')->translatedFormat('d F Y') }}</p>
                                     </div>
                                 @endif
                             </div>
@@ -257,7 +257,14 @@
                                 <div>
                                     <label class="text-sm font-medium text-gray-600">Status</label>
                                     <div class="mt-2">
-                                        @php $s = $kerjaPraktek->status; @endphp
+                                        @php
+                                            $s = $kerjaPraktek->status;
+                                            $displayStatus = $s;
+                                            if ($s === 'sedang_kp' && $kerjaPraktek->nilai_akhir && $kerjaPraktek->file_laporan) {
+                                                // If KP is ongoing but student has uploaded laporan and has final grade, show 'selesai' status
+                                                $displayStatus = 'selesai';
+                                            }
+                                        @endphp
                                         @if($s === \App\Models\KerjaPraktek::STATUS_PENGAJUAN)
                                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
                                                 <i class="fas fa-clock mr-2"></i> Menunggu Persetujuan
@@ -266,14 +273,21 @@
                                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                                                 <i class="fas fa-check-circle mr-2"></i> Disetujui
                                             </span>
-                                        @elseif($s === \App\Models\KerjaPraktek::STATUS_SEDANG_KP)
+                                        @elseif($s === \App\Models\KerjaPraktek::STATUS_SEDANG_KP && $displayStatus === 'sedang_kp')
                                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                                                 <i class="fas fa-play-circle mr-2"></i> Sedang KP
                                             </span>
-                                        @elseif($s === \App\Models\KerjaPraktek::STATUS_SELESAI)
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                                                <i class="fas fa-flag-checkered mr-2"></i> Selesai
-                                            </span>
+                                        @elseif($displayStatus === 'selesai')
+                                            <div class="flex flex-col space-y-2">
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                                                    <i class="fas fa-flag-checkered mr-2"></i> Selesai
+                                                </span>
+                                                @if($kerjaPraktek->nilai_akhir && !$kerjaPraktek->lulus_ujian)
+                                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                                        <i class="fas fa-times-circle mr-2"></i> TIDAK LULUS
+                                                    </span>
+                                                @endif
+                                            </div>
                                         @elseif($s === \App\Models\KerjaPraktek::STATUS_DITOLAK)
                                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
                                                 <i class="fas fa-times-circle mr-2"></i> Ditolak
@@ -352,7 +366,7 @@
                                                         </span>
                                                         @if($kerjaPraktek->jadwal_seminar)
                                                             <div class="text-sm text-gray-600">
-                                                                <i class="fas fa-calendar mr-1"></i> Jadwal: {{ $kerjaPraktek->jadwal_seminar->format('d F Y H:i') }}
+                                                                <i class="fas fa-calendar mr-1"></i> Jadwal: {{ $kerjaPraktek->jadwal_seminar->locale('id')->translatedFormat('d F Y \p\u\k\u\l H:i') }} WIB
                                                                 @if($kerjaPraktek->ruangan_seminar)
                                                                     <br><i class="fas fa-map-marker-alt mr-1"></i> Ruangan: {{ $kerjaPraktek->ruangan_seminar }}
                                                                 @endif
@@ -365,7 +379,7 @@
                                                     </span>
                                                     @if($kerjaPraktek->tanggal_daftar_seminar)
                                                         <div class="text-sm text-gray-500 mt-1">
-                                                            Didaftarkan pada: {{ $kerjaPraktek->tanggal_daftar_seminar->format('d/m/Y') }}
+                                                            Didaftarkan pada: {{ $kerjaPraktek->tanggal_daftar_seminar->locale('id')->translatedFormat('d F Y') }}
                                                         </div>
                                                     @endif
                                                 @endif

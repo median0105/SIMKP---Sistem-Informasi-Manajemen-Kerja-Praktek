@@ -42,9 +42,9 @@
                         <x-nav-link :href="route('admin.bimbingan.index')" :active="request()->routeIs('admin.bimbingan.*')" class="text-white hover:text-unib-blue-200">
                             {{ __('Bimbingan') }}
                         </x-nav-link>
-                        {{-- <x-nav-link :href="route('admin.kegiatan.index')" :active="request()->routeIs('admin.kegiatan.*')" class="text-white hover:text-unib-blue-200">
+                        <x-nav-link :href="route('admin.kegiatan.index')" :active="request()->routeIs('admin.kegiatan.*')" class="text-white hover:text-unib-blue-200">
                             {{ __('Kegiatan Mahasiswa') }}
-                        </x-nav-link> --}}
+                        </x-nav-link>
                     @endif
 
                     @if(auth()->user()->isSuperAdmin())
@@ -71,6 +71,9 @@
                     @if(auth()->user()->isPengawasLapangan())
                         <x-nav-link :href="route('pengawas.mahasiswa.index')" :active="request()->routeIs('pengawas.mahasiswa.*')" class="text-white hover:text-unib-blue-200">
                             {{ __('Mahasiswa KP') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('pengawas.kegiatan.index')" :active="request()->routeIs('pengawas.kegiatan.*')" class="text-white hover:text-unib-blue-200">
+                            {{ __('Kegiatan Mahasiswa') }}
                         </x-nav-link>
                         {{-- <x-nav-link :href="route('pengawas.kuisioner.index')" :active="request()->routeIs('pengawas.kuisioner.*')" class="text-white hover:text-unib-blue-200">
                             {{ __('Kuisioner') }}

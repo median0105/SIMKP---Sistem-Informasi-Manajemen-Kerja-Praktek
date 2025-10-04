@@ -68,7 +68,7 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $kp->created_at->format('d/m/Y') }}
+                                        {{ $kp->created_at->locale('id')->translatedFormat('d F Y') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         @if($kp->status === 'ditolak')

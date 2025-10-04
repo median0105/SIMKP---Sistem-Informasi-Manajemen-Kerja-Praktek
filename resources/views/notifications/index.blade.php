@@ -15,7 +15,7 @@
                     </button>
                 </form>
             @endif
-        </div>
+        </div>  
     </x-slot>
 
     <div class="py-12">
