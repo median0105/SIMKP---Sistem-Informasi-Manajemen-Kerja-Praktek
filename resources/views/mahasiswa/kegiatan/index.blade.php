@@ -62,7 +62,7 @@
             <tr>
               <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
               <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Durasi</th>
-              <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Bukti</th>
+              <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Dokumentasi</th>
               <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
             </tr>
           </thead>

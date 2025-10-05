@@ -85,6 +85,8 @@ class LaporanController extends Controller
 
         // KP dengan Nilai Tertinggi
         $topPerformers = KerjaPraktek::with('mahasiswa')
+                                    ->where('status', KerjaPraktek::STATUS_SELESAI)
+                                    ->where('lulus_ujian', true)
                                     ->whereNotNull('nilai_akhir')
                                     ->whereBetween('created_at', [$startDate, $endDate])
                                     ->orderByDesc('nilai_akhir')

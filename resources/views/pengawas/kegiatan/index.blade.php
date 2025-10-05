@@ -11,14 +11,14 @@
           <label class="text-sm text-gray-600">Cari Mahasiswa</label>
           <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama mahasiswa..." class="w-full border-gray-300 rounded-md">
         </div>
-        <div class="flex-1 min-w-64">
+        {{-- <div class="flex-1 min-w-64">
           <label class="text-sm text-gray-600">Tanggal Mulai</label>
           <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="w-full border-gray-300 rounded-md">
         </div>
         <div class="flex-1 min-w-64">
           <label class="text-sm text-gray-600">Tanggal Akhir</label>
           <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" class="w-full border-gray-300 rounded-md">
-        </div>
+        </div> --}}
         <div class="flex items-end">
           <button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Cari</button>
           <a href="{{ route('pengawas.kegiatan.index') }}" class="ml-3 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md">Reset</a>
@@ -39,7 +39,7 @@
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Durasi</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Bukti</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Dokumentasi</th>
             </tr>
           </thead>
           <tbody class="divide-y">

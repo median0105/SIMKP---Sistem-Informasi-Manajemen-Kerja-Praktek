@@ -53,7 +53,7 @@
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Perusahaan</th>
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Durasi</th>
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Deskripsi</th>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Bukti</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Dokumentasi</th>
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
                     </tr>
                     </thead>
@@ -61,7 +61,7 @@
                     @forelse($kegiatan as $row)
                         <tr>
                             <td class="px-4 py-2 text-sm text-gray-900">
-                                {{ $row->tanggal_kegiatan->format('d/m/Y') }}
+                                {{ $row->tanggal_kegiatan->locale('id')->translatedFormat('d F Y') }}
                             </td>
                             <td class="px-4 py-2">
                                 <div class="text-gray-900 font-medium">{{ $row->mahasiswa->name ?? '-' }}</div>

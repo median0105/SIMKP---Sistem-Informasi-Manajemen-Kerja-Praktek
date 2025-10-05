@@ -34,7 +34,7 @@
                                 Dashboard
                             </a>
                         @else
-                            <a href="{{ route('login') }}" class="text-white hover:text-unib-blue-200 font-medium">Masuk</a>
+                            <a href="{{ route('login') }}" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Masuk</a>
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}" class="bg-teknik-orange-500 hover:bg-teknik-orange-600 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
                                     Daftar

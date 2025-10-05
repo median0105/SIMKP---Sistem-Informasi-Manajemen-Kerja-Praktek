@@ -18,14 +18,17 @@
                 <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <input type="hidden" name="status" value="{{ $status }}">
                     <div class="md:col-span-2">
+                        <label class="block text-xs text-gray-500 mb-1">Cari</label>
                         <input name="search" value="{{ request('search') }}" placeholder="Cari judul / nama / NPM…"
                             class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
                     </div>
                     <div>
+                        <label class="block text-xs text-gray-500 mb-1">Dari</label>
                         <input type="date" name="start_date" value="{{ request('start_date') }}"
                             class="w-full border-gray-300 rounded-md shadow-sm">
                     </div>
                     <div>
+                        <label class="block text-xs text-gray-500 mb-1">Sampai</label>
                         <input type="date" name="end_date" value="{{ request('end_date') }}"
                             class="w-full border-gray-300 rounded-md shadow-sm">
                     </div>

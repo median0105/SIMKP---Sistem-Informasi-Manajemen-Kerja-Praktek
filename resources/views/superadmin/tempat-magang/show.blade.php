@@ -100,7 +100,7 @@
                                                 $displayStatus = 'selesai';
                                             }
                                         @endphp
-                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                             {{ ucfirst(str_replace('_',' ',$displayStatus)) }}
                                         </span>
                                     </td>

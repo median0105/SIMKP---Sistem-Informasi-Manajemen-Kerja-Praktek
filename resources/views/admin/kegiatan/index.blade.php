@@ -47,7 +47,7 @@
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Perusahaan</th>
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Durasi</th>
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Deskripsi</th>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">File</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase">Dokumentasi</th>
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 bg-white">

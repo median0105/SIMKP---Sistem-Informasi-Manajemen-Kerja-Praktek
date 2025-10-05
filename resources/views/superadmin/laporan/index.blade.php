@@ -141,8 +141,8 @@
                                 $colorClass = match($status) {
                                     'pengajuan' => 'yellow',
                                     'disetujui' => 'blue',
-                                    'sedang_kp' => 'green',
-                                    'selesai'   => 'gray',
+                                    'sedang_kp' => 'gray',
+                                    'selesai'   => 'green',
                                     'ditolak'   => 'red',
                                     'tidak_lulus' => 'red',
                                     default     => 'gray',
