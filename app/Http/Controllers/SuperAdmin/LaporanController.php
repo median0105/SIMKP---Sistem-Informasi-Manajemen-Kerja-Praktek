@@ -41,6 +41,22 @@ class LaporanController extends Controller
                                   ->pluck('count', 'status')
                                   ->toArray();
 
+        // Adjust statusStats for 'tidak_lulus'
+        $tidakLulusCount = KerjaPraktek::whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', KerjaPraktek::STATUS_SELESAI)
+            ->where('lulus_ujian', false)
+            ->count();
+
+        if ($tidakLulusCount > 0) {
+            $statusStats['tidak_lulus'] = $tidakLulusCount;
+            if (isset($statusStats[KerjaPraktek::STATUS_SELESAI])) {
+                $statusStats[KerjaPraktek::STATUS_SELESAI] -= $tidakLulusCount;
+                if ($statusStats[KerjaPraktek::STATUS_SELESAI] <= 0) {
+                    unset($statusStats[KerjaPraktek::STATUS_SELESAI]);
+                }
+            }
+        }
+
         // Tempat Magang Terpopuler
         $popularTempat = KerjaPraktek::with('tempatMagang')
                                    ->whereBetween('created_at', [$startDate, $endDate])
@@ -75,9 +91,18 @@ class LaporanController extends Controller
                                     ->limit(10)
                                     ->get();
 
+        // Mahasiswa yang Tidak Lulus KP
+        $failedStudents = KerjaPraktek::with('mahasiswa')
+                                    ->where('status', KerjaPraktek::STATUS_SELESAI)
+                                    ->where('lulus_ujian', false)
+                                    ->whereHas('mahasiswa') // Ensure mahasiswa exists
+                                    ->orderByDesc('updated_at') // Order by when grades were last updated
+                                    ->limit(10)
+                                    ->get();
+
         return view('superadmin.laporan.index', compact(
-            'stats', 'statusStats', 'popularTempat', 'trendKP', 
-            'avgDuration', 'topPerformers', 'startDate', 'endDate'
+            'stats', 'statusStats', 'popularTempat', 'trendKP',
+            'avgDuration', 'topPerformers', 'failedStudents', 'startDate', 'endDate'
         ));
     }
 
@@ -116,7 +141,13 @@ class LaporanController extends Controller
             })
             ->orderByDesc('created_at');
 
-        $kp = $query->paginate(20)->withQueryString();
+        $kp = $query->paginate(20)->withQueryString()->through(function ($row) {
+            $row->display_status = $row->status;
+            if ($row->status === KerjaPraktek::STATUS_SELESAI && !$row->lulus_ujian) {
+                $row->display_status = 'tidak_lulus';
+            }
+            return $row;
+        });
 
         return view('superadmin.laporan.detail-kp', compact('kp', 'status'));
     }

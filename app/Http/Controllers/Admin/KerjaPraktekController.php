@@ -183,9 +183,8 @@ class KerjaPraktekController extends Controller
             'nilai_akhir' => $nilaiAkhir,
             'keterangan_penilaian' => $request->keterangan_penilaian,
             'lulus_ujian' => $lulus,
-            'status' => $lulus ? KerjaPraktek::STATUS_SELESAI : KerjaPraktek::STATUS_SEDANG_KP
+            'status' => KerjaPraktek::STATUS_SELESAI
         ]);
-
         Notifikasi::create([
             'user_id' => $kerjaPraktek->mahasiswa_id,
             'title' => 'Hasil Ujian KP',

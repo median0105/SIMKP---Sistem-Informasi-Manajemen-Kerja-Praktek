@@ -82,6 +82,8 @@ class KerjaPraktek extends Model
     const STATUS_SELESAI   = 'selesai';
     const STATUS_DITOLAK   = 'ditolak';
 
+    protected $appends = ['display_status'];
+
     // Relationships
     public function mahasiswa()       { return $this->belongsTo(User::class, 'mahasiswa_id'); }
     public function tempatMagang()    { return $this->belongsTo(TempatMagang::class); }
@@ -97,9 +99,71 @@ class KerjaPraktek extends Model
     // Helpers
     public function isDuplicateTitle()
     {
-        return static::where('judul_kp', $this->judul_kp)
+        // First check for exact matches with same tempat_magang
+        $exactDuplicate = static::where('judul_kp', $this->judul_kp)
+            ->where('tempat_magang_id', $this->tempat_magang_id)
             ->where('id', '!=', $this->id)
             ->exists();
+
+        if ($exactDuplicate) {
+            return true;
+        }
+
+        // Check for similar titles (80% similarity) regardless of tempat_magang
+        $allTitles = static::where('id', '!=', $this->id)
+            ->pluck('judul_kp')
+            ->toArray();
+
+        foreach ($allTitles as $existingTitle) {
+            $similarity = $this->calculateSimilarity($this->judul_kp, $existingTitle);
+            if ($similarity >= 80) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function calculateSimilarity($str1, $str2)
+    {
+        $str1 = strtolower(trim($str1));
+        $str2 = strtolower(trim($str2));
+
+        if ($str1 === $str2) {
+            return 100;
+        }
+
+        $len1 = strlen($str1);
+        $len2 = strlen($str2);
+
+        if ($len1 === 0 || $len2 === 0) {
+            return 0;
+        }
+
+        // Calculate Levenshtein distance
+        $matrix = [];
+        for ($i = 0; $i <= $len1; $i++) {
+            $matrix[$i] = [$i];
+        }
+        for ($j = 0; $j <= $len2; $j++) {
+            $matrix[0][$j] = $j;
+        }
+
+        for ($i = 1; $i <= $len1; $i++) {
+            for ($j = 1; $j <= $len2; $j++) {
+                $cost = ($str1[$i - 1] === $str2[$j - 1]) ? 0 : 1;
+                $matrix[$i][$j] = min(
+                    $matrix[$i - 1][$j] + 1,     // deletion
+                    $matrix[$i][$j - 1] + 1,     // insertion
+                    $matrix[$i - 1][$j - 1] + $cost // substitution
+                );
+            }
+        }
+
+        $distance = $matrix[$len1][$len2];
+        $maxLen = max($len1, $len2);
+
+        return (1 - $distance / $maxLen) * 100;
     }
 
     public function perluResponsi()
@@ -127,5 +191,12 @@ public static function rejectedCountFor(int $mahasiswaId): int
         ->count();
 }
 
+    public function getDisplayStatusAttribute()
+    {
+        if ($this->status === self::STATUS_SELESAI && !$this->lulus_ujian) {
+            return 'tidak_lulus';
+        }
+        return $this->status;
+    }
 
 }

@@ -57,14 +57,15 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                            @if($kp->status === 'pengajuan') bg-yellow-100 text-yellow-800
-                                            @elseif($kp->status === 'disetujui') bg-green-100 text-green-800
-                                            @elseif($kp->status === 'ditolak') bg-red-100 text-red-800
-                                            @elseif($kp->status === 'berjalan') bg-blue-100 text-blue-800
-                                            @elseif($kp->status === 'selesai') bg-gray-100 text-gray-800
+                                            @if($kp->display_status === 'pengajuan') bg-yellow-100 text-yellow-800
+                                            @elseif($kp->display_status === 'disetujui') bg-gray-100 text-gray-800
+                                            @elseif($kp->display_status === 'ditolak') bg-red-100 text-red-800
+                                            @elseif($kp->display_status === 'berjalan') bg-blue-100 text-blue-800
+                                            @elseif($kp->display_status === 'selesai') bg-green-100 text-green-800
+                                            @elseif($kp->display_status === 'tidak_lulus') bg-red-100 text-red-800
                                             @else bg-gray-100 text-gray-800
                                             @endif">
-                                            {{ ucfirst($kp->status) }}
+                                            @if($kp->display_status === 'tidak_lulus') Tidak Lulus @else {{ ucfirst($kp->display_status) }} @endif
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

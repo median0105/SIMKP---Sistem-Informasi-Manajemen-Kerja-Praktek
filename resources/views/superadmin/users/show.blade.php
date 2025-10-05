@@ -35,7 +35,7 @@
                                 <strong>Status:</strong> {{ $user->is_active ? 'Aktif' : 'Tidak Aktif' }}
                             </div>
                             <div>
-                                <strong>Dibuat:</strong> {{ $user->created_at->format('d M Y') }}
+                                <strong>Dibuat:</strong> {{ $user->created_at->locale('id')->translatedFormat('d F Y') }}
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                                         <div>
                                             <h4 class="font-medium">{{ $kp->judul_kp }}</h4>
                                             <p class="text-sm text-gray-600">Status: <span class="font-medium {{ $kp->status === 'ditolak' ? 'text-red-600' : 'text-gray-800' }}">{{ ucfirst($kp->status) }}</span></p>
-                                            <p class="text-sm text-gray-600">Tanggal Pengajuan: {{ $kp->created_at->format('d M Y') }}</p>
+                                            <p class="text-sm text-gray-600">Tanggal Pengajuan: {{ $kp->created_at->locale('id')->translatedFormat('d F Y') }}</p>
                                             @if($kp->tempatMagang)
                                             <p class="text-sm text-gray-600">Tempat Magang: {{ $kp->tempatMagang->nama_perusahaan }}</p>
                                             @endif

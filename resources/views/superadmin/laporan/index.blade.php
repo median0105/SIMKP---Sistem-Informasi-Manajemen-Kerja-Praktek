@@ -17,6 +17,7 @@
         $popularTempat= $popularTempat?? collect();
         $trendKP      = $trendKP      ?? collect();
         $topPerformers= $topPerformers?? collect();
+        $failedStudents= $failedStudents?? collect();
     @endphp
 
     <x-slot name="header">
@@ -143,13 +144,23 @@
                                     'sedang_kp' => 'green',
                                     'selesai'   => 'gray',
                                     'ditolak'   => 'red',
+                                    'tidak_lulus' => 'red',
                                     default     => 'gray',
+                                };
+                                $statusText = match($status) {
+                                    'pengajuan' => 'Pengajuan',
+                                    'disetujui' => 'Disetujui',
+                                    'sedang_kp' => 'Sedang KP',
+                                    'selesai'   => 'Selesai',
+                                    'ditolak'   => 'Ditolak',
+                                    'tidak_lulus' => 'Tidak Lulus',
+                                    default     => ucfirst(str_replace('_', ' ', $status)),
                                 };
                             @endphp
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center">
                                     <span class="inline-block w-3 h-3 bg-{{ $colorClass }}-500 rounded-full mr-3"></span>
-                                    <span class="text-sm text-gray-600 capitalize">{{ str_replace('_', ' ', $status) }}</span>
+                                    <span class="text-sm text-gray-600">{{ $statusText }}</span>
                                 </div>
                                 <div class="flex items-center">
                                     <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
@@ -256,22 +267,90 @@
                                         </td>
                                         <td class="px-4 py-3">{{ $kp->judul_kp ?? '-' }}</td>
                                         <td class="px-4 py-3">{{ $kp->nilai_akhir ?? '-' }}</td>
-                                        <td class="px-4 py-3">
-                                            <span class="px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                @class([
-                                                    'bg-yellow-100 text-yellow-800' => ($kp->status ?? '')==='pengajuan',
-                                                    'bg-blue-100 text-blue-800'     => ($kp->status ?? '')==='disetujui',
-                                                    'bg-green-100 text-green-800'   => ($kp->status ?? '')==='sedang_kp',
-                                                    'bg-gray-100 text-gray-800'     => ($kp->status ?? '')==='selesai',
-                                                    'bg-red-100 text-red-800'       => ($kp->status ?? '')==='ditolak',
-                                                ])">
-                                                {{ ucfirst(str_replace('_',' ', $kp->status ?? '-')) }}
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @php
+                                                $displayStatus = $kp->display_status ?? '';
+                                                $statusColor = match($displayStatus) {
+                                                    'pengajuan' => 'bg-yellow-100 text-yellow-800',
+                                                    'disetujui' => 'bg-blue-100 text-blue-800',
+                                                    'sedang_kp' => 'bg-gray-100 text-gray-800',
+                                                    'selesai'   => 'bg-green-100 text-green-800',
+                                                    'tidak_lulus' => 'bg-red-100 text-red-800',
+                                                    'ditolak'   => 'bg-red-100 text-red-800',
+                                                    default     => 'bg-gray-100 text-gray-800',
+                                                };
+                                                $statusText = match($displayStatus) {
+                                                    'pengajuan' => 'Pengajuan',
+                                                    'disetujui' => 'Disetujui',
+                                                    'sedang_kp' => 'Sedang KP',
+                                                    'selesai'   => 'Selesai',
+                                                    'tidak_lulus' => 'Tidak Lulus',
+                                                    'ditolak'   => 'Ditolak',
+                                                    default     => '-',
+                                                };
+                                            @endphp
+                                            <span class="px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusColor }}">
+                                                {{ $statusText }}
                                             </span>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="5" class="text-center py-6 text-gray-500">Belum ada data</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Mahasiswa yang Tidak Lulus KP --}}
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-900">Mahasiswa yang Tidak Lulus KP</h3>
+                    <a href="{{ route('superadmin.laporan.detail-kp', ['status' => 'selesai']) }}"
+                       class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
+                        Lihat Semua <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                <div class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">No</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Mahasiswa</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Judul KP</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nilai</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                @forelse($failedStudents as $index => $kp)
+                                    <tr>
+                                        <td class="px-4 py-3">{{ $index + 1 }}</td>
+                                        <td class="px-4 py-3">
+                                            <div class="font-medium text-gray-900">
+                                                {{ $kp->mahasiswa->name ?? '-' }}
+                                            </div>
+                                            <div class="text-xs text-gray-500">
+                                                {{ $kp->mahasiswa->npm ?? '' }}
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3">{{ $kp->judul_kp ?? '-' }}</td>
+                                        <td class="px-4 py-3">{{ $kp->nilai_akhir ?? '-' }}</td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                Tidak Lulus
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">{{ $kp->created_at->locale('id')->translatedFormat('d F Y') }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center py-6 text-gray-500">Belum ada data mahasiswa yang tidak lulus</td>
                                     </tr>
                                 @endforelse
                             </tbody>
