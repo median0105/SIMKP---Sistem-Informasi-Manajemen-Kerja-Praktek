@@ -130,6 +130,13 @@ class DashboardController extends Controller
         $statistikStatus[$label] = KerjaPraktek::where('status', $status)->count();
     }
 
+    // Ambil KP yang ditolak terbaru untuk notifikasi
+    $rejectedKPs = KerjaPraktek::where('status', KerjaPraktek::STATUS_DITOLAK)
+        ->with('mahasiswa')
+        ->latest('updated_at')
+        ->take(5)
+        ->get();
+
     return [
         'totalMahasiswa'   => User::where('role', User::ROLE_MAHASISWA)->count(),
         'totalDosen'       => User::where('role', User::ROLE_ADMIN_DOSEN)->count(),
@@ -137,6 +144,7 @@ class DashboardController extends Controller
         'totalTempatMagang'=> TempatMagang::where('is_active', true)->count(),
         'totalKerjaPraktek'=> array_sum($statistikStatus),
         'statistikStatus'  => $statistikStatus,
+        'rejectedKPs'      => $rejectedKPs,
     ];
 }
 

@@ -1,3 +1,9 @@
-- [x] Fix status display in superadmin laporan index table for students who did not pass
-  - Modified resources/views/superadmin/laporan/index.blade.php to check lulus_ujian field
-  - If status is 'selesai' and lulus_ujian is false, display 'Tidak Lulus' with red color instead of 'Selesai'
+# TODO: Implement Notification for Rejected KP Proposals to Superadmin
+
+## Tasks
+- [ ] Update Admin/KerjaPraktekController rejectProposal method to send notification to superadmin role
+- [ ] Update SuperAdmin/KerjaPraktekController index method to fetch unread notifications for superadmin
+- [ ] Update resources/views/superadmin/kerja-praktek/index.blade.php to display notification badge/section
+- [ ] Test notification creation on proposal rejection
+- [ ] Test notification display on superadmin KP page
+- [ ] Test marking notifications as read

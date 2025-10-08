@@ -1,0 +1,1 @@
+'- kerja_praktek_id: ' . \$latestNotification- . PHP_EOL;

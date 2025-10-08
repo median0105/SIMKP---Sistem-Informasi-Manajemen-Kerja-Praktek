@@ -39,6 +39,7 @@ class KerjaPraktekController extends Controller
                                    return $kp;
                                });
 
+
         return view('superadmin.kerja-praktek.index', compact('kerjaPrakteks', 'search', 'status'));
     }
 }

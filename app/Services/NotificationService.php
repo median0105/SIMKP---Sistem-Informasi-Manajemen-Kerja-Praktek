@@ -19,12 +19,12 @@ class NotificationService
         ]);
     }
 
-    public static function sendToRole($role, $title, $message, $type = 'info')
+    public static function sendToRole($role, $title, $message, $type = 'info', $kerjaPraktekId = null, $actionUrl = null)
     {
         $users = User::where('role', $role)->where('is_active', true)->get();
-        
+
         foreach ($users as $user) {
-            self::sendToUser($user->id, $title, $message, $type);
+            self::sendToUser($user->id, $title, $message, $type, $kerjaPraktekId, $actionUrl);
         }
     }
 

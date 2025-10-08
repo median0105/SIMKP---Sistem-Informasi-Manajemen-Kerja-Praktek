@@ -232,6 +232,13 @@ class UserController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('superadmin.kerja-praktek.index', compact('kerjaPrakteks', 'search', 'status'));
+        // Fetch unread notifications for superadmin related to rejected proposals
+        $notifications = \App\Models\Notifikasi::where('type', 'warning')
+            ->where('is_read', false)
+            ->where('title', 'Proposal KP Ditolak')
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('superadmin.kerja-praktek.index', compact('kerjaPrakteks', 'search', 'status', 'notifications'));
     }
 }

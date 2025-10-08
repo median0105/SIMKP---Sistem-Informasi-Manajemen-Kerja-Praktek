@@ -292,6 +292,16 @@ class KerjaPraktekController extends Controller
             $data
         );
 
+        // Kirim notifikasi ke superadmin bahwa mahasiswa telah mengisi kuisioner
+        NotificationService::sendToRole(
+            'superadmin',
+            'Kuisioner KP Baru',
+            'Mahasiswa ' . auth()->user()->name . ' (' . auth()->user()->npm . ') telah mengisi kuisioner untuk KP: ' . $kerjaPraktek->judul_kp,
+            'info',
+            $kerjaPraktek->id,
+            route('superadmin.kuisioner.show', $kerjaPraktek->kuisioner->id ?? null)
+        );
+
         return back()->with('success', 'Kuisioner berhasil disimpan.');
     }
 

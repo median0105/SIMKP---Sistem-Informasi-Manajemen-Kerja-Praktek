@@ -98,6 +98,13 @@ class KegiatanController extends Controller
             }
         }
 
+        // Kirim notifikasi ke superadmin
+        $tgl = $kegiatan->tanggal_kegiatan instanceof \Illuminate\Support\Carbon
+            ? $kegiatan->tanggal_kegiatan->format('d M Y')
+            : Carbon::parse($kegiatan->tanggal_kegiatan)->format('d M Y');
+
+        \App\Services\NotificationService::sendToRole('superadmin', 'Kegiatan Baru Mahasiswa', "Mahasiswa {$kp->mahasiswa->name} ({$kp->mahasiswa->npm}) menambahkan kegiatan pada {$tgl} dengan deskripsi: {$kegiatan->deskripsi_kegiatan}", 'info', $kp->id, route('superadmin.kegiatan.index'));
+
         return redirect()
             ->route('mahasiswa.kegiatan.index')
             ->with('success', 'Kegiatan berhasil disimpan.');

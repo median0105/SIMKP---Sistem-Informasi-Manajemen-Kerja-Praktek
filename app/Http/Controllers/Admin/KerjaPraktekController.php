@@ -104,6 +104,9 @@ class KerjaPraktekController extends Controller
             'action_url' => route('mahasiswa.kerja-praktek.index')
         ]);
 
+        // Kirim notifikasi ke superadmin
+        \App\Services\NotificationService::sendToRole('superadmin', 'Pengajuan KP Ditolak', "Pengajuan KP mahasiswa {$kerjaPraktek->mahasiswa->name} ({$kerjaPraktek->mahasiswa->npm}) dengan judul '{$kerjaPraktek->judul_kp}' telah ditolak oleh dosen pembimbing.", 'warning', $kerjaPraktek->getKey(), route('superadmin.kerja-praktek.index'));
+
         // ✅ Jika ini penolakan ke-2, kirim notifikasi khusus untuk menemui dosen pembimbing
         $rejectedCount = KerjaPraktek::where('mahasiswa_id', $kerjaPraktek->mahasiswa_id)
             ->where('status', KerjaPraktek::STATUS_DITOLAK)
@@ -393,6 +396,9 @@ class KerjaPraktekController extends Controller
             'kerja_praktek_id' => $kerjaPraktek->id,
             'action_url' => route('mahasiswa.kerja-praktek.index')
         ]);
+
+        // Kirim notifikasi ke superadmin
+        \App\Services\NotificationService::sendToRole('superadmin', 'Proposal KP Ditolak', "Proposal KP mahasiswa {$kerjaPraktek->mahasiswa->name} ({$kerjaPraktek->mahasiswa->npm}) dengan judul '{$kerjaPraktek->judul_kp}' telah ditolak oleh dosen pembimbing.", 'warning', $kerjaPraktek->id, route('superadmin.kerja-praktek.index'));
 
         // Jika ini penolakan ke-2, kirim notifikasi khusus untuk menemui dosen pembimbing
         $rejectedCount = KerjaPraktek::where('mahasiswa_id', $kerjaPraktek->mahasiswa_id)

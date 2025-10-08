@@ -64,7 +64,14 @@ class KuisionerController extends Controller
             'rekom_rate'   => $rekomRate, // dalam persen
         ];
 
-        return view('superadmin.kuisioner.index', compact('items', 'stats', 'start', 'end', 'q'));
+        // Fetch unread notifications for superadmin related to new kuisioner
+        $notifications = \App\Models\Notifikasi::where('type', 'info')
+            ->where('is_read', false)
+            ->where('title', 'Kuisioner KP Baru')
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('superadmin.kuisioner.index', compact('items', 'stats', 'start', 'end', 'q', 'notifications'));
     }
 
     public function show(Kuisioner $kuisioner)

@@ -40,7 +40,14 @@ class KegiatanController extends Controller
 
         $kegiatan = $q->paginate(20)->withQueryString();
 
-        return view('superadmin.kegiatan.index', compact('kegiatan'));
+        // Fetch unread notifications for superadmin related to new kegiatan
+        $notifications = \App\Models\Notifikasi::where('type', 'info')
+            ->where('is_read', false)
+            ->where('title', 'Kegiatan Baru Mahasiswa')
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('superadmin.kegiatan.index', compact('kegiatan', 'notifications'));
     }
 
     public function destroy(Kegiatan $kegiatan)

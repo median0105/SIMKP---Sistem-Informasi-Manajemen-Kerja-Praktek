@@ -11,6 +11,32 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
+            <!-- Notifications -->
+            {{-- @if($notifications->count() > 0)
+            <div class="mb-6 bg-blue-50 border border-blue-200 rounded-md p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-info-circle text-blue-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-blue-800">
+                            Notifikasi Kuisioner Baru
+                        </h3>
+                        <div class="mt-2 text-sm text-blue-700">
+                            <ul role="list" class="list-disc pl-5 space-y-1">
+                                @foreach($notifications as $notification)
+                                <li>
+                                    {{ $notification->message }}
+                                    <a href="{{ $notification->action_url }}" class="text-blue-800 underline ml-2" onclick="markAsRead({{ $notification->id }})">Lihat</a>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif --}}
+
             {{-- Filter --}}
             <div class="bg-white shadow rounded-lg p-6">
                 <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -136,4 +162,20 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function markAsRead(notificationId) {
+            fetch(`/notifications/mark-read/${notificationId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                }
+            });
+        }
+    </script>
 </x-app-layout>

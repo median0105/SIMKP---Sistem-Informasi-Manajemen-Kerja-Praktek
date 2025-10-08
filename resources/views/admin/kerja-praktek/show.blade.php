@@ -192,7 +192,7 @@
                                 </span>
                             @endif
 
-                            @if($kerjaPraktek->canTakeExam() && !$kerjaPraktek->lulus_ujian && !$kerjaPraktek->nilai_akhir)
+                            @if($kerjaPraktek->canTakeExam() && $kerjaPraktek->acc_seminar && !$kerjaPraktek->lulus_ujian && !$kerjaPraktek->nilai_akhir)
                                 <button onclick="openNilai({{ $kerjaPraktek->id }})"
                                         class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg">
                                     <i class="fas fa-edit mr-2"></i>Input Nilai
