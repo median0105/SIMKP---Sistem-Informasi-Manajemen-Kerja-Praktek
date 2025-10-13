@@ -1,9 +1,4 @@
-# TODO: Implement Notification for Rejected KP Proposals to Superadmin
-
-## Tasks
-- [ ] Update Admin/KerjaPraktekController rejectProposal method to send notification to superadmin role
-- [ ] Update SuperAdmin/KerjaPraktekController index method to fetch unread notifications for superadmin
-- [ ] Update resources/views/superadmin/kerja-praktek/index.blade.php to display notification badge/section
-- [ ] Test notification creation on proposal rejection
-- [ ] Test notification display on superadmin KP page
-- [ ] Test marking notifications as read
+- [x] Edit resources/views/admin/bimbingan/index.blade.php: Change <option value="">Semua Status</option> to <option value="all" @selected(request('status')==='all' || !request('status'))>Semua Status</option>
+- [x] Edit app/Http/Controllers/Admin/BimbinganController.php: Change the when condition for status filter to ->when($request->filled('status') && $request->status !== 'all', ...)
+- [x] Add ->whereNotNull('kerja_praktek_id') to exclude bimbingan with null kerja_praktek_id
+- [ ] Test the filter to ensure "Semua Status" shows all bimbingan data guided by the lecturer.

@@ -24,7 +24,7 @@
                     </div>
                     <div>
                         <select name="status" class="border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
-                            <option value="">Semua Status</option>
+                            <option value="all" @selected(request('status')==='all' || !request('status'))>Semua Status</option>
                             <option value="pending"  @selected(request('status')==='pending')>Pending</option>
                             <option value="verified" @selected(request('status')==='verified')>Verified</option>
                         </select>

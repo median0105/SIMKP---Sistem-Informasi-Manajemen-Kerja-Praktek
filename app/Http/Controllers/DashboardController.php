@@ -81,6 +81,113 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Get today's activities for this dosen
+        $today = now()->toDateString();
+
+        $todayActivities = collect();
+
+        // Pengajuan baru hari ini
+        $pengajuanHariIni = KerjaPraktek::where('status', KerjaPraktek::STATUS_PENGAJUAN)
+            ->whereDate('created_at', $today)
+            ->whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                $q->where('dosen_id', $dosenId)
+                  ->where('jenis_pembimbingan', 'akademik');
+            })
+            ->count();
+
+        if ($pengajuanHariIni > 0) {
+            $todayActivities->push([
+                'type' => 'pengajuan',
+                'message' => "{$pengajuanHariIni} Pengajuan Baru",
+                'time' => 'Hari ini',
+                'color' => 'blue'
+            ]);
+        }
+
+        // Aktivitas bimbingan hari ini (updated today)
+        $bimbinganToday = Bimbingan::whereDate('updated_at', $today)
+            ->whereHas('mahasiswa.kerjaPraktek.dosenPembimbing', function($q) use ($dosenId) {
+                $q->where('dosen_id', $dosenId)
+                  ->where('jenis_pembimbingan', 'akademik');
+            })
+            ->count();
+
+        if ($bimbinganToday > 0) {
+            $todayActivities->push([
+                'type' => 'bimbingan',
+                'message' => "{$bimbinganToday} aktivitas bimbingan",
+                'time' => 'Hari ini',
+                'color' => 'green'
+            ]);
+        }
+
+        // KP yang diperbarui hari ini
+        $kpUpdatedToday = KerjaPraktek::whereDate('updated_at', $today)
+            ->whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                $q->where('dosen_id', $dosenId)
+                  ->where('jenis_pembimbingan', 'akademik');
+            })
+            ->count();
+
+        if ($kpUpdatedToday > 0) {
+            $todayActivities->push([
+                'type' => 'kp_updated',
+                'message' => "{$kpUpdatedToday} KP diperbarui",
+                'time' => 'Hari ini',
+                'color' => 'blue'
+            ]);
+        }
+
+        // Notifikasi diterima hari ini
+        $notificationsToday = \App\Models\Notifikasi::where('user_id', $dosenId)
+            ->whereDate('created_at', $today)
+            ->count();
+
+        if ($notificationsToday > 0) {
+            $todayActivities->push([
+                'type' => 'notification',
+                'message' => "{$notificationsToday} notifikasi diterima",
+                'time' => 'Hari ini',
+                'color' => 'purple'
+            ]);
+        }
+
+        // KP yang disetujui hari ini
+        $kpApprovedToday = KerjaPraktek::where('status', KerjaPraktek::STATUS_DISETUJUI)
+            ->whereDate('updated_at', $today)
+            ->whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                $q->where('dosen_id', $dosenId)
+                  ->where('jenis_pembimbingan', 'akademik');
+            })
+            ->count();
+
+        if ($kpApprovedToday > 0) {
+            $todayActivities->push([
+                'type' => 'approved',
+                'message' => "{$kpApprovedToday} KP disetujui",
+                'time' => 'Hari ini',
+                'color' => 'green'
+            ]);
+        }
+
+        // KP yang ditolak hari ini
+        $kpRejectedToday = KerjaPraktek::where('status', KerjaPraktek::STATUS_DITOLAK)
+            ->whereDate('updated_at', $today)
+            ->whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                $q->where('dosen_id', $dosenId)
+                  ->where('jenis_pembimbingan', 'akademik');
+            })
+            ->count();
+
+        if ($kpRejectedToday > 0) {
+            $todayActivities->push([
+                'type' => 'rejected',
+                'message' => "{$kpRejectedToday} KP ditolak",
+                'time' => 'Hari ini',
+                'color' => 'red'
+            ]);
+        }
+
         return [
             'totalMahasiswa' => User::where('role', User::ROLE_MAHASISWA)->count(),
             'pengajuanBaru' => KerjaPraktek::where('status', KerjaPraktek::STATUS_PENGAJUAN)->count(),
@@ -111,6 +218,7 @@ class DashboardController extends Controller
                                                   ->get(),
             'seminarPendingCount' => $seminarPendingCount,
             'seminarRegistrations' => $seminarRegistrations,
+            'todayActivities' => $todayActivities,
         ];
     }
 

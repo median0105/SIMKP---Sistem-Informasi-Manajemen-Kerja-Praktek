@@ -12,14 +12,17 @@ class KerjaPraktekController extends Controller
 {
     public function index(Request $request)
     {
-        $query = KerjaPraktek::with(['mahasiswa', 'tempatMagang', 'dosenAkademik'])
+        $query = KerjaPraktek::with(['mahasiswa', 'tempatMagang', 'dosenAkademik', 'dosenPembimbing.dosen'])
             ->orderByDesc('created_at');
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         } else {
-            // default fokus ke pengajuan
-            $query->where('status', KerjaPraktek::STATUS_PENGAJUAN);
+            // Jika "Semua Status", tampilkan hanya KP yang dibimbing oleh dosen yang sedang login
+            $query->whereHas('dosenPembimbing', function($q) {
+                $q->where('dosen_id', auth()->id())
+                  ->where('jenis_pembimbingan', 'akademik');
+            });
         }
 
         if ($request->filled('search')) {

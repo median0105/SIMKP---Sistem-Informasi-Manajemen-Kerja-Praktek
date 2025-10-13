@@ -69,6 +69,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mahasiswa</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul KP</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tempat</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dosen Pembimbing</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -98,6 +99,13 @@
                                                 {{ \Illuminate\Support\Str::limit($kp->tempat_magang_sendiri, 30) }}
                                             @else
                                                 {{ $kp->tempatMagang->nama_perusahaan ?? '-' }}
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                            @if($kp->dosenPembimbing && $kp->dosenPembimbing->where('jenis_pembimbingan', 'akademik')->first())
+                                                {{ $kp->dosenPembimbing->where('jenis_pembimbingan', 'akademik')->first()->dosen->name ?? '-' }}
+                                            @else
+                                                -
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">

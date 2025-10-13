@@ -26,8 +26,9 @@ class BimbinganController extends Controller
                 'kerjaPraktek.tempatMagang',
             ])
             ->whereIn('kerja_praktek_id', $kerjaPraktekIds)
-            // filter status
-            ->when($request->filled('status'), function ($q) use ($request) {
+            ->whereNotNull('kerja_praktek_id')
+            // filter status - jika tidak ada status filter atau 'all', tampilkan semua
+            ->when($request->filled('status') && $request->status !== 'all', function ($q) use ($request) {
                 if ($request->status === 'verified') {
                     $q->where('status_verifikasi', true);
                 } elseif ($request->status === 'pending') {

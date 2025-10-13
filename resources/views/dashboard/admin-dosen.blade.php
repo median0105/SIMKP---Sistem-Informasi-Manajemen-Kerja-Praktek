@@ -247,27 +247,20 @@
         </div>
         <div class="p-6">
             <div class="space-y-3 max-h-64 overflow-y-auto">
-                <div class="flex items-center space-x-3">
-                    <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <div class="text-sm">
-                        <span class="text-sm font-semibold text-gray-900">{{ $data['pengajuanBaru'] }} Pengajuan Baru</span>
-                        <span class="text-gray-500">2 jam lalu</span>
+                @forelse($data['todayActivities'] as $activity)
+                    <div class="flex items-center space-x-3">
+                        <div class="w-2 h-2 bg-{{ $activity['color'] }}-500 rounded-full"></div>
+                        <div class="text-sm">
+                            <span class="text-sm font-semibold text-gray-900">{{ $activity['message'] }}</span>
+                            <span class="text-gray-500">{{ $activity['time'] }}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <div class="text-sm">
-                        <span class="text-sm font-semibold text-gray-900">2 bimbingan diverifikasi</span>
-                        <span class="text-gray-500">4 jam lalu</span>
+                @empty
+                    <div class="text-center text-gray-500 py-4">
+                        <i class="fas fa-calendar-day text-3xl text-gray-300 mb-2"></i>
+                        <p>Belum ada aktivitas hari ini</p>
                     </div>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                    <div class="text-sm">
-                        <span class="text-sm font-semibold text-gray-900">1 reminder dikirim</span>
-                        <span class="text-gray-500">6 jam lalu</span>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </div>
