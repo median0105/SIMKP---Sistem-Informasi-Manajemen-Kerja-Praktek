@@ -1,9 +1,5 @@
-# TODO: Implement Permutation Importance (AUC Drop) Chart for Popular Tempat Magang on Superadmin Dashboard
+# TODO: Implement Flatpickr for Date Inputs in Kegiatan Mahasiswa Page
 
-## Tasks
-- [ ] Add Chart.js to package.json
-- [ ] Update resources/js/app.js to import Chart.js
-- [ ] Modify resources/views/dashboard/superadmin.blade.php to add chart canvas and rendering script
-- [ ] Update app/Http/Controllers/DashboardController.php getSuperAdminDashboardData method to calculate popular tempat magang data
-- [ ] Build assets with npm run build
-- [ ] Test chart in browser
+## Steps to Complete:
+- [x] Add unique IDs to the start_date and end_date input fields in resources/views/admin/kegiatan/index.blade.php
+- [x] Add JavaScript script at the end of the file to initialize flatpickr for the date inputs with appropriate options (e.g., dateFormat: 'Y-m-d')

@@ -18,7 +18,7 @@ class KerjaPraktekExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection()
     {
-        $query = KerjaPraktek::with(['mahasiswa', 'tempatMagang', 'dosenAkademik']);
+        $query = KerjaPraktek::with(['mahasiswa', 'tempatMagang', 'dosenPembimbing']);
 
         if (isset($this->filters['start_date']) && isset($this->filters['end_date'])) {
             $query->whereBetween('created_at', [$this->filters['start_date'], $this->filters['end_date']]);
@@ -58,7 +58,7 @@ class KerjaPraktekExport implements FromCollection, WithHeadings, WithMapping
             $kp->mahasiswa->name ?? '',
             $kp->judul_kp ?? '',
             $kp->tempatMagang->nama_perusahaan ?? '',
-            $kp->dosenPembimbing->name ?? '',
+            $kp->dosenPembimbing->first()->name ?? '',
             $kp->tanggal_mulai ? $kp->tanggal_mulai->format('d/m/Y') : '',
             $kp->tanggal_selesai ? $kp->tanggal_selesai->format('d/m/Y') : '',
             $kp->status ?? '',

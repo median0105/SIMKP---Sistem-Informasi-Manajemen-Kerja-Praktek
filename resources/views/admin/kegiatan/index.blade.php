@@ -21,14 +21,14 @@
                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Dari</label>
-                        <input type="date" name="start_date" value="{{ request('start_date') }}"
-                               class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
+                        <label class="block text-sm text-gray-600 mb-1">Dari</label>
+                        <input type="text" name="start_date" value="{{ request('start_date') }}"
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-unib-blue-500 focus:border-unib-blue-500 datepicker">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Sampai</label>
-                        <input type="date" name="end_date" value="{{ request('end_date') }}"
-                               class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
+                        <label class="block text-sm text-gray-600 mb-1">Sampai</label>
+                        <input type="text" name="end_date" value="{{ request('end_date') }}"
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-unib-blue-500 focus:border-unib-blue-500 datepicker">
                     </div>
                     <div class="flex items-end gap-2">
                         <button class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-md">Filter</button>
@@ -92,4 +92,17 @@
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Flatpickr for date inputs
+            flatpickr('.datepicker', {
+                dateFormat: 'Y-m-d',
+                locale: 'id',
+                allowInput: true,
+                altInput: true,
+                altFormat: 'd F Y'
+            });
+        });
+    </script>
 </x-app-layout>

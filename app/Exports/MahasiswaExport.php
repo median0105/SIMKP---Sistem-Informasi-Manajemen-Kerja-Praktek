@@ -20,6 +20,9 @@ class MahasiswaExport implements FromCollection, WithHeadings, WithMapping
     {
         $query = User::query();
 
+        // Hanya tampilkan user yang memiliki NPM (mahasiswa)
+        $query->whereNotNull('npm')->where('npm', '!=', '');
+
         if (isset($this->filters['role'])) {
             $query->where('role', $this->filters['role']);
         }

@@ -31,7 +31,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-600">Total Dosen</p>
+                <p class="text-sm font-medium text-gray-600">Total Dosen Pembimbing</p>
                 <p class="text-2xl font-semibold text-green-600 mt-2">{{ $data['totalDosen'] }}</p>
             </div>
             <div class="bg-green-100 rounded-full p-3">
@@ -44,7 +44,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-600">Pengawas Lapangan</p>
+                <p class="text-sm font-medium text-gray-600">Total Pengawas Lapangan</p>
                 <p class="text-2xl font-semibold text-orange-600 mt-2">{{ $data['totalPengawas'] }}</p>
             </div>
             <div class="bg-orange-100 rounded-full p-3">
@@ -57,7 +57,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-600">Tempat Magang</p>
+                <p class="text-sm font-medium text-gray-600">Total Tempat Magang</p>
                 <p class="text-2xl font-semibold text-purple-600 mt-2">{{ $data['totalTempatMagang'] }}</p>
             </div>
             <div class="bg-purple-100 rounded-full p-3">

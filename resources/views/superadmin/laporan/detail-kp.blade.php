@@ -24,13 +24,13 @@
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Dari</label>
-                        <input type="date" name="start_date" value="{{ request('start_date') }}"
-                            class="w-full border-gray-300 rounded-md shadow-sm">
+                        <input type="text" name="start_date" value="{{ request('start_date') }}"
+                            class="w-full border-gray-300 rounded-md shadow-sm datepicker">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Sampai</label>
-                        <input type="date" name="end_date" value="{{ request('end_date') }}"
-                            class="w-full border-gray-300 rounded-md shadow-sm">
+                        <input type="text" name="end_date" value="{{ request('end_date') }}"
+                            class="w-full border-gray-300 rounded-md shadow-sm datepicker">
                     </div>
                     <div class="flex items-center">
                         <button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
@@ -85,3 +85,16 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Flatpickr for date inputs
+    flatpickr('.datepicker', {
+        dateFormat: 'Y-m-d',
+        locale: 'id',
+        allowInput: true,
+        altInput: true,
+        altFormat: 'd F Y'
+    });
+});
+</script>

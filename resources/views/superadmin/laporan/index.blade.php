@@ -50,13 +50,13 @@
                     <form method="GET" class="flex flex-wrap gap-4">
                        <div>
                         <label class="block text-sm text-gray-600 mb-1">Dari</label>
-                        <input type="date" name="start_date" value="{{ request('start_date') }}"
-                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-unib-blue-500 focus:border-unib-blue-500">
+                        <input type="text" name="start_date" value="{{ request('start_date') }}"
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-unib-blue-500 focus:border-unib-blue-500 datepicker">
                     </div>
                     <div>
                         <label class="block text-sm text-gray-600 mb-1">Sampai</label>
-                        <input type="date" name="end_date" value="{{ request('end_date') }}"
-                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-unib-blue-500 focus:border-unib-blue-500">
+                        <input type="text" name="end_date" value="{{ request('end_date') }}"
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-unib-blue-500 focus:border-unib-blue-500 datepicker">
                     </div>
                         <div class="flex items-end">
                             <button type="submit"
@@ -362,3 +362,16 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Flatpickr for date inputs
+    flatpickr('.datepicker', {
+        dateFormat: 'Y-m-d',
+        locale: 'id',
+        allowInput: true,
+        altInput: true,
+        altFormat: 'd F Y'
+    });
+});
+</script>
