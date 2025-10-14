@@ -4,6 +4,7 @@ namespace App\Http\Controllers\PengawasLapangan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KerjaPraktek;
+use App\Services\NotificationService;
 
 class MahasiswaController extends Controller
 {
@@ -86,6 +87,47 @@ class MahasiswaController extends Controller
         $kerjaPraktek->update($data);
 
         return back()->with('success', 'Feedback pembimbing lapangan tersimpan.');
+    }
+
+    public function inputPenilaianPengawas(Request $request, KerjaPraktek $kerjaPraktek)
+    {
+        $this->abortIfNotMine($request->user(), $kerjaPraktek);
+
+        // Validasi: hanya bisa input jika sudah acc pendaftaran seminar dan sedang seminar
+        if (!$kerjaPraktek->acc_pendaftaran_seminar || (!$kerjaPraktek->acc_seminar && $kerjaPraktek->status !== 'sedang_kp')) {
+            return back()->with('error', 'Mahasiswa belum memenuhi syarat untuk penilaian kerja.');
+        }
+
+        $request->validate([
+            'penilaian_pengawas' => 'required|array|min:1',
+            'penilaian_pengawas.*.aspek' => 'required|string',
+            'penilaian_pengawas.*.nilai' => 'required|numeric|min:0|max:100',
+        ]);
+
+        // Hitung rata-rata
+        $nilaiAkhir = collect($request->penilaian_pengawas)->avg('nilai');
+        $rataRata = round($nilaiAkhir, 2);
+
+        $kerjaPraktek->update([
+            'penilaian_pengawas' => $request->penilaian_pengawas,
+            'rata_rata_pengawas' => $rataRata,
+        ]);
+
+        // Kirim notifikasi ke dosen pembimbing
+        if ($kerjaPraktek->dosenPembimbing && $kerjaPraktek->dosenPembimbing->count() > 0) {
+            foreach ($kerjaPraktek->dosenPembimbing as $dosenPembimbing) {
+                NotificationService::sendToUser(
+                    $dosenPembimbing->dosen_id,
+                    'Penilaian Kerja Mahasiswa',
+                    "Pengawas lapangan telah mengisi penilaian kerja untuk mahasiswa {$kerjaPraktek->mahasiswa->name} (NPM: {$kerjaPraktek->mahasiswa->npm}). Silakan lengkapi penilaian dosen.",
+                    'info',
+                    $kerjaPraktek->id,
+                    route('admin.kerja-praktek.show', $kerjaPraktek)
+                );
+            }
+        }
+
+        return back()->with('success', 'Penilaian kerja berhasil disimpan.');
     }
 
     private function abortIfNotMine($user, KerjaPraktek $kp): void

@@ -94,6 +94,110 @@
                     </button>
                 </form>
             </div>
+
+            {{-- Penilaian Kerja --}}
+            @if($kp->acc_pendaftaran_seminar && ($kp->acc_seminar || $kp->status === 'sedang_kp'))
+                <div class="mt-6">
+                    <h4 class="font-semibold text-gray-900 mb-2">Penilaian Kerja Mahasiswa</h4>
+                    @if($kp->penilaian_pengawas)
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                            <h5 class="font-medium text-green-800">Penilaian Sudah Disimpan</h5>
+                            <p class="text-sm text-green-700 mt-1">Rata-rata: {{ $kp->rata_rata_pengawas }}</p>
+                            <div class="mt-3 space-y-2">
+                                @foreach($kp->penilaian_pengawas as $penilaian)
+                                    <div class="flex justify-between text-sm">
+                                        <span>{{ $penilaian['aspek'] }}</span>
+                                        <span class="font-medium">{{ $penilaian['nilai'] }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <form method="POST" action="{{ route('pengawas.mahasiswa.penilaian-pengawas', $kp) }}" class="space-y-4">
+                            @csrf
+                            <div id="penilaianContainer">
+                                {{-- Aspek penilaian --}}
+                                <div class="penilaian-item grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Aspek Penilaian</label>
+                                        <input type="text" name="penilaian_pengawas[0][aspek]" value="Displin kehadiran" readonly class="w-full border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Nilai (0-100)</label>
+                                        <input type="number" name="penilaian_pengawas[0][nilai]" min="0" max="100" required class="w-full border-gray-300 rounded-md nilai-input">
+                                    </div>
+                                </div>
+                                <div class="penilaian-item grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Aspek Penilaian</label>
+                                        <input type="text" name="penilaian_pengawas[1][aspek]" value="Tanggung jawab terhadap pekerjaan" readonly class="w-full border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Nilai (0-100)</label>
+                                        <input type="number" name="penilaian_pengawas[1][nilai]" min="0" max="100" required class="w-full border-gray-300 rounded-md nilai-input">
+                                    </div>
+                                </div>
+                                <div class="penilaian-item grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Aspek Penilaian</label>
+                                        <input type="text" name="penilaian_pengawas[2][aspek]" value="Etika dan komunikasi" readonly class="w-full border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Nilai (0-100)</label>
+                                        <input type="number" name="penilaian_pengawas[2][nilai]" min="0" max="100" required class="w-full border-gray-300 rounded-md nilai-input">
+                                    </div>
+                                </div>
+                                <div class="penilaian-item grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Aspek Penilaian</label>
+                                        <input type="text" name="penilaian_pengawas[3][aspek]" value="Kemampuan kerja sama" readonly class="w-full border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Nilai (0-100)</label>
+                                        <input type="number" name="penilaian_pengawas[3][nilai]" min="0" max="100" required class="w-full border-gray-300 rounded-md nilai-input">
+                                    </div>
+                                </div>
+                                <div class="penilaian-item grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Aspek Penilaian</label>
+                                        <input type="text" name="penilaian_pengawas[4][aspek]" value="Inisiatif dan kreativitas" readonly class="w-full border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Nilai (0-100)</label>
+                                        <input type="number" name="penilaian_pengawas[4][nilai]" min="0" max="100" required class="w-full border-gray-300 rounded-md nilai-input">
+                                    </div>
+                                </div>
+                                <div class="penilaian-item grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Aspek Penilaian</label>
+                                        <input type="text" name="penilaian_pengawas[5][aspek]" value="Penguasaan materi dan tugas kerja" readonly class="w-full border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Nilai (0-100)</label>
+                                        <input type="number" name="penilaian_pengawas[5][nilai]" min="0" max="100" required class="w-full border-gray-300 rounded-md nilai-input">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Rata-rata Nilai</label>
+                                        <p class="text-xs text-gray-500">Otomatis dihitung dari semua aspek</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span id="rataRataDisplay" class="text-2xl font-bold text-gray-900">0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-md">
+                                Simpan Penilaian Kerja
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            @endif
         </div>
 
         <!-- Activity Kegiatan -->
@@ -133,4 +237,37 @@
             </div>
         </div>
     </div>
+
+    {{-- Scripts --}}
+    <script>
+        let currentKpId = null;
+        let penilaianIndex = 1;
+
+        // Fungsi untuk menghitung rata-rata penilaian pengawas
+        function calculateRataRata() {
+            const nilaiInputs = document.querySelectorAll('.nilai-input');
+            let total = 0;
+            let count = 0;
+
+            nilaiInputs.forEach(input => {
+                const value = parseFloat(input.value);
+                if (!isNaN(value)) {
+                    total += value;
+                    count++;
+                }
+            });
+
+            const average = count > 0 ? (total / count).toFixed(2) : '0.00';
+            document.getElementById('rataRataDisplay').textContent = average;
+        }
+
+        // Attach event listeners to nilai inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            const nilaiInputs = document.querySelectorAll('.nilai-input');
+            nilaiInputs.forEach(input => {
+                input.addEventListener('input', calculateRataRata);
+            });
+            calculateRataRata(); // Initial calculation
+        });
+    </script>
 </x-app-layout>

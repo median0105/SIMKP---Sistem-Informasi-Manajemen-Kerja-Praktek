@@ -50,6 +50,10 @@ class KerjaPraktek extends Model
         'semester_ke',
         'file_krs',
         'file_proposal',
+        'penilaian_pengawas',
+        'rata_rata_pengawas',
+        'penilaian_dosen',
+        'rata_rata_dosen',
     ];
 
     protected $casts = [
@@ -72,6 +76,10 @@ class KerjaPraktek extends Model
         // ✅ Tambahan:
         'ipk_semester' => 'decimal:2',
         'semester_ke'  => 'integer',
+        'penilaian_pengawas' => 'array',
+        'rata_rata_pengawas' => 'decimal:2',
+        'penilaian_dosen' => 'array',
+        'rata_rata_dosen' => 'decimal:2',
     ];
 
 

@@ -178,25 +178,42 @@ class KerjaPraktekController extends Controller
             'keterangan_penilaian' => 'required|string'
         ]);
 
-        // Hitung nilai akhir sebagai rata-rata dari semua nilai indikator
-        $nilaiAkhir = collect($request->penilaian_detail)->avg('nilai');
+        // Hitung rata-rata seminar (indeks 0-2) dan dosen pembimbing (indeks 3-5)
+        $penilaianSeminar = array_slice($request->penilaian_detail, 0, 3);
+        $penilaianDosen = array_slice($request->penilaian_detail, 3, 3);
+
+        $rataRataSeminar = collect($penilaianSeminar)->avg('nilai');
+        $rataRataDosen = collect($penilaianDosen)->avg('nilai');
+
+        $rataRataSeminar = round($rataRataSeminar, 2);
+        $rataRataDosen = round($rataRataDosen, 2);
+
+        // Hitung nilai akhir: rata-rata dari pengawas dan rata-rata seminar + pembimbing
+        $rataRataPengawas = $kerjaPraktek->rata_rata_pengawas ?? 0;
+        $rataRataGabungan = ($rataRataSeminar + $rataRataDosen) / 2;
+        $nilaiAkhir = $rataRataPengawas > 0 ? ($rataRataPengawas + $rataRataGabungan) / 2 : $rataRataGabungan;
         $nilaiAkhir = round($nilaiAkhir, 2);
 
         $lulus = $nilaiAkhir >= 70;
 
         $kerjaPraktek->update([
             'penilaian_detail' => $request->penilaian_detail,
+            'penilaian_dosen' => $request->penilaian_detail,
+            'rata_rata_dosen' => $rataRataDosen,
             'nilai_akhir' => $nilaiAkhir,
             'keterangan_penilaian' => $request->keterangan_penilaian,
             'lulus_ujian' => $lulus,
             'status' => KerjaPraktek::STATUS_SELESAI
         ]);
+
+        // Kirim notifikasi ke mahasiswa
         Notifikasi::create([
             'user_id' => $kerjaPraktek->mahasiswa_id,
-            'title' => 'Hasil Ujian KP',
-            'message' => "Hasil ujian KP Anda: ".($lulus ? 'LULUS' : 'TIDAK LULUS')." dengan nilai {$nilaiAkhir}",
+            'title' => 'Penilaian Kerja Praktek Selesai',
+            'message' => "Penilaian kerja praktek Anda telah selesai dengan nilai akhir: {$nilaiAkhir}. Status: " . ($lulus ? 'LULUS' : 'TIDAK LULUS') . ". Silakan cek detail penilaian di halaman kerja praktek Anda.",
             'type' => $lulus ? 'success' : 'warning',
-            'kerja_praktek_id' => $kerjaPraktek->id
+            'kerja_praktek_id' => $kerjaPraktek->id,
+            'action_url' => route('mahasiswa.kerja-praktek.index')
         ]);
 
         return back()->with('success', 'Penilaian berhasil disimpan.');

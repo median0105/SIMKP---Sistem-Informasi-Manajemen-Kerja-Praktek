@@ -471,30 +471,148 @@
                     <div class="p-6">
                         <h3 class="text-lg font-medium text-gray-900 mb-6">Input Penilaian Kerja Praktek</h3>
 
-                        <div id="penilaianContainer" class="space-y-4 mb-6">
-                            <div class="penilaian-item grid grid-cols-3 gap-4">
-                                <div class="col-span-2">
-                                    <input type="text" name="penilaian_detail[0][indikator]"
-                                           placeholder="Indikator penilaian..." required
-                                           class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
+                        <div id="penilaianContainer" class="space-y-6 mb-6">
+                            {{-- Lembar Penilaian Seminar Kerja Praktek --}}
+                            <div class="border-b border-gray-200 pb-4">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-4">Penilaian Seminar Kerja Praktek</h4>
+                                <div class="space-y-3">
+                                    <div class="penilaian-item grid grid-cols-3 gap-4">
+                                        <div class="col-span-2">
+                                            <input type="text" name="penilaian_detail[0][indikator]"
+                                                   value="Laporan Kerja Praktek" readonly
+                                                   class="w-full border-gray-300 rounded-md shadow-sm bg-gray-50">
+                                        </div>
+                                        <div>
+                                            <input type="number" name="penilaian_detail[0][nilai]"
+                                                   placeholder="Nilai (0-100)" min="0" max="100" required
+                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 nilai-input">
+                                        </div>
+                                    </div>
+                                    <div class="penilaian-item grid grid-cols-3 gap-4">
+                                        <div class="col-span-2">
+                                            <input type="text" name="penilaian_detail[1][indikator]"
+                                                   value="Presentasi dan Pemahaman Materi" readonly
+                                                   class="w-full border-gray-300 rounded-md shadow-sm bg-gray-50">
+                                        </div>
+                                        <div>
+                                            <input type="number" name="penilaian_detail[1][nilai]"
+                                                   placeholder="Nilai (0-100)" min="0" max="100" required
+                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 nilai-input">
+                                        </div>
+                                    </div>
+                                    <div class="penilaian-item grid grid-cols-3 gap-4">
+                                        <div class="col-span-2">
+                                            <input type="text" name="penilaian_detail[2][indikator]"
+                                                   value="Sikap dan Etika" readonly
+                                                   class="w-full border-gray-300 rounded-md shadow-sm bg-gray-50">
+                                        </div>
+                                        <div>
+                                            <input type="number" name="penilaian_detail[2][nilai]"
+                                                   placeholder="Nilai (0-100)" min="0" max="100" required
+                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 nilai-input">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <input type="number" name="penilaian_detail[0][nilai]"
-                                           placeholder="Nilai (0-100)" min="0" max="100" required
-                                           class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 nilai-input">
+                            </div>
+
+                            {{-- Lembar Penilaian Dosen Pembimbing Kerja Praktek --}}
+                            <div class="pt-4">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-4">Penilaian Dosen Pembimbing Kerja Praktek</h4>
+                                <div class="space-y-3">
+                                    <div class="penilaian-item grid grid-cols-3 gap-4">
+                                        <div class="col-span-2">
+                                            <input type="text" name="penilaian_detail[3][indikator]"
+                                                   value="Laporan Kerja Praktek" readonly
+                                                   class="w-full border-gray-300 rounded-md shadow-sm bg-gray-50">
+                                        </div>
+                                        <div>
+                                            <input type="number" name="penilaian_detail[3][nilai]"
+                                                   placeholder="Nilai (0-100)" min="0" max="100" required
+                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 nilai-input">
+                                        </div>
+                                    </div>
+                                    <div class="penilaian-item grid grid-cols-3 gap-4">
+                                        <div class="col-span-2">
+                                            <input type="text" name="penilaian_detail[4][indikator]"
+                                                   value="Presentasi dan Pemahaman Materi" readonly
+                                                   class="w-full border-gray-300 rounded-md shadow-sm bg-gray-50">
+                                        </div>
+                                        <div>
+                                            <input type="number" name="penilaian_detail[4][nilai]"
+                                                   placeholder="Nilai (0-100)" min="0" max="100" required
+                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 nilai-input">
+                                        </div>
+                                    </div>
+                                    <div class="penilaian-item grid grid-cols-3 gap-4">
+                                        <div class="col-span-2">
+                                            <input type="text" name="penilaian_detail[5][indikator]"
+                                                   value="Sikap dan Etika" readonly
+                                                   class="w-full border-gray-300 rounded-md shadow-sm bg-gray-50">
+                                        </div>
+                                        <div>
+                                            <input type="number" name="penilaian_detail[5][nilai]"
+                                                   placeholder="Nilai (0-100)" min="0" max="100" required
+                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 nilai-input">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="button" onclick="addPenilaian()" class="text-unib-blue-600 hover:text-unib-blue-800 text-sm mb-4">
-                            <i class="fas fa-plus mr-1"></i>Tambah Indikator
-                        </button>
+                        {{-- Tombol tambah indikator dihapus karena sudah fixed --}}
+
+                        {{-- Tampilkan rata-rata pengawas jika ada --}}
+                        @if($kerjaPraktek->rata_rata_pengawas)
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <label class="block text-sm font-medium text-blue-700">Rata-rata Penilaian Pengawas Lapangan</label>
+                                        <p class="text-xs text-blue-600">Nilai dari pembimbing lapangan</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-2xl font-bold text-blue-900">{{ $kerjaPraktek->rata_rata_pengawas }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Rata-rata Seminar --}}
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <label class="block text-sm font-medium text-blue-700">Rata-rata Penilaian Seminar</label>
+                                    <p class="text-xs text-blue-600">Rata-rata dari 3 aspek seminar (Laporan, Presentasi, Sikap)</p>
+                                </div>
+                                <div class="text-right">
+                                    <span id="rataSeminarDisplay" class="text-2xl font-bold text-blue-900">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Rata-rata Dosen Pembimbing --}}
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <label class="block text-sm font-medium text-green-700">Rata-rata Penilaian Dosen Pembimbing</label>
+                                    <p class="text-xs text-green-600">Rata-rata dari 3 aspek pembimbing (Laporan, Presentasi, Sikap)</p>
+                                </div>
+                                <div class="text-right">
+                                    <span id="rataDosenDisplay" class="text-2xl font-bold text-green-900">0.00</span>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
                             <div class="flex justify-between items-center">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Nilai Akhir (Otomatis)</label>
-                                    <p class="text-xs text-gray-500">Rata-rata dari semua indikator penilaian</p>
+                                    <p class="text-xs text-gray-500">
+                                        @if($kerjaPraktek->rata_rata_pengawas)
+                                            Rata-rata dari penilaian pengawas dan rata-rata seminar + pembimbing
+                                        @else
+                                            Rata-rata dari semua indikator penilaian dosen
+                                        @endif
+                                    </p>
                                 </div>
                                 <div class="text-right">
                                     <span id="nilaiAkhirDisplay" class="text-2xl font-bold text-gray-900">0.00</span>
@@ -789,26 +907,44 @@
         // Fungsi untuk menghitung nilai akhir
         function calculateNilaiAkhir() {
             const nilaiInputs = document.querySelectorAll('input[name*="[nilai]"]');
-            let total = 0;
-            let count = 0;
+            let totalSeminar = 0;
+            let totalDosen = 0;
+            let countSeminar = 0;
+            let countDosen = 0;
 
-            nilaiInputs.forEach(input => {
+            nilaiInputs.forEach((input, index) => {
                 const value = parseFloat(input.value);
                 if (!isNaN(value)) {
-                    total += value;
-                    count++;
+                    if (index < 3) { // Indeks 0-2: Seminar
+                        totalSeminar += value;
+                        countSeminar++;
+                    } else { // Indeks 3-5: Dosen Pembimbing
+                        totalDosen += value;
+                        countDosen++;
+                    }
                 }
             });
 
-            const average = count > 0 ? (total / count).toFixed(2) : '0.00';
-            document.getElementById('nilaiAkhirDisplay').textContent = average;
+            const rataSeminar = countSeminar > 0 ? (totalSeminar / countSeminar).toFixed(2) : '0.00';
+            const rataDosen = countDosen > 0 ? (totalDosen / countDosen).toFixed(2) : '0.00';
+
+            // Update display rata-rata
+            document.getElementById('rataSeminarDisplay').textContent = rataSeminar;
+            document.getElementById('rataDosenDisplay').textContent = rataDosen;
+
+            // Hitung nilai akhir: rata-rata dari pengawas dan rata-rata seminar + pembimbing
+            const rataRataPengawas = {{ $kerjaPraktek->rata_rata_pengawas ?? 0 }};
+            const rataRataGabungan = (parseFloat(rataSeminar) + parseFloat(rataDosen)) / 2;
+            const nilaiAkhir = rataRataPengawas > 0 ? ((parseFloat(rataRataPengawas) + rataRataGabungan) / 2).toFixed(2) : rataRataGabungan.toFixed(2);
+
+            document.getElementById('nilaiAkhirDisplay').textContent = nilaiAkhir;
 
             const statusElement = document.getElementById('statusDisplay');
-            if (count === 0) {
+            if (countSeminar === 0 && countDosen === 0) {
                 statusElement.textContent = '-';
                 statusElement.className = 'text-sm text-gray-600';
             } else {
-                const avgNum = parseFloat(average);
+                const avgNum = parseFloat(nilaiAkhir);
                 if (avgNum >= 70) {
                     statusElement.textContent = 'LULUS';
                     statusElement.className = 'text-sm text-green-600';
@@ -819,33 +955,7 @@
             }
         }
 
-        // Dinamika baris penilaian
-        function addPenilaian() {
-            const container = document.getElementById('penilaianContainer');
-            const row = document.createElement('div');
-            row.className = 'penilaian-item grid grid-cols-3 gap-4';
-            row.innerHTML = `
-                <div class="col-span-2">
-                    <input type="text" name="penilaian_detail[${penilaianIndex}][indikator]"
-                           placeholder="Indikator penilaian..." required
-                           class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
-                </div>
-                <div class="flex space-x-2">
-                    <input type="number" name="penilaian_detail[${penilaianIndex}][nilai]"
-                           placeholder="Nilai (0-100)" min="0" max="100" required
-                           class="flex-1 border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 nilai-input">
-                    <button type="button" onclick="this.closest('.penilaian-item').remove(); calculateNilaiAkhir();" class="text-red-600 hover:text-red-800">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            penilaianIndex++;
-            container.appendChild(row);
-
-            // Attach event listener to new input
-            const newInput = row.querySelector('.nilai-input');
-            newInput.addEventListener('input', calculateNilaiAkhir);
-        }
+        // Dinamika baris penilaian - tidak digunakan karena fixed aspek
 
         // Attach event listeners to existing nilai inputs
         document.addEventListener('DOMContentLoaded', function() {

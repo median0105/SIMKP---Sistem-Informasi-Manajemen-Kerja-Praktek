@@ -187,6 +187,7 @@ Route::middleware(['auth', 'verified', 'role:pengawas_lapangan'])
         Route::resource('mahasiswa', PengawasMahasiswaController::class)->only(['index', 'show']);
         Route::post('mahasiswa/{kerjaPraktek}/acc-kartu', [PengawasMahasiswaController::class, 'accKartuImplementasi'])->name('mahasiswa.acc-kartu');
         Route::post('mahasiswa/{kerjaPraktek}/feedback',  [PengawasMahasiswaController::class, 'addFeedback'])->name('mahasiswa.feedback');
+        Route::post('mahasiswa/{kerjaPraktek}/penilaian-pengawas', [PengawasMahasiswaController::class, 'inputPenilaianPengawas'])->name('mahasiswa.penilaian-pengawas');
 
         // Kegiatan
         Route::resource('kegiatan', \App\Http\Controllers\PengawasLapangan\KegiatanController::class)->only(['index']);
