@@ -128,72 +128,161 @@
 </div>
 
 <!-- Statistics Overview -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- KP Status Statistics -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+    <!-- KP Status Statistics - Bar Chart -->
     <div class="bg-white rounded-lg shadow">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Statistik Status KP</h3>
+        <div class="px-4 py-3 border-b border-gray-200">
+            <h3 class="text-base font-semibold text-gray-900">Statistik Status KP</h3>
         </div>
-        <div class="p-6">
-            <div class="space-y-4">
-                @foreach($data['statistikStatus'] as $status => $count)
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-600 capitalize">{{ str_replace('_', ' ', $status) }}</span>
-                        <div class="flex items-center">
-                            <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                                <div class="h-2 rounded-full 
-                                    @switch($status)
-                                        @case('pengajuan') bg-yellow-500 @break
-                                        @case('disetujui') bg-blue-500 @break
-                                        @case('sedang_kp') bg-green-500 @break
-                                        @case('selesai') bg-gray-500 @break
-                                        @case('ditolak') bg-red-500 @break
-                                    @endswitch
-                                " style="width: {{ $count > 0 ? ($count / max($data['totalKerjaPraktek'], 1) * 100) : 0 }}%"></div>
-                            </div>
-                            <span class="text-sm font-semibold text-gray-900">{{ $count }}</span>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+        <div class="p-4">
+            <canvas id="statusChart" width="300" height="200"></canvas>
         </div>
     </div>
 
-    <!-- User Distribution -->
+    <!-- User Distribution - Pie Chart -->
     <div class="bg-white rounded-lg shadow">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Distribusi User</h3>
+        <div class="px-4 py-3 border-b border-gray-200">
+            <h3 class="text-base font-semibold text-gray-900">Distribusi User</h3>
         </div>
-        <div class="p-6">
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-600">Mahasiswa</span>
-                    <div class="flex items-center">
-                        <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                            <div class="bg-blue-500 h-2 rounded-full" style="width: 85%"></div>
-                        </div>
-                        <span class="text-sm font-semibold text-gray-900">{{ $data['totalMahasiswa'] }}</span>
-                    </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-600">Dosen</span>
-                    <div class="flex items-center">
-                        <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                            <div class="bg-green-500 h-2 rounded-full" style="width: 10%"></div>
-                        </div>
-                        <span class="text-sm font-semibold text-gray-900">{{ $data['totalDosen'] }}</span>
-                    </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-600">Pengawas</span>
-                    <div class="flex items-center">
-                        <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                            <div class="bg-orange-500 h-2 rounded-full" style="width: 5%"></div>
-                        </div>
-                        <span class="text-sm font-semibold text-gray-900">{{ $data['totalPengawas'] }}</span>
-                    </div>
-                </div>
-            </div>
+        <div class="p-4">
+            <canvas id="userChart" width="300" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Tempat Magang Terpopuler - Bar Chart -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-4 py-3 border-b border-gray-200">
+            <h3 class="text-base font-semibold text-gray-900">Tempat Magang Terpopuler</h3>
+        </div>
+        <div class="p-4">
+            <canvas id="popularChart" width="300" height="200"></canvas>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Data untuk chart
+    const statusData = @json($data['statistikStatus']);
+    const userData = {
+        mahasiswa: @json($data['totalMahasiswa']),
+        dosen: @json($data['totalDosen']),
+        pengawas: @json($data['totalPengawas'])
+    };
+    const popularData = @json($data['popularTempatMagang']);
+
+    // Bar Chart untuk Status KP
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(statusData).map(key => key.replace('_', ' ').toUpperCase()),
+            datasets: [{
+                label: 'Jumlah KP',
+                data: Object.values(statusData),
+                backgroundColor: [
+                    'rgba(255, 206, 86, 0.8)', // pengajuan - yellow
+                    'rgba(54, 162, 235, 0.8)', // disetujui - blue
+                    'rgba(75, 192, 192, 0.8)', // sedang_kp - green
+                    'rgba(153, 102, 255, 0.8)', // selesai - purple
+                    'rgba(255, 99, 132, 0.8)'   // ditolak - red
+                ],
+                borderColor: [
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+
+    // Pie Chart untuk Distribusi User
+    const userCtx = document.getElementById('userChart').getContext('2d');
+    new Chart(userCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Mahasiswa', 'Dosen', 'Pengawas'],
+            datasets: [{
+                data: [userData.mahasiswa, userData.dosen, userData.pengawas],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.8)', // blue
+                    'rgba(75, 192, 192, 0.8)', // green
+                    'rgba(255, 206, 86, 0.8)'  // yellow
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Bar Chart untuk Tempat Magang Terpopuler
+    const popularCtx = document.getElementById('popularChart').getContext('2d');
+    new Chart(popularCtx, {
+        type: 'bar',
+        data: {
+            labels: popularData.map(item => item.nama.length > 20 ? item.nama.substring(0, 20) + '...' : item.nama),
+            datasets: [{
+                label: 'Jumlah Mahasiswa',
+                data: popularData.map(item => item.total),
+                backgroundColor: 'rgba(255, 159, 64, 0.8)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+

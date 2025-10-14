@@ -19,6 +19,7 @@
         "vite": "^7.0.4"
     },
     "dependencies": {
+        "chart.js": "^4.5.1",
         "cropperjs": "^2.0.1"
     }
 }

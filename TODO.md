@@ -1,4 +1,9 @@
-- [x] Edit resources/views/admin/bimbingan/index.blade.php: Change <option value="">Semua Status</option> to <option value="all" @selected(request('status')==='all' || !request('status'))>Semua Status</option>
-- [x] Edit app/Http/Controllers/Admin/BimbinganController.php: Change the when condition for status filter to ->when($request->filled('status') && $request->status !== 'all', ...)
-- [x] Add ->whereNotNull('kerja_praktek_id') to exclude bimbingan with null kerja_praktek_id
-- [ ] Test the filter to ensure "Semua Status" shows all bimbingan data guided by the lecturer.
+# TODO: Implement Permutation Importance (AUC Drop) Chart for Popular Tempat Magang on Superadmin Dashboard
+
+## Tasks
+- [ ] Add Chart.js to package.json
+- [ ] Update resources/js/app.js to import Chart.js
+- [ ] Modify resources/views/dashboard/superadmin.blade.php to add chart canvas and rendering script
+- [ ] Update app/Http/Controllers/DashboardController.php getSuperAdminDashboardData method to calculate popular tempat magang data
+- [ ] Build assets with npm run build
+- [ ] Test chart in browser

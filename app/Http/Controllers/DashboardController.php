@@ -245,6 +245,22 @@ class DashboardController extends Controller
         ->take(5)
         ->get();
 
+    // Data untuk tempat magang terpopuler
+    $popularTempatMagang = KerjaPraktek::with('tempatMagang')
+                                      ->whereNotNull('tempat_magang_id')
+                                      ->selectRaw('tempat_magang_id, COUNT(*) as total')
+                                      ->groupBy('tempat_magang_id')
+                                      ->orderByDesc('total')
+                                      ->limit(10)
+                                      ->get()
+                                      ->map(function($item) {
+                                          return [
+                                              'nama' => $item->tempatMagang->nama_perusahaan ?? 'Unknown',
+                                              'total' => $item->total,
+                                              'bidang' => $item->tempatMagang->bidang_usaha ?? ''
+                                          ];
+                                      });
+
     return [
         'totalMahasiswa'   => User::where('role', User::ROLE_MAHASISWA)->count(),
         'totalDosen'       => User::where('role', User::ROLE_ADMIN_DOSEN)->count(),
@@ -253,6 +269,7 @@ class DashboardController extends Controller
         'totalKerjaPraktek'=> array_sum($statistikStatus),
         'statistikStatus'  => $statistikStatus,
         'rejectedKPs'      => $rejectedKPs,
+        'popularTempatMagang' => $popularTempatMagang,
     ];
 }
 

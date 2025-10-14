@@ -610,25 +610,34 @@
                         <h3 class="text-lg font-medium text-gray-900 mb-6">ACC Pendaftaran Seminar</h3>
 
                         <div class="space-y-4">
+                            {{-- Jadwal Seminar --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Jadwal Seminar *</label>
-                                <input type="datetime-local" name="jadwal_seminar" required
-                                       class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
-                                <p class="text-xs text-gray-500 mt-1">Pilih tanggal dan waktu seminar</p>
+                                <input 
+                                    type="text" 
+                                    id="jadwal_seminar" 
+                                    name="jadwal_seminar" 
+                                    required
+                                    class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                    placeholder="Pilih tanggal dan waktu"
+                                >
+                                <p class="text-xs text-gray-500 mt-1">Pilih tanggal dan waktu seminar (format 24 jam)</p>
                             </div>
 
+                            {{-- Ruangan Seminar --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Ruangan Seminar *</label>
                                 <input type="text" name="ruangan_seminar" required
-                                       class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
-                                       placeholder="Contoh: Ruang Seminar 101">
+                                    class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                    placeholder="Contoh: Ruang Seminar 101">
                             </div>
 
+                            {{-- Catatan Seminar --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Catatan Seminar</label>
                                 <textarea name="catatan_seminar" rows="3"
-                                          class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
-                                          placeholder="Catatan tambahan untuk mahasiswa (opsional)"></textarea>
+                                        class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                        placeholder="Catatan tambahan untuk mahasiswa (opsional)"></textarea>
                             </div>
                         </div>
 
@@ -845,6 +854,18 @@
                 input.addEventListener('input', calculateNilaiAkhir);
             });
             calculateNilaiAkhir(); // Initial calculation
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+        flatpickr("#jadwal_seminar", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",  // Format 24 jam
+        time_24hr: true,          // Pastikan tanpa AM/PM
+        minuteIncrement: 5,       // Langkah menit (opsional)
+        altInput: true,
+        altFormat: "d M Y H:i",   // Tampilan lebih ramah user
+        defaultDate: null
+            });
         });
     </script>
 </x-app-layout>

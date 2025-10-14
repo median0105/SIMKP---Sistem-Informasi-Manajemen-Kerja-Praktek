@@ -26,7 +26,7 @@
         <!-- Content -->
         <div class="relative z-10 flex flex-col justify-center items-center text-center">
             <img src="{{ asset('storage/logo-unib.png') }}" alt="UNIB Logo" class="w-48 h-auto ">
-            <h1 class="text-3xl sm:text-4xl font-bold">Buat Akun Baru</h1>
+            <h1 class="text-3xl sm:text-4xl font-bold">UNIVERSITAS BENGKULU</h1>
             <p class="mt-3 text-lg font-medium">Sistem Informasi Manajemen Praktek</p>
             <p class="text-sm text-blue-200 mt-1">Daftar untuk mulai menggunakan layanan</p>
         </div>
@@ -42,8 +42,8 @@
         <div class="max-w-sm w-full">
             <!-- Header -->
             <div class="text-left mb-6">
-                <h2 class="text-4xl font-bold text-gray-900">Daftar</h2>
-                <p class="mt-2 text-gray-500">Buat akun baru Anda</p>
+                <h2 class="text-4xl font-bold text-gray-900 text-center">Daftar</h2>
+                <p class="mt-2 text-gray-500 text-center">Buat akun baru Anda</p>
             </div>
 
             <form method="POST" action="{{ route('register') }}" class="space-y-6">
