@@ -65,5 +65,10 @@ Sistem ini memfasilitasi berbagai peran seperti **Super Admin, Dosen Pembimbing,
 
 1. **Clone repository ini**
    ```bash
-   git clone https://github.com/username/simkp.git
+   git clone https://github.com/median0105/SIMKP---Sistem-Informasi-Manajemen-Kerja-Praktek.git
    cd simkp
+2. Install Dependensi Backend (Laravel)
+   ```bash
+   composer install
+3. 
+4. 
