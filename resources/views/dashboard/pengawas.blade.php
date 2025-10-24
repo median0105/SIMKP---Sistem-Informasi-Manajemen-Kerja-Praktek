@@ -59,10 +59,40 @@
         <h3 class="text-lg font-semibold text-gray-900">Mahasiswa yang Membutuhkan Perhatian</h3>
     </div>
     <div class="p-6">
-        <div class="text-center py-8 text-gray-500">
-            <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-4"></i>
-            <p>Semua mahasiswa dalam kondisi baik</p>
-            <p class="text-sm">Tidak ada yang memerlukan tindakan segera</p>
-        </div>
+        @if($data['recentNotifications']->count() > 0)
+            <div class="space-y-4">
+                @foreach($data['recentNotifications'] as $notification)
+                    <div class="flex items-start space-x-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="bg-blue-100 rounded-full p-2 mt-1">
+                            <i class="fas fa-info-circle text-blue-600 text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-900">{{ $notification->title }}</h4>
+                            <p class="text-sm text-gray-600 mt-1">{{ $notification->message }}</p>
+                            @if($notification->kerjaPraktek)
+                                <p class="text-xs text-gray-500 mt-2">
+                                    Mahasiswa: {{ $notification->kerjaPraktek->mahasiswa->name }} ({{ $notification->kerjaPraktek->mahasiswa->npm }})
+                                </p>
+                                <p class="text-xs text-gray-500">
+                                    Judul KP: {{ $notification->kerjaPraktek->judul_kp }}
+                                </p>
+                            @endif
+                            <p class="text-xs text-gray-400 mt-2">{{ $notification->created_at->diffForHumans() }}</p>
+                        </div>
+                        @if($notification->action_url)
+                            <a href="{{ $notification->action_url }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                Lihat Detail
+                            </a>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <div class="text-center py-8 text-gray-500">
+                <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-4"></i>
+                <p>Semua mahasiswa dalam kondisi baik</p>
+                <p class="text-sm">Tidak ada yang memerlukan tindakan segera</p>
+            </div>
+        @endif
     </div>
 </div>

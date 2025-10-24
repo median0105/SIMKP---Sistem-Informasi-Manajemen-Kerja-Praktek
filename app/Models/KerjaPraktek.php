@@ -54,6 +54,7 @@ class KerjaPraktek extends Model
         'rata_rata_pengawas',
         'penilaian_dosen',
         'rata_rata_dosen',
+        'rata_rata_seminar',
     ];
 
     protected $casts = [
@@ -80,6 +81,7 @@ class KerjaPraktek extends Model
         'rata_rata_pengawas' => 'decimal:2',
         'penilaian_dosen' => 'array',
         'rata_rata_dosen' => 'decimal:2',
+        'rata_rata_seminar' => 'decimal:2',
     ];
 
 
@@ -205,6 +207,12 @@ public static function rejectedCountFor(int $mahasiswaId): int
             return 'tidak_lulus';
         }
         return $this->status;
+    }
+
+    // Relationship with Dosen Penguji
+    public function dosenPenguji()
+    {
+        return $this->hasMany(DosenPenguji::class);
     }
 
 }

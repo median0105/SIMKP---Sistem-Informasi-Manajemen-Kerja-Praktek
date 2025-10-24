@@ -130,6 +130,14 @@ Route::middleware(['auth', 'verified', 'role:admin_dosen'])
         Route::resource('mahasiswa', AdminMahasiswaController::class)->only(['index', 'show']);
         Route::resource('kegiatan', \App\Http\Controllers\Admin\KegiatanController::class)->only(['index','show']);
         Route::get('kegiatan', [AdminKegiatanController::class, 'index'])->name('kegiatan.index');
+        Route::prefix('seminar')->name('seminar.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\SeminarController::class, 'index'])->name('index');
+            Route::get('/{kerjaPraktek}', [App\Http\Controllers\Admin\SeminarController::class, 'show'])->name('show');
+            Route::post('/{kerjaPraktek}/acc-pendaftaran-seminar', [App\Http\Controllers\Admin\SeminarController::class, 'accPendaftaranSeminar'])->name('acc-pendaftaran-seminar');
+            Route::post('/{kerjaPraktek}/tolak-pendaftaran-seminar', [App\Http\Controllers\Admin\SeminarController::class, 'tolakPendaftaranSeminar'])->name('tolak-pendaftaran-seminar');
+            Route::post('/{kerjaPraktek}/acc-seminar', [App\Http\Controllers\Admin\SeminarController::class, 'accSeminar'])->name('acc-seminar');
+            Route::post('/{kerjaPraktek}/input-nilai', [App\Http\Controllers\Admin\SeminarController::class, 'inputNilai'])->name('input-nilai');
+        });
     });
 
 /*
@@ -146,6 +154,16 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
         Route::resource('users', SAUserController::class);
         Route::post('users/{user}/toggle-status', [SAUserController::class, 'toggleStatus'])->name('users.toggle-status');
         Route::delete('users/{user}/kerja-praktek/{kerjaPraktek}', [SAUserController::class, 'destroyKP'])->name('users.destroy-kp');
+
+        // Dosen Pembimbing
+        Route::get('dosen-pembimbing', [SAUserController::class, 'indexDosenPembimbing'])->name('dosen-pembimbing.index');
+        Route::get('dosen-pembimbing/{user}', [SAUserController::class, 'showDosenPembimbing'])->name('dosen-pembimbing.show');
+        Route::post('dosen-pembimbing/{user}/assign-mahasiswa', [SAUserController::class, 'assignMahasiswaToDosen'])->name('dosen-pembimbing.assign-mahasiswa');
+
+        // Dosen Penguji
+        Route::get('dosen-penguji', [SAUserController::class, 'indexDosenPenguji'])->name('dosen-penguji.index');
+        Route::get('dosen-penguji/{user}', [SAUserController::class, 'showDosenPenguji'])->name('dosen-penguji.show');
+        Route::post('dosen-penguji/{user}/assign-mahasiswa', [SAUserController::class, 'assignMahasiswaToDosenPenguji'])->name('dosen-penguji.assign-mahasiswa');
 
         // Kerja Praktek
         Route::get('kerja-praktek', [SAUserController::class, 'indexKP'])->name('kerja-praktek.index');

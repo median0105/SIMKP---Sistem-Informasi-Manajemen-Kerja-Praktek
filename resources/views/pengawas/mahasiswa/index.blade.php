@@ -30,7 +30,7 @@
                                         {{ $c['value'] }}
                                     </p>
                                 </div>
-                                <div class="{{ $c['bg'] }} rounded-full p-3">
+                                <div >
                                     <i class="fas {{ $c['icon'] }} {{ $c['iconColor'] }}"></i>
                                 </div>
                             </div>

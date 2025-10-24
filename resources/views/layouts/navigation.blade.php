@@ -45,6 +45,9 @@
                         <x-nav-link :href="route('admin.kegiatan.index')" :active="request()->routeIs('admin.kegiatan.*')" class="text-white hover:text-unib-blue-200">
                             {{ __('Kegiatan Mahasiswa') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.seminar.index')" :active="request()->routeIs('admin.seminar.*')" class="text-white hover:text-unib-blue-200">
+                            {{ __('Seminar') }}
+                        </x-nav-link>
                     @endif
 
                     @if(auth()->user()->isSuperAdmin())

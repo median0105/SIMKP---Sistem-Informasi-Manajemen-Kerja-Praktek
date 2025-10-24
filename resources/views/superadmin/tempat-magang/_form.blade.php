@@ -91,15 +91,40 @@
 
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Pengawas Lapangan</label>
-        <select name="pengawas_id" class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
-            <option value="">-- Pilih Pengawas Lapangan --</option>
-            @foreach(\App\Models\User::where('role', 'pengawas_lapangan')->where('is_active', true)->get() as $pengawas)
-                <option value="{{ $pengawas->id }}" {{ old('pengawas_id', $tempatMagang ? $tempatMagang->pengawas->first()->id ?? '' : '') == $pengawas->id ? 'selected' : '' }}>
-                    {{ $pengawas->name }} ({{ $pengawas->email }})
-                </option>
-            @endforeach
-        </select>
-        <p class="text-xs text-gray-500 mt-1">Opsional: Pilih pengawas lapangan yang bertanggung jawab untuk tempat magang ini.</p>
+        @php
+            $currentPengawas = $tempatMagang ? $tempatMagang->pengawas->first() : null;
+        @endphp
+        @if($currentPengawas)
+            <div class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100 text-gray-700">
+                {{ $currentPengawas->name }} ({{ $currentPengawas->email }})
+            </div>
+            <input type="hidden" name="pengawas_id" value="{{ $currentPengawas->id }}">
+            <p class="text-xs text-gray-500 mt-1">Pengawas lapangan sudah terikat dengan tempat magang ini dan tidak dapat diubah.</p>
+        @else
+            <select name="pengawas_id" class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">
+                <option value="">-- Pilih Pengawas Lapangan --</option>
+                @php
+                    $pengawasQuery = \App\Models\User::where('role', 'pengawas_lapangan')->where('is_active', true);
+                    if ($tempatMagang) {
+                        // Edit: tampilkan yang belum ditugaskan atau yang sudah ditugaskan ke tempat ini
+                        $pengawasQuery->where(function($q) use ($tempatMagang) {
+                            $q->whereNull('tempat_magang_id')
+                              ->orWhere('tempat_magang_id', $tempatMagang->id);
+                        });
+                    } else {
+                        // Create: hanya yang belum ditugaskan
+                        $pengawasQuery->whereNull('tempat_magang_id');
+                    }
+                    $pengawasList = $pengawasQuery->get();
+                @endphp
+                @foreach($pengawasList as $pengawas)
+                    <option value="{{ $pengawas->id }}" {{ old('pengawas_id', $currentPengawas ? $currentPengawas->id : '') == $pengawas->id ? 'selected' : '' }}>
+                        {{ $pengawas->name }} ({{ $pengawas->email }})
+                    </option>
+                @endforeach
+            </select>
+            <p class="text-xs text-gray-500 mt-1">Opsional: Pilih pengawas lapangan yang bertanggung jawab untuk tempat magang ini.</p>
+        @endif
     </div>
 
     <div class="flex items-center gap-3">

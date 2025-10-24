@@ -14,14 +14,14 @@
 
 <!-- Stats Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-    <!-- Total Mahasiswa -->
+    <!-- Total Mahasiswa Bimbingan -->
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-600">Total Mahasiswa</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-2">{{ $data['totalMahasiswa'] }}</p>
+                <p class="text-sm font-medium text-gray-600">Mahasiswa Bimbingan</p>
+                <p class="text-2xl font-semibold text-gray-900 mt-2">{{ $data['totalMahasiswaBimbingan'] }}</p>
             </div>
-            <div class="bg-blue-100 rounded-full p-3">
+            <div>
                 <i class="fas fa-users text-blue-600 text-xl"></i>
             </div>
         </div>
@@ -34,7 +34,7 @@
                 <p class="text-sm font-medium text-gray-600">Pengajuan Baru</p>
                 <p class="text-2xl font-semibold text-yellow-600 mt-2">{{ $data['pengajuanBaru'] }}</p>
             </div>
-            <div class="bg-yellow-100 rounded-full p-3">
+            <div>
                 <i class="fas fa-clock text-yellow-600 text-xl"></i>
             </div>
         </div>
@@ -47,7 +47,7 @@
                 <p class="text-sm font-medium text-gray-600">Sedang KP</p>
                 <p class="text-2xl font-semibold text-green-600 mt-2">{{ $data['sedangKP'] }}</p>
             </div>
-            <div class="bg-green-100 rounded-full p-3">
+            <div>
                 <i class="fas fa-play-circle text-green-600 text-xl"></i>
             </div>
         </div>
@@ -60,7 +60,7 @@
                 <p class="text-sm font-medium text-gray-600">Selesai KP</p>
                 <p class="text-2xl font-semibold text-gray-600 mt-2">{{ $data['selesaiKP'] }}</p>
             </div>
-            <div class="bg-gray-100 rounded-full p-3">
+            <div>
                 <i class="fas fa-flag-checkered text-gray-600 text-xl"></i>
             </div>
         </div>
@@ -93,24 +93,31 @@
         </div>
     </div>
 
-    <!-- Recent Activities -->
+    <!-- Mahasiswa Bimbingan -->
     <div class="lg:col-span-2 bg-white rounded-lg shadow">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Pengajuan Terbaru</h3>
+            <h3 class="text-lg font-semibold text-gray-900">Mahasiswa Bimbingan</h3>
         </div>
         <div class="p-6">
-            @forelse($data['pengajuanTerbaru'] as $pengajuan)
+            @forelse($data['mahasiswaBimbingan'] as $kp)
                 <div class="flex items-start space-x-3 mb-4 last:mb-0">
-                    <div class="bg-yellow-100 rounded-full p-2 mt-1">
-                        <i class="fas fa-file-alt text-yellow-600 text-sm"></i>
+                    <div>
+                        <i class="fas fa-user-graduate text-blue-600 text-sm"></i>
                     </div>
                     <div class="flex-1">
-                        <p class="font-medium text-gray-900">{{ $pengajuan->mahasiswa->name }}</p>
-                        <p class="text-sm text-gray-600">{{ Str::limit($pengajuan->judul_kp, 40) }}</p>
+                        <p class="font-medium text-gray-900">{{ $kp->mahasiswa->name }}</p>
+                        <p class="text-sm text-gray-600">{{ Str::limit($kp->judul_kp, 40) }}</p>
                         <div class="flex items-center justify-between mt-2">
-                            <p class="text-xs text-gray-500">{{ $pengajuan->created_at->diffForHumans() }}</p>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                @if($kp->status == 'pengajuan') bg-yellow-100 text-yellow-800
+                                @elseif($kp->status == 'disetujui') bg-green-100 text-green-800
+                                @elseif($kp->status == 'sedang_kp') bg-blue-100 text-blue-800
+                                @elseif($kp->status == 'selesai') bg-gray-100 text-gray-800
+                                @else bg-red-100 text-red-800 @endif">
+                                {{ ucfirst(str_replace('_', ' ', $kp->status)) }}
+                            </span>
                             <div class="flex space-x-2">
-                                <a href="{{ route('admin.kerja-praktek.show', $pengajuan) }}"
+                                <a href="{{ route('admin.kerja-praktek.show', $kp) }}"
                                    class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
                                     Detail
                                 </a>
@@ -120,8 +127,8 @@
                 </div>
             @empty
                 <div class="text-center text-gray-500 py-4">
-                    <i class="fas fa-inbox text-3xl text-gray-300 mb-2"></i>
-                    <p>Tidak ada pengajuan baru</p>
+                    <i class="fas fa-users text-3xl text-gray-300 mb-2"></i>
+                    <p>Belum ada mahasiswa yang ditugaskan untuk dibimbing</p>
                 </div>
             @endforelse
         </div>
@@ -189,7 +196,7 @@
                     <span class="text-sm text-gray-600">Pengajuan</span>
                     <div class="flex items-center">
                         <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                            <div class="bg-yellow-600 h-2 rounded-full" style="width: {{ $data['pengajuanBaru'] > 0 ? ($data['pengajuanBaru'] / max($data['totalMahasiswa'], 1) * 100) : 0 }}%"></div>
+                            <div class="bg-yellow-600 h-2 rounded-full" style="width: {{ $data['pengajuanBaru'] > 0 ? ($data['pengajuanBaru'] / max($data['totalMahasiswaBimbingan'], 1) * 100) : 0 }}%"></div>
                         </div>
                         <span class="text-sm font-semibold text-gray-900">{{ $data['pengajuanBaru'] }}</span>
                     </div>
@@ -198,7 +205,7 @@
                     <span class="text-sm text-gray-600">Sedang KP</span>
                     <div class="flex items-center">
                         <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                            <div class="bg-green-600 h-2 rounded-full" style="width: {{ $data['sedangKP'] > 0 ? ($data['sedangKP'] / max($data['totalMahasiswa'], 1) * 100) : 0 }}%"></div>
+                            <div class="bg-green-600 h-2 rounded-full" style="width: {{ $data['sedangKP'] > 0 ? ($data['sedangKP'] / max($data['totalMahasiswaBimbingan'], 1) * 100) : 0 }}%"></div>
                         </div>
                         <span class="text-sm font-semibold text-gray-900">{{ $data['sedangKP'] }}</span>
                     </div>
@@ -207,7 +214,7 @@
                     <span class="text-sm text-gray-600">Selesai</span>
                     <div class="flex items-center">
                         <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                            <div class="bg-gray-600 h-2 rounded-full" style="width: {{ $data['selesaiKP'] > 0 ? ($data['selesaiKP'] / max($data['totalMahasiswa'], 1) * 100) : 0 }}%"></div>
+                            <div class="bg-gray-600 h-2 rounded-full" style="width: {{ $data['selesaiKP'] > 0 ? ($data['selesaiKP'] / max($data['totalMahasiswaBimbingan'], 1) * 100) : 0 }}%"></div>
                         </div>
                         <span class="text-sm font-semibold text-gray-900">{{ $data['selesaiKP'] }}</span>
                     </div>

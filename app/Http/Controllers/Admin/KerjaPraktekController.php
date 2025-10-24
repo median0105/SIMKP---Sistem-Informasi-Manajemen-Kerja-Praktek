@@ -166,6 +166,20 @@ class KerjaPraktekController extends Controller
             'kerja_praktek_id' => $kerjaPraktek->id
         ]);
 
+        // Kirim notifikasi ke pengawas lapangan tempat magang tersebut
+        if ($kerjaPraktek->tempatMagang && $kerjaPraktek->tempatMagang->pengawasAktif) {
+            foreach ($kerjaPraktek->tempatMagang->pengawasAktif as $pengawas) {
+                Notifikasi::create([
+                    'user_id' => $pengawas->id,
+                    'title' => 'Mahasiswa Mulai Kerja Praktek',
+                    'message' => "Mahasiswa {$kerjaPraktek->mahasiswa->name} (NPM: {$kerjaPraktek->mahasiswa->npm}) dengan judul KP '{$kerjaPraktek->judul_kp}' telah mulai kerja praktek di tempat magang Anda.",
+                    'type' => 'info',
+                    'kerja_praktek_id' => $kerjaPraktek->id,
+                    'action_url' => route('pengawas.mahasiswa.show', $kerjaPraktek)
+                ]);
+            }
+        }
+
         return back()->with('success', 'Status KP diubah menjadi "Sedang KP".');
     }
 
@@ -178,18 +192,19 @@ class KerjaPraktekController extends Controller
             'keterangan_penilaian' => 'required|string'
         ]);
 
-        // Hitung rata-rata seminar (indeks 0-2) dan dosen pembimbing (indeks 3-5)
-        $penilaianSeminar = array_slice($request->penilaian_detail, 0, 3);
-        $penilaianDosen = array_slice($request->penilaian_detail, 3, 3);
-
-        $rataRataSeminar = collect($penilaianSeminar)->avg('nilai');
+        // Hitung rata-rata dosen pembimbing (indeks 0-2)
+        $penilaianDosen = array_slice($request->penilaian_detail, 0, 3);
         $rataRataDosen = collect($penilaianDosen)->avg('nilai');
-
-        $rataRataSeminar = round($rataRataSeminar, 2);
         $rataRataDosen = round($rataRataDosen, 2);
 
-        // Hitung nilai akhir: rata-rata dari pengawas dan rata-rata seminar + pembimbing
+        // Pastikan nilai seminar sudah ada dari dosen penguji
+        if (!$kerjaPraktek->rata_rata_seminar) {
+            return back()->with('error', 'Nilai seminar belum diinput oleh dosen penguji.');
+        }
+
+        // Hitung nilai akhir: rata-rata dari pengawas, seminar, dan pembimbing
         $rataRataPengawas = $kerjaPraktek->rata_rata_pengawas ?? 0;
+        $rataRataSeminar = $kerjaPraktek->rata_rata_seminar;
         $rataRataGabungan = ($rataRataSeminar + $rataRataDosen) / 2;
         $nilaiAkhir = $rataRataPengawas > 0 ? ($rataRataPengawas + $rataRataGabungan) / 2 : $rataRataGabungan;
         $nilaiAkhir = round($nilaiAkhir, 2);

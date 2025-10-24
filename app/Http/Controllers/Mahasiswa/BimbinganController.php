@@ -48,15 +48,25 @@ class BimbinganController extends Controller
             'catatan_mahasiswa' => $request->catatan_mahasiswa,
         ]);
 
-        // Kirim notifikasi ke dosen
-        NotificationService::sendToRole(
-            'admin_dosen',
-            'Pengajuan Bimbingan Baru',
-            'Mahasiswa ' . auth()->user()->name . ' mengajukan bimbingan untuk topik: ' . $request->topik_bimbingan,
-            'info',
-            $kerjaPraktek ? $kerjaPraktek->id : null,
-            route('admin.bimbingan.show', $bimbingan->id)
-        );
+        // Kirim notifikasi ke dosen pembimbing yang sudah ditugaskan
+        if ($kerjaPraktek) {
+            $assignedDosen = \App\Models\DosenPembimbing::whereHas('kerjaPraktek', function($q) use ($kerjaPraktek) {
+                $q->where('mahasiswa_id', $kerjaPraktek->mahasiswa_id);
+            })->where('jenis_pembimbingan', 'akademik')->pluck('dosen_id');
+
+            if ($assignedDosen->isNotEmpty()) {
+                foreach ($assignedDosen as $dosenId) {
+                    NotificationService::sendToUser(
+                        $dosenId,
+                        'Pengajuan Bimbingan Baru',
+                        'Mahasiswa ' . auth()->user()->name . ' mengajukan bimbingan untuk topik: ' . $request->topik_bimbingan,
+                        'info',
+                        $kerjaPraktek->id,
+                        route('admin.bimbingan.show', $bimbingan->id)
+                    );
+                }
+            }
+        }
 
         return redirect()->route('mahasiswa.bimbingan.index')
                         ->with('success', 'Bimbingan berhasil ditambahkan.');

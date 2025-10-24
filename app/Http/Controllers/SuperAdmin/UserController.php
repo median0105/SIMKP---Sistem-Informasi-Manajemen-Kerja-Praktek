@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\KerjaPraktek;
+use App\Models\DosenPenguji;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -207,6 +208,215 @@ class UserController extends Controller
         $kerjaPraktek->delete();
 
         return back()->with('success', 'Data KP yang ditolak berhasil dihapus. Mahasiswa dapat mengajukan ulang.');
+    }
+
+    /**
+     * Index Data Dosen Pembimbing.
+     */
+    public function indexDosenPembimbing(Request $request)
+    {
+        $search = trim((string) $request->get('search', ''));
+
+        $dosen = User::where('role', User::ROLE_ADMIN_DOSEN)
+            ->when($search !== '', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            })
+            ->orderBy('name')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('superadmin.dosen-pembimbing.index', compact('dosen', 'search'));
+    }
+
+    /**
+     * Show detail dosen pembimbing dengan mahasiswa yang dibimbingnya.
+     */
+    public function showDosenPembimbing(User $user)
+    {
+        // Pastikan user adalah dosen
+        if ($user->role !== User::ROLE_ADMIN_DOSEN) {
+            abort(404);
+        }
+
+        // Ambil mahasiswa yang dibimbing oleh dosen ini
+        $mahasiswa = KerjaPraktek::with(['mahasiswa', 'tempatMagang'])
+            ->whereHas('dosenPembimbing', function($q) use ($user) {
+                $q->where('dosen_id', $user->id)
+                  ->where('jenis_pembimbingan', 'akademik');
+            })
+            ->get()
+            ->groupBy('mahasiswa_id')
+            ->map(function($kps) {
+                $mahasiswa = $kps->first()->mahasiswa;
+                // Set kpTerbaru ke KP yang memiliki dosen pembimbing (terbaru jika multiple)
+                $mahasiswa->kpTerbaru = $kps->sortByDesc('created_at')->first();
+                return $mahasiswa;
+            })
+            ->sortBy('name');
+
+        // Ambil semua mahasiswa yang belum memiliki dosen pembimbing akademik
+        $mahasiswaAvailable = User::where('role', User::ROLE_MAHASISWA)
+            ->whereDoesntHave('kerjaPraktek.dosenPembimbing', function($q) {
+                $q->where('jenis_pembimbingan', 'akademik');
+            })
+            ->with('kpTerbaru')
+            ->orderBy('name')
+            ->get();
+
+        return view('superadmin.dosen-pembimbing.show', compact('user', 'mahasiswa', 'mahasiswaAvailable'));
+    }
+
+    /**
+     * Assign mahasiswa ke dosen pembimbing.
+     */
+    public function assignMahasiswaToDosen(Request $request, User $user)
+    {
+        $request->validate([
+            'mahasiswa_id' => 'required|exists:users,id',
+        ]);
+
+        $mahasiswa = User::findOrFail($request->mahasiswa_id);
+
+        // Pastikan mahasiswa memiliki KP
+        $kp = $mahasiswa->kerjaPraktek()->latest()->first();
+        if (!$kp) {
+            return back()->with('error', 'Mahasiswa belum memiliki data KP.');
+        }
+
+        // Cek apakah sudah ada dosen pembimbing akademik
+        $existing = $kp->dosenPembimbing()->where('jenis_pembimbingan', 'akademik')->first();
+        if ($existing) {
+            return back()->with('error', 'Mahasiswa sudah memiliki dosen pembimbing akademik.');
+        }
+
+        // Assign dosen pembimbing
+        \App\Models\DosenPembimbing::create([
+            'kerja_praktek_id' => $kp->id,
+            'dosen_id' => $user->id,
+            'jenis_pembimbingan' => 'akademik',
+            'is_active' => true,
+        ]);
+
+        // Kirim notifikasi ke dosen pembimbing
+        \App\Services\NotificationService::sendToUser(
+            $user->id,
+            'Mahasiswa Baru Ditugaskan',
+            "Mahasiswa {$mahasiswa->name} ({$mahasiswa->npm}) telah ditugaskan sebagai mahasiswa bimbingan Anda.",
+            'info',
+            $kp->id,
+            route('admin.kerja-praktek.show', $kp)
+        );
+
+        return back()->with('success', 'Mahasiswa berhasil ditugaskan ke dosen pembimbing.');
+    }
+
+    /**
+     * Index Data Dosen Penguji.
+     */
+    public function indexDosenPenguji(Request $request)
+    {
+        $search = trim((string) $request->get('search', ''));
+
+        $dosen = User::where('role', User::ROLE_ADMIN_DOSEN)
+            ->when($search !== '', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            })
+            ->orderBy('name')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('superadmin.dosen-penguji.index', compact('dosen', 'search'));
+    }
+
+    /**
+     * Show detail dosen penguji dengan mahasiswa yang dinilainya.
+     */
+    public function showDosenPenguji(User $user)
+    {
+        // Pastikan user adalah dosen
+        if ($user->role !== User::ROLE_ADMIN_DOSEN) {
+            abort(404);
+        }
+
+        // Ambil mahasiswa yang ditugaskan ke dosen ini sebagai penguji
+        $mahasiswa = DosenPenguji::with(['kerjaPraktek.mahasiswa', 'kerjaPraktek.tempatMagang'])
+            ->where('dosen_id', $user->id)
+            ->where('is_active', true)
+            ->get()
+            ->map(function($dosenPenguji) {
+                $mahasiswa = $dosenPenguji->kerjaPraktek->mahasiswa;
+                $mahasiswa->kpTerbaru = $dosenPenguji->kerjaPraktek;
+                return $mahasiswa;
+            })
+            ->sortBy('name');
+
+        // Ambil mahasiswa yang sudah mengajukan KP (ada data KP) dan belum ditugaskan ke dosen penguji ini
+        // Tapi jangan tampilkan mahasiswa yang sudah dibimbing oleh dosen ini sebagai dosen pembimbing
+        // Dan jangan tampilkan mahasiswa yang sudah memiliki dosen penguji lainnya
+        $mahasiswaAvailable = User::where('role', User::ROLE_MAHASISWA)
+            ->whereHas('kerjaPraktek') // Pastikan sudah ada data KP
+            ->whereDoesntHave('kerjaPraktek.dosenPenguji', function($q) {
+                $q->where('is_active', true);
+            })
+            ->whereDoesntHave('kerjaPraktek.dosenPembimbing', function($q) use ($user) {
+                $q->where('dosen_id', $user->id)
+                  ->where('jenis_pembimbingan', 'akademik')
+                  ->where('is_active', true);
+            })
+            ->with(['kpTerbaru.tempatMagang'])
+            ->orderBy('name')
+            ->get();
+
+        return view('superadmin.dosen-penguji.show', compact('user', 'mahasiswa', 'mahasiswaAvailable'));
+    }
+
+    /**
+     * Assign mahasiswa ke dosen penguji.
+     */
+    public function assignMahasiswaToDosenPenguji(Request $request, User $user)
+    {
+        $request->validate([
+            'mahasiswa_id' => 'required|exists:users,id',
+        ]);
+
+        $mahasiswa = User::findOrFail($request->mahasiswa_id);
+
+        // Pastikan mahasiswa memiliki KP
+        $kp = $mahasiswa->kerjaPraktek()->latest()->first();
+        if (!$kp) {
+            return back()->with('error', 'Mahasiswa belum memiliki data KP.');
+        }
+
+        // Cek apakah mahasiswa sudah ditugaskan ke dosen penguji ini
+        $existing = DosenPenguji::where('kerja_praktek_id', $kp->id)
+            ->where('dosen_id', $user->id)
+            ->where('is_active', true)
+            ->first();
+
+        if ($existing) {
+            return back()->with('error', 'Mahasiswa ini sudah ditugaskan ke dosen penguji ini.');
+        }
+
+        // Buat relasi dosen penguji
+        DosenPenguji::create([
+            'kerja_praktek_id' => $kp->id,
+            'dosen_id' => $user->id,
+            'is_active' => true,
+        ]);
+
+        // Kirim notifikasi ke dosen penguji
+        \App\Services\NotificationService::sendToUser(
+            $user->id,
+            'Mahasiswa Baru untuk Dinilai',
+            "Mahasiswa {$mahasiswa->name} ({$mahasiswa->npm}) telah ditugaskan untuk dinilai oleh Anda.",
+            'info',
+            $kp->id,
+            route('admin.kerja-praktek.show', $kp)
+        );
+
+        return back()->with('success', 'Mahasiswa berhasil ditugaskan ke dosen penguji.');
     }
 
     /**

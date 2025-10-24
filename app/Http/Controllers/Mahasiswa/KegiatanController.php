@@ -105,6 +105,20 @@ class KegiatanController extends Controller
 
         \App\Services\NotificationService::sendToRole('superadmin', 'Kegiatan Baru Mahasiswa', "Mahasiswa {$kp->mahasiswa->name} ({$kp->mahasiswa->npm}) menambahkan kegiatan pada {$tgl} dengan deskripsi: {$kegiatan->deskripsi_kegiatan}", 'info', $kp->id, route('superadmin.kegiatan.index'));
 
+        // Kirim notifikasi ke dosen pembimbing yang sudah ditugaskan
+        if ($dosenIds->isNotEmpty()) {
+            foreach ($dosenIds as $dosenId) {
+                \App\Services\NotificationService::sendToUser(
+                    $dosenId,
+                    'Kegiatan Baru Mahasiswa Bimbingan',
+                    "Mahasiswa {$kp->mahasiswa->name} menambahkan kegiatan pada {$tgl} dengan deskripsi: {$kegiatan->deskripsi_kegiatan}",
+                    'info',
+                    $kp->id,
+                    route('admin.mahasiswa.show', $kp->mahasiswa_id)
+                );
+            }
+        }
+
         return redirect()
             ->route('mahasiswa.kegiatan.index')
             ->with('success', 'Kegiatan berhasil disimpan.');

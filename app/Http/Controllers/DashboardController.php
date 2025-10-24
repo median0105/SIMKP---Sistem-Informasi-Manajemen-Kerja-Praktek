@@ -38,7 +38,7 @@ class DashboardController extends Controller
     {
         $userId = auth()->id();
 
-        $kerjaPraktek = KerjaPraktek::with(['dosenAkademik.dosen'])
+        $kerjaPraktek = KerjaPraktek::with(['dosenAkademik.dosen', 'dosenPenguji.dosen'])
                                    ->where('mahasiswa_id', $userId)
                                    ->first();
 
@@ -60,6 +60,13 @@ class DashboardController extends Controller
     private function getAdminDosenDashboardData()
     {
         $dosenId = auth()->id();
+
+        // Get unread notifications for this dosen
+        $notifications = \App\Models\Notifikasi::where('user_id', $dosenId)
+            ->where('is_read', false)
+            ->latest()
+            ->take(5)
+            ->get();
 
         // Hitung jumlah mahasiswa yang sudah mendaftar seminar tapi belum di-ACC
         $seminarPendingCount = KerjaPraktek::where('pendaftaran_seminar', true)
@@ -189,33 +196,54 @@ class DashboardController extends Controller
         }
 
         return [
-            'totalMahasiswa' => User::where('role', User::ROLE_MAHASISWA)->count(),
-            'pengajuanBaru' => KerjaPraktek::where('status', KerjaPraktek::STATUS_PENGAJUAN)->count(),
+            'notifications' => $notifications,
+            'totalMahasiswaBimbingan' => KerjaPraktek::whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                                              $q->where('dosen_id', $dosenId)
+                                                ->where('jenis_pembimbingan', 'akademik');
+                                          })->count(),
+            'pengajuanBaru' => KerjaPraktek::where('status', KerjaPraktek::STATUS_PENGAJUAN)
+                                              ->whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                                                  $q->where('dosen_id', $dosenId)
+                                                    ->where('jenis_pembimbingan', 'akademik');
+                                              })->count(),
             'sedangKP' => KerjaPraktek::where('status', KerjaPraktek::STATUS_SEDANG_KP)
+                ->whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                    $q->where('dosen_id', $dosenId)
+                      ->where('jenis_pembimbingan', 'akademik');
+                })
                 ->where(function($q) {
                     $q->whereNull('nilai_akhir')
                       ->orWhereNull('file_laporan');
                 })->count(),
-            'selesaiKP' => KerjaPraktek::where('status', KerjaPraktek::STATUS_SELESAI)
-                ->orWhere(function($q) {
-                    $q->where('status', KerjaPraktek::STATUS_SEDANG_KP)
-                      ->whereNotNull('nilai_akhir')
-                      ->whereNotNull('file_laporan');
-                })->count(),
+            'selesaiKP' => KerjaPraktek::whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                $q->where('dosen_id', $dosenId)
+                  ->where('jenis_pembimbingan', 'akademik');
+            })
+            ->where(function($q) {
+                $q->where('status', KerjaPraktek::STATUS_SELESAI)
+                  ->orWhere(function($subQ) {
+                      $subQ->where('status', KerjaPraktek::STATUS_SEDANG_KP)
+                           ->whereNotNull('nilai_akhir')
+                           ->whereNotNull('file_laporan');
+                  });
+            })->count(),
             'pengajuanTerbaru' => KerjaPraktek::where('status', KerjaPraktek::STATUS_PENGAJUAN)
+                                              ->whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                                                  $q->where('dosen_id', $dosenId)
+                                                    ->where('jenis_pembimbingan', 'akademik');
+                                              })
                                               ->with('mahasiswa')
                                               ->latest()
                                               ->take(5)
                                               ->get(),
-            'mahasiswaBimbinganAcc' => KerjaPraktek::where('status', KerjaPraktek::STATUS_DISETUJUI)
-                                                  ->whereHas('dosenPembimbing', function($q) use ($dosenId) {
-                                                      $q->where('dosen_id', $dosenId)
-                                                        ->where('jenis_pembimbingan', 'akademik');
-                                                  })
-                                                  ->with(['mahasiswa', 'tempatMagang'])
-                                                  ->latest()
-                                                  ->take(10)
-                                                  ->get(),
+            'mahasiswaBimbingan' => KerjaPraktek::whereHas('dosenPembimbing', function($q) use ($dosenId) {
+                                                $q->where('dosen_id', $dosenId)
+                                                  ->where('jenis_pembimbingan', 'akademik');
+                                            })
+                                            ->with(['mahasiswa', 'tempatMagang'])
+                                            ->latest()
+                                            ->take(10)
+                                            ->get(),
             'seminarPendingCount' => $seminarPendingCount,
             'seminarRegistrations' => $seminarRegistrations,
             'todayActivities' => $todayActivities,
@@ -237,6 +265,13 @@ class DashboardController extends Controller
     foreach ($statuses as $label => $status) {
         $statistikStatus[$label] = KerjaPraktek::where('status', $status)->count();
     }
+
+    // Get unread notifications for superadmin
+    $notifications = \App\Models\Notifikasi::where('user_id', auth()->id())
+        ->where('is_read', false)
+        ->latest()
+        ->take(5)
+        ->get();
 
     // Ambil KP yang ditolak terbaru untuk notifikasi
     $rejectedKPs = KerjaPraktek::where('status', KerjaPraktek::STATUS_DITOLAK)
@@ -264,10 +299,12 @@ class DashboardController extends Controller
     return [
         'totalMahasiswa'   => User::where('role', User::ROLE_MAHASISWA)->count(),
         'totalDosen'       => User::where('role', User::ROLE_ADMIN_DOSEN)->count(),
+        'totalDosenPenguji' => User::where('role', User::ROLE_ADMIN_DOSEN)->count(), // Dosen penguji sama dengan dosen pembimbing
         'totalPengawas'    => User::where('role', User::ROLE_PENGAWAS_LAPANGAN)->count(),
         'totalTempatMagang'=> TempatMagang::where('is_active', true)->count(),
         'totalKerjaPraktek'=> array_sum($statistikStatus),
         'statistikStatus'  => $statistikStatus,
+        'notifications'    => $notifications,
         'rejectedKPs'      => $rejectedKPs,
         'popularTempatMagang' => $popularTempatMagang,
     ];
@@ -275,13 +312,36 @@ class DashboardController extends Controller
 
     private function getPengawasDashboardData()
     {
+        $pengawasId = auth()->id();
+
+        // Mahasiswa yang sedang KP di tempat magang pengawas
+        $mahasiswaKP = KerjaPraktek::where('status', KerjaPraktek::STATUS_SEDANG_KP)
+            ->whereHas('tempatMagang.pengawasAktif', function($q) use ($pengawasId) {
+                $q->where('pengawas_id', $pengawasId);
+            })
+            ->with('mahasiswa')
+            ->count();
+
+        // Laporan pending di tempat magang pengawas
+        $laporanPending = KerjaPraktek::whereNull('file_laporan')
+            ->where('status', KerjaPraktek::STATUS_SEDANG_KP)
+            ->whereHas('tempatMagang.pengawasAktif', function($q) use ($pengawasId) {
+                $q->where('pengawas_id', $pengawasId);
+            })
+            ->count();
+
+        // Notifikasi terbaru untuk pengawas
+        $recentNotifications = \App\Models\Notifikasi::where('user_id', $pengawasId)
+            ->where('is_read', false)
+            ->with('kerjaPraktek.mahasiswa')
+            ->latest()
+            ->take(5)
+            ->get();
+
         return [
-            'mahasiswaKP' => KerjaPraktek::where('status', KerjaPraktek::STATUS_SEDANG_KP)
-                                        ->with('mahasiswa')
-                                        ->count(),
-            'laporanPending' => KerjaPraktek::whereNull('file_laporan')
-                                           ->where('status', KerjaPraktek::STATUS_SEDANG_KP)
-                                           ->count(),
+            'mahasiswaKP' => $mahasiswaKP,
+            'laporanPending' => $laporanPending,
+            'recentNotifications' => $recentNotifications,
         ];
     }
 }

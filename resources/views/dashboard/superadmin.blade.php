@@ -13,95 +13,108 @@
 </div>
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+<div class="flex gap-4 mb-6">
     <!-- Total Mahasiswa -->
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-4 flex-1">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-600">Total Mahasiswa</p>
                 <p class="text-2xl font-semibold text-blue-600 mt-2">{{ $data['totalMahasiswa'] }}</p>
             </div>
-            <div class="bg-blue-100 rounded-full p-3">
-                <i class="fas fa-user-graduate text-blue-600 text-xl"></i>
+            <div>
+                <i class="fas fa-user-graduate text-blue-600 "></i>
             </div>
         </div>
     </div>
 
-    <!-- Total Dosen -->
-    <div class="bg-white rounded-lg shadow p-6">
+    <!-- Total Dosen Pembimbing -->
+    <div class="bg-white rounded-lg shadow p-4 flex-1">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-600">Total Dosen Pembimbing</p>
-                <p class="text-2xl font-semibold text-green-600 mt-2">{{ $data['totalDosen'] }}</p>
+                <p class="text-2xl font-semibold text-blue-600 mt-2">{{ $data['totalDosen'] }}</p>
             </div>
-            <div class="bg-green-100 rounded-full p-3">
-                <i class="fas fa-chalkboard-teacher text-green-600 text-xl"></i>
+            <div>
+                <i class="fas fa-chalkboard-teacher text-blue-600 "></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Dosen Penguji -->
+    <div class="bg-white rounded-lg shadow p-4 flex-1">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Total Dosen Penguji</p>
+                <p class="text-2xl font-semibold text-teal-600 mt-2">{{ $data['totalDosenPenguji'] }}</p>
+            </div>
+            <div>
+                <i class="fas fa-pen-alt text-teal-600 "></i>
             </div>
         </div>
     </div>
 
     <!-- Total Pengawas -->
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-4 flex-1">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-600">Total Pengawas Lapangan</p>
                 <p class="text-2xl font-semibold text-orange-600 mt-2">{{ $data['totalPengawas'] }}</p>
             </div>
-            <div class="bg-orange-100 rounded-full p-3">
-                <i class="fas fa-clipboard-check text-orange-600 text-xl"></i>
+            <div>
+                <i class="fas fa-clipboard-check text-orange-600 "></i>
             </div>
         </div>
     </div>
 
     <!-- Total Tempat Magang -->
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-4 flex-1">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-600">Total Tempat Magang</p>
                 <p class="text-2xl font-semibold text-purple-600 mt-2">{{ $data['totalTempatMagang'] }}</p>
             </div>
-            <div class="bg-purple-100 rounded-full p-3">
-                <i class="fas fa-building text-purple-600 text-xl"></i>
+            <div>
+                <i class="fas fa-building text-purple-600 "></i>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Management Cards -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-    <!-- User Management -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+    <!-- Data Dosen -->
     <div class="bg-white rounded-lg shadow">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Manajemen User</h3>
+        <div class="px-4 py-3 border-b border-gray-200">
+            <h3 class="text-base font-semibold text-gray-900">Data Dosen</h3>
         </div>
-        <div class="p-6 space-y-3">
-            <a href="{{ route('superadmin.users.index') }}" 
-               class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium transition duration-200 flex items-center">
-                <i class="fas fa-users mr-3"></i>
-                Kelola Users
+        <div class="p-4 space-y-2">
+            <a href="{{ route('superadmin.dosen-pembimbing.index') }}"
+               class="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200 flex items-center">
+                <i class="fas fa-chalkboard-teacher mr-2"></i>
+                Lihat Data Dosen Pembimbing
             </a>
-            <a href="{{ route('superadmin.users.create') }}" 
-               class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium transition duration-200 flex items-center">
-                <i class="fas fa-user-plus mr-3"></i>
-                Tambah User Baru
+            <a href="{{ route('superadmin.dosen-penguji.index') }}"
+               class="w-full bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200 flex items-center">
+                <i class="fas fa-pen-alt mr-2"></i>
+                Lihat Data Dosen Penguji
             </a>
         </div>
     </div>
 
     <!-- Tempat Magang Management -->
     <div class="bg-white rounded-lg shadow">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Tempat Magang</h3>
+        <div class="px-4 py-3 border-b border-gray-200">
+            <h3 class="text-base font-semibold text-gray-900">Tempat Magang</h3>
         </div>
-        <div class="p-6 space-y-3">
-            <a href="{{ route('superadmin.tempat-magang.index') }}" 
-               class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg font-medium transition duration-200 flex items-center">
-                <i class="fas fa-building mr-3"></i>
+        <div class="p-4 space-y-2">
+            <a href="{{ route('superadmin.tempat-magang.index') }}"
+               class="w-full bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200 flex items-center">
+                <i class="fas fa-building mr-2"></i>
                 Kelola Tempat Magang
             </a>
-            <a href="{{ route('superadmin.tempat-magang.create') }}" 
-               class="w-full bg-orange-600 hover:bg-orange-700 text-white px-4 py-3 rounded-lg font-medium transition duration-200 flex items-center">
-                <i class="fas fa-plus mr-3"></i>
+            <a href="{{ route('superadmin.tempat-magang.create') }}"
+               class="w-full bg-orange-600 hover:bg-orange-700 text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200 flex items-center">
+                <i class="fas fa-plus mr-2"></i>
                 Tambah Tempat Baru
             </a>
         </div>
@@ -109,18 +122,18 @@
 
     <!-- Reports -->
     <div class="bg-white rounded-lg shadow">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Laporan</h3>
+        <div class="px-4 py-3 border-b border-gray-200">
+            <h3 class="text-base font-semibold text-gray-900">Laporan</h3>
         </div>
-        <div class="p-6 space-y-3">
-            <a href="{{ route('superadmin.laporan.index') }}" 
-               class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-lg font-medium transition duration-200 flex items-center">
-                <i class="fas fa-chart-bar mr-3"></i>
+        <div class="p-4 space-y-2">
+            <a href="{{ route('superadmin.laporan.index') }}"
+               class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200 flex items-center">
+                <i class="fas fa-chart-bar mr-2"></i>
                 Lihat Laporan
             </a>
-            <a href="{{ route('superadmin.laporan.export-kp') }}" 
-               class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg font-medium transition duration-200 flex items-center">
-                <i class="fas fa-download mr-3"></i>
+            <a href="{{ route('superadmin.laporan.export-kp') }}"
+               class="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200 flex items-center">
+                <i class="fas fa-download mr-2"></i>
                 Export Data KP
             </a>
         </div>

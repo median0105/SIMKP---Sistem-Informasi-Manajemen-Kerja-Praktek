@@ -22,7 +22,7 @@
                             <p class="text-sm font-medium text-gray-600">Total Tempat</p>
                             <p class="text-2xl font-semibold text-blue-600 mt-2">{{ $stats['total_tempat'] }}</p>
                         </div>
-                        <div class="bg-blue-100 rounded-full p-3">
+                        <div>
                             <i class="fas fa-building text-blue-600"></i>
                         </div>
                     </div>
@@ -34,7 +34,7 @@
                             <p class="text-sm font-medium text-gray-600">Tempat Aktif</p>
                             <p class="text-2xl font-semibold text-green-600 mt-2">{{ $stats['tempat_aktif'] }}</p>
                         </div>
-                        <div class="bg-green-100 rounded-full p-3">
+                        <div>
                             <i class="fas fa-check-circle text-green-600"></i>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                             <p class="text-sm font-medium text-gray-600">Total Kuota</p>
                             <p class="text-2xl font-semibold text-purple-600 mt-2">{{ $stats['total_kuota'] }}</p>
                         </div>
-                        <div class="bg-purple-100 rounded-full p-3">
+                        <div>
                             <i class="fas fa-users text-purple-600"></i>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                             <p class="text-sm font-medium text-gray-600">Terpakai</p>
                             <p class="text-2xl font-semibold text-orange-600 mt-2">{{ $stats['tempat_terpakai'] }}</p>
                         </div>
-                        <div class="bg-orange-100 rounded-full p-3">
+                        <div>
                             <i class="fas fa-handshake text-orange-600"></i>
                         </div>
                     </div>

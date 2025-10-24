@@ -156,15 +156,41 @@ class KerjaPraktekController extends Controller
 
         $kerjaPraktek = KerjaPraktek::create($payload);
 
-        // Kirim notifikasi ke dosen
+        // Kirim notifikasi ke superadmin untuk penugasan dosen pembimbing
+        $tempatInfo = '';
+        if ($choice === 1) {
+            $tempatMagang = TempatMagang::find($dataValid['tempat_magang_id']);
+            $tempatInfo = 'di ' . $tempatMagang->nama_perusahaan;
+        } else {
+            $tempatInfo = 'di ' . $dataValid['tempat_magang_sendiri'];
+        }
+
         NotificationService::sendToRole(
-            'admin_dosen',
+            'superadmin',
             'Pengajuan Kerja Praktek Baru',
-            'Mahasiswa ' . auth()->user()->name . ' mengajukan kerja praktek dengan judul: ' . $payload['judul_kp'],
-            'info',
+            'Mahasiswa ' . auth()->user()->name . ' mengajukan kerja praktek dengan judul "' . $payload['judul_kp'] . '" ' . $tempatInfo . '. Silakan pilihkan dosen pembimbing untuk mahasiswa ini.',
+            'warning',
             $kerjaPraktek->id,
-            route('admin.kerja-praktek.show', $kerjaPraktek->id)
+            route('superadmin.kerja-praktek.index')
         );
+
+        // Kirim notifikasi ke dosen pembimbing yang sudah ditugaskan (jika ada)
+        $assignedDosen = \App\Models\DosenPembimbing::whereHas('kerjaPraktek', function($q) use ($mahasiswaId) {
+            $q->where('mahasiswa_id', $mahasiswaId);
+        })->where('jenis_pembimbingan', 'akademik')->pluck('dosen_id');
+
+        if ($assignedDosen->isNotEmpty()) {
+            foreach ($assignedDosen as $dosenId) {
+                NotificationService::sendToUser(
+                    $dosenId,
+                    'Pengajuan Kerja Praktek Baru',
+                    'Mahasiswa ' . auth()->user()->name . ' mengajukan kerja praktek dengan judul: ' . $payload['judul_kp'],
+                    'info',
+                    $kerjaPraktek->id,
+                    route('admin.kerja-praktek.show', $kerjaPraktek->id)
+                );
+            }
+        }
 
         return redirect()->route('mahasiswa.kerja-praktek.index')
             ->with('success', 'Pengajuan kerja praktek berhasil disubmit.');
@@ -189,15 +215,23 @@ class KerjaPraktekController extends Controller
             'file_laporan' => $path,
         ]);
 
-        // Kirim notifikasi ke dosen bahwa mahasiswa telah upload laporan
-        NotificationService::sendToRole(
-            'admin_dosen',
-            'Laporan KP Diunggah',
-            'Mahasiswa ' . auth()->user()->name . ' telah mengunggah laporan kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
-            'info',
-            $kerjaPraktek->id,
-            route('admin.kerja-praktek.show', $kerjaPraktek->id)
-        );
+        // Kirim notifikasi ke dosen pembimbing yang sudah ditugaskan
+        $assignedDosen = \App\Models\DosenPembimbing::whereHas('kerjaPraktek', function($q) use ($kerjaPraktek) {
+            $q->where('mahasiswa_id', $kerjaPraktek->mahasiswa_id);
+        })->where('jenis_pembimbingan', 'akademik')->pluck('dosen_id');
+
+        if ($assignedDosen->isNotEmpty()) {
+            foreach ($assignedDosen as $dosenId) {
+                NotificationService::sendToUser(
+                    $dosenId,
+                    'Laporan KP Diunggah',
+                    'Mahasiswa ' . auth()->user()->name . ' telah mengunggah laporan kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
+                    'info',
+                    $kerjaPraktek->id,
+                    route('admin.kerja-praktek.show', $kerjaPraktek->id)
+                );
+            }
+        }
 
         return back()->with('success', 'Laporan berhasil diupload.');
     }
@@ -216,17 +250,43 @@ class KerjaPraktekController extends Controller
             'tanggal_daftar_seminar' => now(),
         ]);
 
-        // Kirim notifikasi ke dosen bahwa mahasiswa telah mendaftar seminar
-        NotificationService::sendToRole(
-            'admin_dosen',
-            'Pendaftaran Seminar KP',
-            'Mahasiswa ' . auth()->user()->name . ' telah mendaftar seminar kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
-            'info',
-            $kerjaPraktek->id,
-            route('admin.kerja-praktek.show', $kerjaPraktek->id)
-        );
+        // Kirim notifikasi ke dosen pembimbing yang sudah ditugaskan
+        $assignedDosen = \App\Models\DosenPembimbing::whereHas('kerjaPraktek', function($q) use ($kerjaPraktek) {
+            $q->where('mahasiswa_id', $kerjaPraktek->mahasiswa_id);
+        })->where('jenis_pembimbingan', 'akademik')->pluck('dosen_id');
 
-        return back()->with('success', 'Pendaftaran seminar berhasil. Menunggu jadwal dari dosen pembimbing.');
+        if ($assignedDosen->isNotEmpty()) {
+            foreach ($assignedDosen as $dosenId) {
+                NotificationService::sendToUser(
+                    $dosenId,
+                    'Pendaftaran Seminar KP',
+                    'Mahasiswa ' . auth()->user()->name . ' telah mendaftar seminar kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
+                    'info',
+                    $kerjaPraktek->id,
+                    route('admin.kerja-praktek.show', $kerjaPraktek->id)
+                );
+            }
+        }
+
+        // Kirim notifikasi ke dosen penguji yang sudah ditugaskan
+        $assignedDosenPenguji = \App\Models\DosenPenguji::whereHas('kerjaPraktek', function($q) use ($kerjaPraktek) {
+            $q->where('mahasiswa_id', $kerjaPraktek->mahasiswa_id);
+        })->where('is_active', true)->pluck('dosen_id');
+
+        if ($assignedDosenPenguji->isNotEmpty()) {
+            foreach ($assignedDosenPenguji as $dosenId) {
+                NotificationService::sendToUser(
+                    $dosenId,
+                    'Pendaftaran Seminar KP',
+                    'Mahasiswa dengan NPM ' . auth()->user()->npm . ' (' . auth()->user()->name . ') telah mendaftar seminar dengan judul: "' . $kerjaPraktek->judul_kp . '". Silakan ACC pendaftarannya.',
+                    'warning',
+                    $kerjaPraktek->id,
+                    route('admin.seminar.index')
+                );
+            }
+        }
+
+        return back()->with('success', 'Pendaftaran seminar berhasil. Menunggu jadwal dari dosen Penguji.');
     }
 
     /** Halaman kuisioner */

@@ -1,5 +1,34 @@
-# TODO: Implement Flatpickr for Date Inputs in Kegiatan Mahasiswa Page
+# TODO: Implementasi Aksi Lihat dan Halaman Show untuk Dosen Penguji
 
-## Steps to Complete:
-- [x] Add unique IDs to the start_date and end_date input fields in resources/views/admin/kegiatan/index.blade.php
-- [x] Add JavaScript script at the end of the file to initialize flatpickr for the date inputs with appropriate options (e.g., dateFormat: 'Y-m-d')
+## Completed Tasks:
+- [x] Tambah kolom Aksi di tabel index dosen penguji dengan link "Lihat"
+- [x] Buat method showDosenPenguji di UserController
+- [x] Tambah route untuk show dosen penguji
+- [x] Buat file show.blade.php untuk dosen penguji, copy dari dosen pembimbing dan sesuaikan
+- [x] Test implementasi - Route berhasil dibuat dan cache dibersihkan
+- [x] Tambah fitur assign mahasiswa ke dosen penguji
+- [x] Buat menu Seminar untuk dosen dengan data mahasiswa yang akan diuji
+- [x] Implementasi show method di SeminarController untuk penguji
+- [x] Tambah route admin.seminar.show
+- [x] Update link "Lihat" di admin/seminar/index.blade.php
+- [x] Buat view admin/seminar/show.blade.php untuk penguji
+- [x] Clear route cache
+- [x] Tambah method accPendaftaranSeminar, tolakPendaftaranSeminar, accSeminar di SeminarController
+- [x] Tambah route untuk ACC pendaftaran seminar, tolak pendaftaran seminar, dan ACC seminar
+- [x] Update view show.blade.php dengan tombol ACC pendaftaran seminar, tolak pendaftaran seminar, ACC seminar
+- [x] Tambah modal untuk ACC pendaftaran seminar dan tolak pendaftaran seminar
+- [x] Tambah JavaScript untuk handle modal dan form submission
+- [x] Tambah Flatpickr date picker untuk jadwal seminar
+- [x] Clear route cache lagi
+- [x] Tambah method inputNilai di SeminarController untuk penguji
+- [x] Tambah route admin.seminar.input-nilai
+- [x] Update form action di view show.blade.php untuk menggunakan route seminar.input-nilai
+- [x] Clear route cache
+- [x] Hapus tombol ACC pendaftaran seminar dan ACC seminar dari halaman dosen pembimbing
+- [x] Hapus modal ACC pendaftaran seminar dan tolak pendaftaran seminar dari halaman dosen pembimbing
+- [x] Hapus JavaScript functions openAccSeminar dan openTolakSeminar dari halaman dosen pembimbing
+- [x] Hapus Flatpickr initialization untuk jadwal seminar dari halaman dosen pembimbing
+- [x] Buat notification class SeminarAccNotification untuk notifikasi seminar
+- [x] Clear config cache
+- [x] Buat migration untuk tabel notifications
+- [x] Jalankan migration untuk membuat tabel notifications
