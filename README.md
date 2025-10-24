@@ -77,10 +77,6 @@ Sistem ini memfasilitasi berbagai peran seperti **Super Admin, Dosen Pembimbing,
 4. Konfigurasi File .env
    ```bash
    cp .env.example .env
-Lalu buka file .env dan sesuaikan pengaturan database:
-    DB_DATABASE=simkp
-    DB_USERNAME=root
-    DB_PASSWORD=
 5. Generate App Key
    ```bash
    php artisan key:generate
