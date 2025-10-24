@@ -70,5 +70,23 @@ Sistem ini memfasilitasi berbagai peran seperti **Super Admin, Dosen Pembimbing,
 2. Install Dependensi Backend (Laravel)
    ```bash
    composer install
-3. 
-4. 
+3. Install Dependensi Frontend (CSS & JS)
+   ```bash
+   npm install
+   npm run build
+4. Konfigurasi File .env
+   ```bash
+   cp .env.example .env
+Lalu buka file .env dan sesuaikan pengaturan database:
+    DB_DATABASE=simkp
+    DB_USERNAME=root
+    DB_PASSWORD=
+5. Generate App Key
+   ```bash
+   php artisan key:generate
+6. Migrasi Database
+   ```bash
+   php artisan migrate --seed
+7. Jalankan Server
+   ```bash
+   php artisan serve
