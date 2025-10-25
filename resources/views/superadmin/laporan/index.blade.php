@@ -76,7 +76,7 @@
                             <p class="text-sm font-medium text-gray-600">Total KP</p>
                             <p class="text-3xl font-bold text-blue-600 mt-2">{{ number_format($stats['total_kp']) }}</p>
                         </div>
-                        <div class="bg-blue-100 rounded-full p-3">
+                        <div class="bg-blue-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                             <i class="fas fa-briefcase text-blue-600 text-xl"></i>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                             <p class="text-sm font-medium text-gray-600">KP Selesai</p>
                             <p class="text-3xl font-bold text-green-600 mt-2">{{ number_format($stats['kp_selesai']) }}</p>
                         </div>
-                        <div class="bg-green-100 rounded-full p-3">
+                        <div class="bg-green-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                             <i class="fas fa-check-circle text-green-600 text-xl"></i>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
                             <p class="text-sm font-medium text-gray-600">Mahasiswa Aktif</p>
                             <p class="text-3xl font-bold text-purple-600 mt-2">{{ number_format($stats['total_mahasiswa_aktif']) }}</p>
                         </div>
-                        <div class="bg-purple-100 rounded-full p-3">
+                        <div class="bg-purple-100 rounded-full p-3  w-10 h-10 flex items-center justify-center">
                             <i class="fas fa-users text-purple-600 text-xl"></i>
                         </div>
                     </div>
@@ -121,7 +121,7 @@
                             <p class="text-sm font-medium text-gray-600">Tempat Magang</p>
                             <p class="text-3xl font-bold text-orange-600 mt-2">{{ number_format($stats['total_tempat_magang']) }}</p>
                         </div>
-                        <div class="bg-orange-100 rounded-full p-3">
+                        <div class="bg-orange-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                             <i class="fas fa-building text-orange-600 text-xl"></i>
                         </div>
                     </div>

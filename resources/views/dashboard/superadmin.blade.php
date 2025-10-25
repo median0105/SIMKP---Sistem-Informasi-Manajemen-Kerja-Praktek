@@ -19,10 +19,10 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-600">Total Mahasiswa</p>
-                <p class="text-2xl font-semibold text-blue-600 mt-2">{{ $data['totalMahasiswa'] }}</p>
+                <p class="text-2xl font-semibold text-yellow-600 mt-2">{{ $data['totalMahasiswa'] }}</p>
             </div>
-            <div>
-                <i class="fas fa-user-graduate text-blue-600 "></i>
+            <div class="bg-yellow-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-user-graduate text-yellow-600 "></i>
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
                 <p class="text-sm font-medium text-gray-600">Total Dosen Pembimbing</p>
                 <p class="text-2xl font-semibold text-blue-600 mt-2">{{ $data['totalDosen'] }}</p>
             </div>
-            <div>
+            <div class="bg-blue-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-chalkboard-teacher text-blue-600 "></i>
             </div>
         </div>
@@ -47,8 +47,8 @@
                 <p class="text-sm font-medium text-gray-600">Total Dosen Penguji</p>
                 <p class="text-2xl font-semibold text-teal-600 mt-2">{{ $data['totalDosenPenguji'] }}</p>
             </div>
-            <div>
-                <i class="fas fa-pen-alt text-teal-600 "></i>
+            <div class="bg-green-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-pen-alt text-green-600 "></i>
             </div>
         </div>
     </div>
@@ -57,10 +57,10 @@
     <div class="bg-white rounded-lg shadow p-4 flex-1">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-600">Total Pengawas Lapangan</p>
+                <p class="text-sm font-medium text-gray-600 whitespace-nowrap">Total Pengawas Lapangan</p>
                 <p class="text-2xl font-semibold text-orange-600 mt-2">{{ $data['totalPengawas'] }}</p>
             </div>
-            <div>
+            <div class="bg-orange-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-clipboard-check text-orange-600 "></i>
             </div>
         </div>
@@ -73,7 +73,7 @@
                 <p class="text-sm font-medium text-gray-600">Total Tempat Magang</p>
                 <p class="text-2xl font-semibold text-purple-600 mt-2">{{ $data['totalTempatMagang'] }}</p>
             </div>
-            <div>
+            <div class="bg-purple-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-building text-purple-600 "></i>
             </div>
         </div>

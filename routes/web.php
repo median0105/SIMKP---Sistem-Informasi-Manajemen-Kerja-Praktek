@@ -35,7 +35,9 @@ use App\Http\Controllers\NotificationController;
 | Public
 |--------------------------------------------------------------------------
 */
-Route::get('/', fn () => view('welcome'));
+use App\Http\Controllers\WelcomeController;
+
+Route::get('/', [WelcomeController::class, 'index']);
 
 /*
 |--------------------------------------------------------------------------

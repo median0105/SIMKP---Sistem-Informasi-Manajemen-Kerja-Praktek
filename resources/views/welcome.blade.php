@@ -75,8 +75,57 @@
         </div>
     </section>
 
+    <!-- Tempat Magang Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-unib-blue-800 mb-4">
+                    Tempat Magang Tersedia
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Daftar tempat magang yang telah bekerja sama dengan Prodi Sistem Informasi Universitas Bengkulu
+                </p>
+            </div>
+
+            @if($tempatMagang->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($tempatMagang as $tempat)
+                        <div class="bg-gradient-to-br from-unib-blue-50 to-unib-blue-100 p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-unib-blue-800">{{ $tempat->nama_perusahaan }}</h3>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle mr-1"></i>Aktif
+                                </span>
+                            </div>
+                            @if($tempat->deskripsi)
+                                <p class="text-sm font-bold text-gray-600">{{ Str::limit($tempat->deskripsi, 100) }}</p>
+                            @endif
+                            <div class="pt-4 pb-2">
+                            <p class="text-sm text-gray-600 ">{{ Str::limit($tempat->alamat, 80) }}</p>
+                            </div>
+                            <div class="pt-4 pb-2 mb-3">
+                                <span class="inline-block bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">
+                                    <i class="fas fa-briefcase mr-1"></i>{{ Str::limit($tempat->bidang_usaha, 18) }}
+                                </span>
+                                <span class="inline-block bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">
+                                    <i class="fas fa-users mr-1"></i>{{ $tempat->kuota_mahasiswa - $tempat->terpakai_count }}/{{ $tempat->kuota_mahasiswa }} tersedia
+                                </span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-12">
+                    <i class="fas fa-building text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Tempat Magang</h3>
+                    <p class="text-gray-600">Saat ini belum ada tempat magang yang tersedia.</p>
+                </div>
+            @endif
+        </div>
+    </section>
+
     <!-- Features Section -->
-    <section id="features" class="py-20 bg-white">
+    <section id="features" class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold text-unib-blue-800 mb-4">
@@ -103,7 +152,7 @@
                         <i class="fas fa-building text-white text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-unib-blue-800 mb-3">Database Tempat Magang</h3>
-                    <p class="text-gray-600">Akses ke database lengkap tempat magang yang telah bekerja sama dengan fakultas.</p>
+                    <p class="text-gray-600">Akses ke database lengkap tempat magang yang telah bekerja sama dengan Prodi.</p>
                 </div>
 
                 <!-- Feature 3 -->

@@ -19,9 +19,9 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-600">Mahasiswa Bimbingan</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-2">{{ $data['totalMahasiswaBimbingan'] }}</p>
+                <p class="text-2xl font-semibold text-blue-600 mt-2">{{ $data['totalMahasiswaBimbingan'] }}</p>
             </div>
-            <div>
+            <div class="bg-blue-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-users text-blue-600 text-xl"></i>
             </div>
         </div>
@@ -34,7 +34,7 @@
                 <p class="text-sm font-medium text-gray-600">Pengajuan Baru</p>
                 <p class="text-2xl font-semibold text-yellow-600 mt-2">{{ $data['pengajuanBaru'] }}</p>
             </div>
-            <div>
+            <div class="bg-yellow-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-clock text-yellow-600 text-xl"></i>
             </div>
         </div>
@@ -47,7 +47,7 @@
                 <p class="text-sm font-medium text-gray-600">Sedang KP</p>
                 <p class="text-2xl font-semibold text-green-600 mt-2">{{ $data['sedangKP'] }}</p>
             </div>
-            <div>
+            <div class="bg-green-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-play-circle text-green-600 text-xl"></i>
             </div>
         </div>
@@ -60,7 +60,7 @@
                 <p class="text-sm font-medium text-gray-600">Selesai KP</p>
                 <p class="text-2xl font-semibold text-gray-600 mt-2">{{ $data['selesaiKP'] }}</p>
             </div>
-            <div>
+            <div class="bg-gray-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-flag-checkered text-gray-600 text-xl"></i>
             </div>
         </div>
@@ -101,7 +101,7 @@
         <div class="p-6">
             @forelse($data['mahasiswaBimbingan'] as $kp)
                 <div class="flex items-start space-x-3 mb-4 last:mb-0">
-                    <div>
+                    <div class="bg-blue-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                         <i class="fas fa-user-graduate text-blue-600 text-sm"></i>
                     </div>
                     <div class="flex-1">
@@ -145,7 +145,7 @@
         <div class="p-6">
             @forelse($data['seminarRegistrations'] as $registration)
                 <div class="flex items-start space-x-3 mb-4 last:mb-0">
-                    <div class="bg-blue-100 rounded-full p-2 mt-1">
+                    <div class="bg-blue-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                         <i class="fas fa-graduation-cap text-blue-600 text-sm"></i>
                     </div>
                     <div class="flex-1">

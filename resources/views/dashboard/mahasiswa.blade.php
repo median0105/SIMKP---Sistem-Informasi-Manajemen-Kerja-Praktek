@@ -4,9 +4,6 @@
         <div>
             <h3 class="text-2xl font-bold">Selamat Datang, {{ auth()->user()->name }}</h3>
             <p class="text-unib-blue-200 mt-1 font-bold">NPM: {{ auth()->user()->npm }}</p>
-            {{-- @if($data['kerjaPraktek'] && $data['kerjaPraktek']->dosenAkademik)
-                <p class="text-unib-blue-200">Dosen Pembimbing: {{ $data['kerjaPraktek']->dosenAkademik->dosen->name }}</p>
-            @endif --}}
             <p class="text-unib-blue-200">Sistem Informasi Manajemen Kerja Praktek</p>
         </div>
         <div class="hidden md:block">
@@ -53,7 +50,7 @@
                     @endif
                 </p>
             </div>
-            <div>
+            <div class="bg-blue-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-briefcase text-unib-blue-600 text-lg"></i>
             </div>
         </div>
@@ -66,7 +63,7 @@
                 <p class="text-xs font-medium text-gray-600">Total Bimbingan</p>
                 <p class="text-xl font-semibold text-gray-900 mt-1">{{ $data['totalBimbingan'] }}</p>
             </div>
-            <div>
+            <div class="bg-green-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-comments text-green-600 text-lg"></i>
             </div>
         </div>
@@ -79,7 +76,7 @@
                 <p class="text-xs font-medium text-gray-600">Total Kegiatan</p>
                 <p class="text-xl font-semibold text-gray-900 mt-1">{{ $data['totalKegiatan'] }}</p>
             </div>
-            <div>
+            <div class="bg-orange-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-tasks text-teknik-orange-600 text-lg"></i>
             </div>
         </div>
@@ -95,8 +92,8 @@
                     {{ $data['kerjaPraktek']->dosenAkademik?->dosen?->name ?? 'Dosen belum ditugaskan' }}
                 </p>
             </div>
-            <div>
-                <i class="fas fa-chalkboard-teacher text-green-600 text-lg"></i>
+            <div class="bg-yellow-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-chalkboard-teacher text-yellow-600 text-lg"></i>
             </div>
         </div>
     </div>
@@ -121,7 +118,7 @@
                     </p>
                 @endif
             </div>
-            <div>
+            <div class="bg-purple-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-graduation-cap text-purple-600 text-lg"></i>
             </div>
         </div>
@@ -138,7 +135,7 @@
                     {{ $data['kerjaPraktek']->dosenPenguji->first()->dosen->name }}
                 </p>
             </div>
-            <div>
+            <div class="bg-blue-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-pen-alt text-blue-600 text-lg"></i>
             </div>
         </div>

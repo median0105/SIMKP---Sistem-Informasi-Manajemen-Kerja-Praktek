@@ -14,7 +14,7 @@
                     $cards = [
                         ['label'=>'Total Mahasiswa','value'=>$stats['total'] ?? 0,'icon'=>'fa-users','bg'=>'bg-blue-100','iconColor'=>'text-blue-600','numColor'=>'text-blue-600'],
                         ['label'=>'Pengajuan','value'=>$stats['pengajuan'] ?? 0,'icon'=>'fa-hourglass','bg'=>'bg-yellow-100','iconColor'=>'text-yellow-600','numColor'=>'text-yellow-600'],
-                        ['label'=>'Disetujui','value'=>$stats['disetujui'] ?? 0,'icon'=>'fa-check','bg'=>'bg-green-100','iconColor'=>'text-green-600','numColor'=>'text-green-600'],
+                        ['label'=>'Disetujui','value'=>$stats['disetujui'] ?? 0,'icon'=>'fa-check','bg'=>'bg-purple-100','iconColor'=>'text-purple-600','numColor'=>'text-purple-600'],
                         ['label'=>'Sedang KP','value'=>$stats['sedang'] ?? 0,'icon'=>'fa-play','bg'=>'bg-emerald-100','iconColor'=>'text-emerald-600','numColor'=>'text-emerald-600'],
                         ['label'=>'Selesai','value'=>$stats['selesai'] ?? 0,'icon'=>'fa-flag-checkered','bg'=>'bg-gray-100','iconColor'=>'text-gray-600','numColor'=>'text-gray-600'],
                     ];
@@ -30,7 +30,7 @@
                                         {{ $c['value'] }}
                                     </p>
                                 </div>
-                                <div >
+                                <div class="{{ $c['bg'] }} rounded-full p-3 w-10 h-10 flex items-center justify-center">
                                     <i class="fas {{ $c['icon'] }} {{ $c['iconColor'] }}"></i>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">NPM</th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Judul KP</th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Status</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Tanggal</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Tanggal Mulai</th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Aksi</th>
                             </tr>
                         </thead>
@@ -114,7 +114,7 @@
                                             <i class="fas fa-times-circle mr-1"></i> Ditolak
                                         </span>
                                     @elseif($displayStatus === \App\Models\KerjaPraktek::STATUS_SEDANG_KP || $displayStatus === 'sedang_kp')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 whitespace-nowrap">
                                             <i class="fas fa-play-circle mr-1"></i> Sedang KP
                                         </span>
                                     @elseif($displayStatus === \App\Models\KerjaPraktek::STATUS_SELESAI || $displayStatus === 'selesai')
@@ -127,15 +127,13 @@
                                         </span>
                                     @endif
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-700">
+                                    <td class="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">
                                         {{ optional($item->tanggal_mulai)->locale('id')->translatedFormat('d F Y') }}
-                                        —
-                                        {{ optional($item->tanggal_selesai)->format('d M Y') ?? '-' }}
                                     </td>
                                     <td class="px-4 py-2">
                                         <div class="flex items-center gap-3">
                                             <a href="{{ route('pengawas.mahasiswa.show', $item) }}"
-                                               class="text-unib-blue-600 hover:text-unib-blue-800">
+                                               class="text-unib-blue-600 hover:text-unib-blue-800 whitespace-nowrap">
                                                 <i class="fas fa-eye mr-1"></i> Detail
                                             </a>
 

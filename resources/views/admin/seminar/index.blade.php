@@ -3,7 +3,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Seminar - Mahasiswa yang Akan Diuji
+                Daftar Mahasiswa Seminar
             </h2>
             <div class="flex gap-2">
                 <a href="{{ route('dashboard') }}" class="text-unib-blue-600 hover:text-unib-blue-800">
