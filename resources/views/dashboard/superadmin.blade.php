@@ -141,37 +141,41 @@
 </div>
 
 <!-- Statistics Overview -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-    <!-- KP Status Statistics - Bar Chart -->
-    <div class="bg-white rounded-lg shadow">
-        <div class="px-4 py-3 border-b border-gray-200">
-            <h3 class="text-base font-semibold text-gray-900">Statistik Status KP</h3>
+<div class="mb-6">
+    <!-- KP Status Statistics and User Distribution - Side by Side -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <!-- KP Status Statistics - Bar Chart -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-4 py-3 border-b border-gray-200">
+                <h3 class="text-base font-semibold text-gray-900">Statistik Status KP</h3>
+            </div>
+            <div class="p-4 max-h-72"> <!-- Tambah batas tinggi -->
+                <canvas id="statusChart" width="180" height="90" style="max-width: 100%; height: 250px;"></canvas>
+            </div>
         </div>
-        <div class="p-4">
-            <canvas id="statusChart" width="300" height="200"></canvas>
+
+        <!-- User Distribution - Pie Chart -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-4 py-3 border-b border-gray-200">
+                <h3 class="text-base font-semibold text-gray-900">Distribusi User</h3>
+            </div>
+            <div class="p-4 max-h-72">
+                <canvas id="userChart" width="180" height="90" style="max-width: 100%; height: 250px;"></canvas>
+            </div>
         </div>
     </div>
 
-    <!-- User Distribution - Pie Chart -->
-    <div class="bg-white rounded-lg shadow">
-        <div class="px-4 py-3 border-b border-gray-200">
-            <h3 class="text-base font-semibold text-gray-900">Distribusi User</h3>
-        </div>
-        <div class="p-4">
-            <canvas id="userChart" width="300" height="200"></canvas>
-        </div>
-    </div>
-
-    <!-- Tempat Magang Terpopuler - Bar Chart -->
+    <!-- Tempat Magang Terpopuler - Full Width -->
     <div class="bg-white rounded-lg shadow">
         <div class="px-4 py-3 border-b border-gray-200">
             <h3 class="text-base font-semibold text-gray-900">Tempat Magang Terpopuler</h3>
         </div>
-        <div class="p-4">
-            <canvas id="popularChart" width="300" height="200"></canvas>
+        <div class="p-4 max-h-80">
+            <canvas id="popularChart" width="300" height="100" style="max-width: 100%; height: 300px;"></canvas>
         </div>
     </div>
 </div>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -212,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 display: false
@@ -223,16 +228,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 ticks: {
                     stepSize: 1,
                     font: {
-                        size: 10 
+                        size: 10
                     }
                 }
             },
             x: {
                 ticks: {
-                    maxRotation: 0, 
+                    maxRotation: 0,
                     minRotation: 0,
                     font: {
-                        size: 10 
+                        size: 10
                     }
                 }
             }
@@ -264,6 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom'
@@ -288,6 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: false

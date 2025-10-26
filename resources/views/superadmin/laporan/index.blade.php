@@ -207,7 +207,7 @@
             </div>
 
             {{-- Trend KP per Bulan --}}
-            <div class="bg-white rounded-lg shadow">
+            {{-- <div class="bg-white rounded-lg shadow">
                 <div class="px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900">Trend KP per Bulan</h3>
                 </div>
@@ -230,7 +230,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- Top Performers --}}
             <div class="bg-white rounded-lg shadow">
