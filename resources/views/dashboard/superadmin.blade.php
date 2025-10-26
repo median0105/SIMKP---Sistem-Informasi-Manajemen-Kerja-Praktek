@@ -187,51 +187,64 @@ document.addEventListener('DOMContentLoaded', function() {
     // Bar Chart untuk Status KP
     const statusCtx = document.getElementById('statusChart').getContext('2d');
     new Chart(statusCtx, {
-        type: 'bar',
-        data: {
-            labels: Object.keys(statusData).map(key => key.replace('_', ' ').toUpperCase()),
-            datasets: [{
-                label: 'Jumlah KP',
-                data: Object.values(statusData),
-                backgroundColor: [
-                    'rgba(255, 206, 86, 0.8)', // pengajuan - yellow
-                    'rgba(54, 162, 235, 0.8)', // disetujui - blue
-                    'rgba(75, 192, 192, 0.8)', // sedang_kp - green
-                    'rgba(153, 102, 255, 0.8)', // selesai - purple
-                    'rgba(255, 99, 132, 0.8)'   // ditolak - red
-                ],
-                borderColor: [
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 99, 132, 1)'
-                ],
-                borderWidth: 1
-            }]
+    type: 'bar',
+    data: {
+        labels: Object.keys(statusData).map(key => key.replace('_', ' ').toUpperCase()),
+        datasets: [{
+            label: 'Jumlah KP',
+            data: Object.values(statusData),
+            backgroundColor: [
+                'rgba(255, 206, 86, 0.8)', // pengajuan - yellow
+                'rgba(54, 162, 235, 0.8)', // disetujui - blue
+                'rgba(75, 192, 192, 0.8)', // sedang_kp - green
+                'rgba(153, 102, 255, 0.8)', // selesai - purple
+                'rgba(255, 99, 132, 0.8)'   // ditolak - red
+            ],
+            borderColor: [
+                'rgba(255, 206, 86, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 99, 132, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false
+            }
         },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1,
+                    font: {
+                        size: 10 
+                    }
                 }
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1
+            x: {
+                ticks: {
+                    maxRotation: 0, 
+                    minRotation: 0,
+                    font: {
+                        size: 10 
                     }
                 }
             }
         }
-    });
+    }
+});
+
 
     // Pie Chart untuk Distribusi User
     const userCtx = document.getElementById('userChart').getContext('2d');
     new Chart(userCtx, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
             labels: ['Mahasiswa', 'Dosen', 'Pengawas'],
             datasets: [{
@@ -289,8 +302,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 x: {
                     ticks: {
-                        maxRotation: 45,
-                        minRotation: 45
+                        maxRotation: 0, // agar teks sejajar
+                    minRotation: 0, // tidak miring
+                    autoSkip: false
                     }
                 }
             }
