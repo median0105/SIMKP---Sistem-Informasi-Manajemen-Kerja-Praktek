@@ -451,4 +451,43 @@ class UserController extends Controller
 
         return view('superadmin.kerja-praktek.index', compact('kerjaPrakteks', 'search', 'status', 'notifications'));
     }
+
+    /**
+     * Show form edit KP (hanya untuk status pengajuan).
+     */
+    public function editKP(KerjaPraktek $kerjaPraktek)
+    {
+        // Pastikan hanya bisa edit jika status pengajuan
+        if ($kerjaPraktek->status !== KerjaPraktek::STATUS_PENGAJUAN) {
+            return back()->with('error', 'Data KP hanya dapat diedit jika status masih pengajuan.');
+        }
+
+        $tempatMagang = \App\Models\TempatMagang::where('is_active', true)->orderBy('nama_perusahaan')->get();
+
+        return view('superadmin.kerja-praktek.edit', compact('kerjaPraktek', 'tempatMagang'));
+    }
+
+    /**
+     * Update data KP (hanya untuk status pengajuan).
+     */
+    public function updateKP(Request $request, KerjaPraktek $kerjaPraktek)
+    {
+        // Pastikan hanya bisa update jika status pengajuan
+        if ($kerjaPraktek->status !== KerjaPraktek::STATUS_PENGAJUAN) {
+            return back()->with('error', 'Data KP hanya dapat diedit jika status masih pengajuan.');
+        }
+
+        $request->validate([
+            'judul_kp' => 'required|string|max:255',
+            'tempat_magang_id' => 'required|exists:tempat_magang,id',
+        ]);
+
+        $kerjaPraktek->update([
+            'judul_kp' => $request->judul_kp,
+            'tempat_magang_id' => $request->tempat_magang_id,
+        ]);
+
+        return redirect()->route('superadmin.kerja-praktek.index')
+            ->with('success', 'Data KP berhasil diupdate.');
+    }
 }

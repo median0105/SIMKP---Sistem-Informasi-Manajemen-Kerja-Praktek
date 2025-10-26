@@ -105,9 +105,14 @@
                                             <button type="submit" class="text-red-600 hover:text-red-900" title="Hapus">
                                                     <i class="fas fa-trash"></i> Hapus</button>
                                         </form>
+                                        @elseif($kp->status === 'pengajuan')
+                                        <a href="{{ route('superadmin.kerja-praktek.edit', $kp) }}" class="text-blue-600 hover:text-blue-900 mr-2" title="Edit">
+                                            <i class="fas fa-edit"></i> Edit</a>
+                                        <a href="{{ route('superadmin.users.show', $kp->mahasiswa) }}" class="text-unib-blue-600 hover:text-unib-blue-900" title="Detail">
+                                            <i class="fas fa-eye"></i> Detail</a>
                                         @else
                                         <a href="{{ route('superadmin.users.show', $kp->mahasiswa) }}" class="text-unib-blue-600 hover:text-unib-blue-900" title="Detail">
-                                        <i class="fas fa-eye"></i> Detail</a>
+                                            <i class="fas fa-eye"></i> Detail</a>
                                         @endif
                                     </td>
                                 </tr>

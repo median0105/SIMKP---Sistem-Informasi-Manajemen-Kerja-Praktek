@@ -169,6 +169,8 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
 
         // Kerja Praktek
         Route::get('kerja-praktek', [SAUserController::class, 'indexKP'])->name('kerja-praktek.index');
+        Route::get('kerja-praktek/{kerjaPraktek}/edit', [SAUserController::class, 'editKP'])->name('kerja-praktek.edit');
+        Route::put('kerja-praktek/{kerjaPraktek}', [SAUserController::class, 'updateKP'])->name('kerja-praktek.update');
 
         // Tempat Magang
         Route::resource('tempat-magang', SATempatMagangController::class);
