@@ -128,14 +128,20 @@
                                         <td class="px-4 py-2">
                                             <div class="flex items-center gap-2">
                                                 {{-- Toggle aktif/nonaktif --}}
-                                                <form method="POST" action="{{ route('superadmin.users.toggle-status', $user) }}">
-                                                    @csrf
-                                                    <button type="submit"
-                                                            class="text-xs px-3 py-1 rounded border
-                                                                   {{ $user->is_active ? 'border-red-300 text-red-700 hover:bg-red-50' : 'border-green-300 text-green-700 hover:bg-green-50' }}">
-                                                        {{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                                    </button>
-                                                </form>
+                                                @if(!(auth()->user()->role === 'superadmin' && $user->id === auth()->id()))
+                                                    <form method="POST" action="{{ route('superadmin.users.toggle-status', $user) }}">
+                                                        @csrf
+                                                        <button type="submit"
+                                                                class="text-xs px-3 py-1 rounded border
+                                                                       {{ $user->is_active ? 'border-red-300 text-red-700 hover:bg-red-50' : 'border-green-300 text-green-700 hover:bg-green-50' }}">
+                                                            {{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <span class="text-xs px-3 py-1 rounded border border-gray-300 text-gray-500">
+                                                        Tidak bisa dinonaktifkan
+                                                    </span>
+                                                @endif
 
                                                 {{-- Edit --}}
                                                 <a href="{{ route('superadmin.users.edit', $user) }}"
@@ -222,35 +228,41 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-2">
-                                        <div class="flex items-center gap-2">
-                                            {{-- Toggle aktif/nonaktif --}}
-                                            <form method="POST" action="{{ route('superadmin.users.toggle-status', $user) }}">
-                                                @csrf
-                                                <button type="submit"
-                                                        class="text-xs px-3 py-1 rounded border
-                                                               {{ $user->is_active ? 'border-red-300 text-red-700 hover:bg-red-50' : 'border-green-300 text-green-700 hover:bg-green-50' }}">
-                                                    {{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                                </button>
-                                            </form>
+                                        <td class="px-4 py-2">
+                                            <div class="flex items-center gap-2">
+                                                {{-- Toggle aktif/nonaktif --}}
+                                                @if(!(auth()->user()->role === 'superadmin' && $user->id === auth()->id()))
+                                                    <form method="POST" action="{{ route('superadmin.users.toggle-status', $user) }}">
+                                                        @csrf
+                                                        <button type="submit"
+                                                                class="text-xs px-3 py-1 rounded border
+                                                                       {{ $user->is_active ? 'border-red-300 text-red-700 hover:bg-red-50' : 'border-green-300 text-green-700 hover:bg-green-50' }}">
+                                                            {{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <span class="text-xs px-3 py-1 rounded border border-gray-300 text-gray-500">
+                                                        Tidak bisa dinonaktifkan
+                                                    </span>
+                                                @endif
 
-                                            {{-- Edit --}}
-                                            <a href="{{ route('superadmin.users.edit', $user) }}"
-                                               class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
-                                                <i class="fas fa-edit mr-1"></i>Edit
-                                            </a>
+                                                {{-- Edit --}}
+                                                <a href="{{ route('superadmin.users.edit', $user) }}"
+                                                   class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
+                                                    <i class="fas fa-edit mr-1"></i>Edit
+                                                </a>
 
-                                            {{-- Delete --}}
-                                            <form method="POST" action="{{ route('superadmin.users.destroy', $user) }}"
-                                                  onsubmit="return confirm('Hapus pengguna ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-800 text-sm">
-                                                    <i class="fas fa-trash mr-1"></i>Hapus
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
+                                                {{-- Delete --}}
+                                                <form method="POST" action="{{ route('superadmin.users.destroy', $user) }}"
+                                                      onsubmit="return confirm('Hapus pengguna ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-800 text-sm">
+                                                        <i class="fas fa-trash mr-1"></i>Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
                                 </tr>
                             @empty
                                 <tr>

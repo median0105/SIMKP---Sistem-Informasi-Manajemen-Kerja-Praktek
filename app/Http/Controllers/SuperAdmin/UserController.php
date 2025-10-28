@@ -164,6 +164,11 @@ class UserController extends Controller
 
     public function toggleStatus(User $user)
     {
+        // Cek jika superadmin mencoba menonaktifkan akun sendiri
+        if (auth()->user()->role === User::ROLE_SUPERADMIN && $user->id === auth()->id()) {
+            return back()->with('error', 'Akun anda tidak bisa di nonaktifkan karena anda adalah superadmin.');
+        }
+
         $user->update(['is_active' => !$user->is_active]);
 
         $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
