@@ -39,6 +39,6 @@ class NotificationController extends Controller
     {
         NotificationService::markAllAsRead(auth()->id());
         
-        return back()->with('success', 'Semua notifikasi ditandai sudah dibaca.');
+        return back()->with('success', 'Semua Notifikasi ditandai sudah dibaca.');
     }
 }

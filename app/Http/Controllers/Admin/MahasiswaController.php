@@ -62,11 +62,11 @@ class MahasiswaController extends Controller
         $stats = [
             'total_mahasiswa'    => User::where('role', User::ROLE_MAHASISWA)->count(),
             'mahasiswa_bimbingan'=> DosenPembimbing::where('dosen_id', auth()->id())
-                                      ->where('jenis_pembimbingan', 'akademik')->count(),
+                                    ->where('jenis_pembimbingan', 'akademik')->count(),
             'sedang_kp'          => KerjaPraktek::whereHas('dosenAkademik', fn ($q) => $q->where('dosen_id', auth()->id()))
-                                      ->where('status', KerjaPraktek::STATUS_SEDANG_KP)->count(),
+                                    ->where('status', KerjaPraktek::STATUS_SEDANG_KP)->count(),
             'selesai_kp'         => KerjaPraktek::whereHas('dosenAkademik', fn ($q) => $q->where('dosen_id', auth()->id()))
-                                      ->where('status', KerjaPraktek::STATUS_SELESAI)->count(),
+                                    ->where('status', KerjaPraktek::STATUS_SELESAI)->count(),
         ];
 
         return view('admin.mahasiswa.index', compact('mahasiswa', 'stats'));

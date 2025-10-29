@@ -113,7 +113,7 @@
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
+                                <tbody class="bg-white divide-y divide-gray-200 ">
                                     @foreach($mahasiswa as $mhs)
                                         @php
                                             $kp = $mhs->kpTerakhir; // BUKAN $mhs->kerjaPraktek
@@ -139,7 +139,7 @@
                                                 <div class="text-xs text-gray-500">{{ $mhs->email }}</div>
                                             </td>
                                             <td class="px-6 py-4 text-sm text-gray-900">{{ $kp->judul_kp ?? '-' }}</td>
-                                            <td class="px-6 py-4 text-sm">
+                                            <td class="px-6 py-4 text-sm whitespace-nowrap">
                                                 @if($status)
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $cls }}">
                                                         {{ ucfirst(str_replace('_',' ',$displayStatus)) }}

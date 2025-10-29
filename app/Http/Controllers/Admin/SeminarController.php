@@ -22,8 +22,8 @@ class SeminarController extends Controller
             ->when($search !== '', function ($q) use ($search) {
                 $q->whereHas('kerjaPraktek.mahasiswa', function ($qq) use ($search) {
                     $qq->where('name', 'like', "%{$search}%")
-                       ->orWhere('npm', 'like', "%{$search}%")
-                       ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('npm', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
                 });
             })
             ->get()

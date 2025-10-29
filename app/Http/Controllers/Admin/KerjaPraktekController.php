@@ -21,7 +21,7 @@ class KerjaPraktekController extends Controller
             // Jika "Semua Status", tampilkan hanya KP yang dibimbing oleh dosen yang sedang login
             $query->whereHas('dosenPembimbing', function($q) {
                 $q->where('dosen_id', auth()->id())
-                  ->where('jenis_pembimbingan', 'akademik');
+                ->where('jenis_pembimbingan', 'akademik');
             });
         }
 
@@ -29,10 +29,10 @@ class KerjaPraktekController extends Controller
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('judul_kp', 'like', "%{$search}%")
-                  ->orWhereHas('mahasiswa', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%")
+                ->orWhereHas('mahasiswa', function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
                         ->orWhere('npm', 'like', "%{$search}%");
-                  });
+                });
             });
         }
 

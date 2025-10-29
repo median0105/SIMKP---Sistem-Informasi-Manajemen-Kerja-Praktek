@@ -85,10 +85,10 @@
                                         <span class="text-gray-500">-</span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-2">
+                                <td class="px-2 py-1 text-right text-sm font-medium">
                                     <a href="{{ route('admin.seminar.show', $mhs->kpTerbaru) }}"
-                                       class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
-                                        <i class="fas fa-eye mr-1"></i>Lihat Detail KP
+                                        class="text-unib-blue-600 hover:text-unib-blue-900">
+                                        <i class="fas fa-eye mr-1"></i>Detail
                                     </a>
                                 </td>
                             </tr>
