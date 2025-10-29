@@ -41,6 +41,10 @@
                         <p class="mt-1 text-sm text-gray-900">{{ $user->email }}</p>
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-gray-700">NIP</label>
+                        <p class="mt-1 text-sm text-gray-900">{{ $user->nip ?? '-' }}</p>
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-700">No HP</label>
                         <p class="mt-1 text-sm text-gray-900">{{ $user->phone ?? '-' }}</p>
                     </div>

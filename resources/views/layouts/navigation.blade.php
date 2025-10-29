@@ -142,6 +142,19 @@
                     {{ __('Profile') }}
                 </x-dropdown-link>
 
+                <!-- Additional Info -->
+                {{-- <div class="px-4 py-2 text-sm text-gray-500 border-t border-gray-200">
+                    @if(auth()->user()->role === 'superadmin' || auth()->user()->role === 'admin_dosen')
+                        <div class="mb-1"><strong>NIP:</strong> {{ auth()->user()->nip ?? '-' }}</div>
+                        <div><strong>No. HP:</strong> {{ auth()->user()->phone ?? '-' }}</div>
+                    @elseif(auth()->user()->role === 'pengawas_lapangan')
+                        <div><strong>No. HP:</strong> {{ auth()->user()->phone ?? '-' }}</div>
+                    @elseif(auth()->user()->role === 'mahasiswa')
+                        <div class="mb-1"><strong>NPM:</strong> {{ auth()->user()->npm ?? '-' }}</div>
+                        <div><strong>No. HP:</strong> {{ auth()->user()->phone ?? '-' }}</div>
+                    @endif
+                </div> --}}
+
                 <!-- Logout -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

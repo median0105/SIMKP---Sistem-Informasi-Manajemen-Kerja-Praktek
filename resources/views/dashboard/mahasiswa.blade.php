@@ -88,9 +88,14 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-xs font-medium text-gray-600">Dosen Pembimbing</p>
-                <p class="text-xl font-semibold text-gray-900 mt-1">
+                <p class="text-lg font-semibold text-gray-900 mt-1">
                     {{ $data['kerjaPraktek']->dosenAkademik?->dosen?->name ?? 'Dosen belum ditugaskan' }}
                 </p>
+                @if($data['kerjaPraktek']->dosenAkademik?->dosen?->nip)
+                    <p class="text-sm text-gray-500 mt-1">
+                        NIP: {{ $data['kerjaPraktek']->dosenAkademik->dosen->nip }}
+                    </p>
+                @endif
             </div>
             <div class="bg-yellow-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-chalkboard-teacher text-yellow-600 text-lg"></i>
@@ -131,9 +136,14 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-xs font-medium text-gray-600">Dosen Penguji</p>
-                <p class="text-xl font-semibold text-gray-900 mt-1">
+                <p class="text-lg font-semibold text-gray-900 mt-1">
                     {{ $data['kerjaPraktek']->dosenPenguji->first()->dosen->name }}
                 </p>
+                @if($data['kerjaPraktek']->dosenPenguji->first()->dosen->nip)
+                    <p class="text-sm text-gray-500 mt-1">
+                        NIP: {{ $data['kerjaPraktek']->dosenPenguji->first()->dosen->nip }}
+                    </p>
+                @endif
             </div>
             <div class="bg-blue-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-pen-alt text-blue-600 text-lg"></i>

@@ -83,6 +83,7 @@ class UserController extends Controller
             'email'    => 'required|email|unique:users,email',
             'role'     => 'required|in:mahasiswa,admin_dosen,superadmin,pengawas_lapangan',
             'npm'      => 'required_if:role,mahasiswa|nullable|string|unique:users,npm',
+            'nip'      => 'required_if:role,admin_dosen,superadmin|nullable|string|unique:users,nip',
             'phone'    => 'nullable|string',
             'password' => 'required|string|min:8|confirmed',
             'tempat_magang_id' => 'nullable|exists:tempat_magang,id',
@@ -93,6 +94,7 @@ class UserController extends Controller
             'email'    => $request->email,
             'role'     => $request->role,
             'npm'      => $request->npm,
+            'nip'      => $request->nip,
             'phone'    => $request->phone,
             'password' => Hash::make($request->password),
         ]);
@@ -130,6 +132,7 @@ class UserController extends Controller
             'email'     => 'required|email|unique:users,email,' . $user->id,
             'role'      => 'required|in:mahasiswa,admin_dosen,superadmin,pengawas_lapangan',
             'npm'       => 'required_if:role,mahasiswa|nullable|string|unique:users,npm,' . $user->id,
+            'nip'       => 'required_if:role,admin_dosen,superadmin|nullable|string|unique:users,nip,' . $user->id,
             'phone'     => 'nullable|string',
             'is_active' => 'boolean',
         ];
@@ -140,7 +143,7 @@ class UserController extends Controller
 
         $request->validate($rules);
 
-        $data = $request->only(['name', 'email', 'role', 'npm', 'phone', 'is_active']);
+        $data = $request->only(['name', 'email', 'role', 'npm', 'nip', 'phone', 'is_active']);
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
@@ -436,7 +439,7 @@ class UserController extends Controller
             ->when($search !== '', function ($q) use ($search) {
                 $q->whereHas('mahasiswa', function ($qq) use ($search) {
                     $qq->where('name', 'like', "%{$search}%")
-                       ->orWhere('npm', 'like', "%{$search}%");
+                    ->orWhere('npm', 'like', "%{$search}%");
                 })
                 ->orWhere('judul_kp', 'like', "%{$search}%");
             })

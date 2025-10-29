@@ -49,6 +49,11 @@
                             <input type="text" name="npm" value="{{ old('npm') }}"
                                    class="w-full border-gray-300 rounded-md shadow-sm">
                         </div>
+                        <div id="nipGroup" class="{{ in_array(old('role'), ['superadmin', 'admin_dosen']) ? '' : 'hidden' }}">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">NIP (khusus Super Admin & Dosen)</label>
+                            <input type="text" name="nip" value="{{ old('nip') }}"
+                                   class="w-full border-gray-300 rounded-md shadow-sm">
+                        </div>
                     </div>
 
                     <div>
@@ -88,8 +93,10 @@
     <script>
         const roleSelect = document.getElementById('roleSelect');
         const npmGroup = document.getElementById('npmGroup');
+        const nipGroup = document.getElementById('nipGroup');
         roleSelect?.addEventListener('change', () => {
             npmGroup.classList.toggle('hidden', roleSelect.value !== 'mahasiswa');
+            nipGroup.classList.toggle('hidden', !['superadmin', 'admin_dosen'].includes(roleSelect.value));
         });
     </script>
 </x-app-layout>

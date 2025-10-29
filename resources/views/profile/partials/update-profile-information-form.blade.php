@@ -47,6 +47,36 @@
             @endif
         </div>
 
+        <!-- Additional Info Display -->
+        @if($user->role === 'superadmin' || $user->role === 'admin_dosen')
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <x-input-label :value="__('NIP')" />
+                    <p class="mt-1 text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">{{ $user->nip ?? '-' }}</p>
+                </div>
+                <div>
+                    <x-input-label :value="__('No. HP')" />
+                    <p class="mt-1 text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">{{ $user->phone ?? '-' }}</p>
+                </div>
+            </div>
+        @elseif($user->role === 'pengawas_lapangan')
+            <div>
+                <x-input-label :value="__('No. HP')" />
+                <p class="mt-1 text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">{{ $user->phone ?? '-' }}</p>
+            </div>
+        @elseif($user->role === 'mahasiswa')
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <x-input-label :value="__('NPM')" />
+                    <p class="mt-1 text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">{{ $user->npm ?? '-' }}</p>
+                </div>
+                <div>
+                    <x-input-label :value="__('No. HP')" />
+                    <p class="mt-1 text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">{{ $user->phone ?? '-' }}</p>
+                </div>
+            </div>
+        @endif
+
         <div>
             <x-input-label for="avatar" :value="__('Foto Profil')" />
             <div class="mt-2 flex items-center space-x-4">

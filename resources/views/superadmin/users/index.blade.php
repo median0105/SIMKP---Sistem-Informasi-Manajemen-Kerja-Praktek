@@ -88,6 +88,9 @@
                                 <tr>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                    {{-- @if(in_array($key, ['superadmin', 'admin_dosen']))
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">NIP</th>
+                                    @endif --}}
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
@@ -98,13 +101,25 @@
                                     <tr>
                                         <td class="px-4 py-2">
                                             <div class="font-medium text-gray-900">{{ $user->name }}</div>
-                                            @if($user->npm)
+                                            @if($user->npm && $key === 'mahasiswa')
                                                 <div class="text-xs text-gray-500">NPM: {{ $user->npm }}</div>
+                                            @endif
+                                            @if($user->nip && in_array($key, ['superadmin', 'admin_dosen']))
+                                                <div class="text-xs text-gray-500">NIP: {{ $user->nip }}</div>
                                             @endif
                                         </td>
                                         <td class="px-4 py-2">
                                             <span class="text-gray-900">{{ $user->email }}</span>
                                         </td>
+                                        {{-- @if(in_array($key, ['superadmin', 'admin_dosen']))
+                                            <td class="px-4 py-2">
+                                                @if($user->nip)
+                                                    <span class="text-gray-900">{{ $user->nip }}</span>
+                                                @else
+                                                    <span class="text-gray-500">-</span>
+                                                @endif
+                                            </td>
+                                        @endif --}}
                                         <td class="px-4 py-2">
                                             @php
                                                 $r = $user->role;
@@ -163,7 +178,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center py-8 text-gray-500">
+                                        <td colspan="{{ in_array($key, ['superadmin', 'admin_dosen']) ? 6 : 5 }}" class="text-center py-8 text-gray-500">
                                             Tidak ada data pengguna.
                                         </td>
                                     </tr>
@@ -191,6 +206,7 @@
                             <tr>
                                 <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
                                 <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
                                 <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
                                 <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                 <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
@@ -204,9 +220,21 @@
                                         @if($user->npm)
                                             <div class="text-xs text-gray-500">NPM: {{ $user->npm }}</div>
                                         @endif
+                                        @if($user->nip)
+                                            <div class="text-xs text-gray-500">NIP: {{ $user->nip }}</div>
+                                        @endif
                                     </td>
                                     <td class="px-4 py-2">
                                         <span class="text-gray-900">{{ $user->email }}</span>
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        @if($user->npm)
+                                            <span class="text-gray-900">{{ $user->npm }}</span>
+                                        @elseif($user->nip)
+                                            <span class="text-gray-900">{{ $user->nip }}</span>
+                                        @else
+                                            <span class="text-gray-500">-</span>
+                                        @endif
                                     </td>
                                     <td class="px-4 py-2">
                                         @php
@@ -266,7 +294,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-8 text-gray-500">
+                                    <td colspan="6" class="text-center py-8 text-gray-500">
                                         Tidak ada data pengguna.
                                     </td>
                                 </tr>

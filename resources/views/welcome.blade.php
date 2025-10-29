@@ -161,7 +161,7 @@
                         <i class="fas fa-users text-white text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-unib-blue-800 mb-3">Sistem Bimbingan</h3>
-                    <p class="text-gray-600">Platform bimbingan terintegrasi antara mahasiswa, dosen pembimbing, dan pengawas lapangan.</p>
+                    <p class="text-gray-600">Platform bimbingan terintegrasi antara mahasiswa, dosen Pembimbing/Penguji, dan pengawas lapangan.</p>
                 </div>
 
                 <!-- Feature 4 -->
@@ -222,7 +222,7 @@
                         <i class="fas fa-chalkboard-teacher text-white text-2xl"></i>
                     </div>
                     <h3 class="text-lg font-semibold text-unib-blue-800 mb-2">Dosen</h3>
-                    <p class="text-gray-600 text-sm">Verifikasi pengajuan dan pembimbingan mahasiswa</p>
+                    <p class="text-gray-600 text-sm">Verifikasi pengajuan dan pembimbingan dan Pengujian Seminar untuk mahasiswa</p>
                 </div>
 
                 <!-- Super Admin -->
@@ -283,7 +283,7 @@
             </div>
             
             <div class="border-t border-unib-blue-700 mt-8 pt-8 text-center text-unib-blue-200">
-                <p>&copy; {{ date('Y') }} Prodi Sistem Informasi Fakultas Teknik Universitas Bengkulu. All rights reserved.</p>
+                <p>Copyright &copy; {{ date('Y') }} Prodi Sistem Informasi Fakultas Teknik Universitas Bengkulu. All rights reserved.</p>
             </div>
         </div>
     </footer>
