@@ -402,6 +402,229 @@ class KerjaPraktekController extends Controller
     //     return back()->with('success', 'Kartu implementasi berhasil diupload. Menunggu ACC dari pembimbing lapangan.');
     // }
 
+    /** Edit KP yang ditolak */
+    public function edit(KerjaPraktek $kerjaPraktek)
+    {
+        $this->authorize('update', $kerjaPraktek);
+
+        // Pastikan hanya KP yang ditolak yang bisa diedit
+        if ($kerjaPraktek->status !== KerjaPraktek::STATUS_DITOLAK) {
+            return back()->with('error', 'Hanya KP yang ditolak yang dapat diedit.');
+        }
+
+        // tampilkan hanya tempat aktif + hitung terpakai (untuk sisa kuota)
+        $tempatMagang = TempatMagang::active()
+            ->withCount([
+                'kerjaPraktek as terpakai_count' => fn ($q) =>
+                    $q->whereIn('status', [
+                        KerjaPraktek::STATUS_DISETUJUI,
+                        KerjaPraktek::STATUS_SEDANG_KP,
+                    ]),
+            ])
+            ->orderBy('nama_perusahaan')
+            ->get();
+
+        return view('mahasiswa.kerja-praktek.edit', compact('kerjaPraktek', 'tempatMagang'));
+    }
+
+    /** Update KP yang ditolak */
+    public function update(Request $request, KerjaPraktek $kerjaPraktek)
+    {
+        $this->authorize('update', $kerjaPraktek);
+
+        // Pastikan hanya KP yang ditolak yang bisa diupdate
+        if ($kerjaPraktek->status !== KerjaPraktek::STATUS_DITOLAK) {
+            return back()->with('error', 'Hanya KP yang ditolak yang dapat diupdate.');
+        }
+
+        $rules = [
+            'judul_kp'       => ['required','string','max:255'],
+            'pilihan_tempat' => ['required','integer','in:1,3'], // 1=prodi, 3=mandiri
+
+            // PRODI → hanya valid kalau pilihan_tempat=1
+            'tempat_magang_id' => [
+                'nullable',
+                'exclude_unless:pilihan_tempat,1',
+                Rule::exists('tempat_magang', 'id'),
+            ],
+
+            // MANDIRI → hanya wajib kalau pilihan_tempat=3
+            'tempat_magang_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:255'],
+            'alamat_tempat_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:5000'],
+            'kontak_tempat_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:255'],
+            'tanggal_mulai'         => ['nullable','required_if:pilihan_tempat,3','date'],
+
+            // Wajib saat update
+            'file_proposal' => ['required','file','mimes:pdf','max:10240'], // 10MB
+        ];
+
+        $messages = [
+            'tempat_magang_id.exists'           => 'Tempat magang yang dipilih tidak valid.',
+            'tempat_magang_sendiri.required_if' => 'Nama perusahaan wajib diisi jika mencari sendiri.',
+            'alamat_tempat_sendiri.required_if' => 'Alamat wajib diisi jika mencari sendiri.',
+            'kontak_tempat_sendiri.required_if' => 'Kontak wajib diisi jika mencari sendiri.',
+            'tanggal_mulai.required_if'         => 'Tanggal mulai wajib diisi jika mencari sendiri.',
+            'file_proposal.required'            => 'File proposal wajib diupload.',
+        ];
+
+        $dataValid = $request->validate($rules, $messages);
+
+        $choice = (int) $dataValid['pilihan_tempat'];
+
+        // Cek sisa kuota saat pilih prodi
+        if ($choice === 1) {
+            $tm = TempatMagang::active()
+                ->withCount([
+                    'kerjaPraktek as terpakai_count' => fn ($q) =>
+                        $q->whereIn('status', [
+                            KerjaPraktek::STATUS_DISETUJUI,
+                            KerjaPraktek::STATUS_SEDANG_KP,
+                        ]),
+                ])
+                ->findOrFail($dataValid['tempat_magang_id']);
+
+            $sisa = max(0, (int) $tm->kuota_mahasiswa - (int) $tm->terpakai_count);
+            if ($sisa < 1) {
+                return back()->withInput()->with('error', 'Kuota tempat magang ini sudah penuh.');
+            }
+        }
+
+        // Hapus file proposal lama jika ada
+        if ($kerjaPraktek->file_proposal) {
+            Storage::disk('public')->delete($kerjaPraktek->file_proposal);
+        }
+
+        // Upload file proposal baru
+        $fileProposalPath = $request->file('file_proposal')->store('proposal-kp', 'public');
+
+        // Build payload update
+        $payload = [
+            'judul_kp'       => $dataValid['judul_kp'],
+            'pilihan_tempat' => $choice,
+            'status'         => KerjaPraktek::STATUS_PENGAJUAN, // Reset status ke pengajuan
+            'file_proposal'  => $fileProposalPath,
+        ];
+
+        if ($choice === 1) {
+            // dari prodi
+            $payload['tempat_magang_id']       = (int) $dataValid['tempat_magang_id'];
+            $payload['tempat_magang_sendiri']  = null;
+            $payload['alamat_tempat_sendiri']  = null;
+            $payload['kontak_tempat_sendiri']  = null;
+            $payload['tanggal_mulai']          = null;
+        } else {
+            // cari sendiri
+            $payload['tempat_magang_id']       = null;
+            $payload['tempat_magang_sendiri']  = $dataValid['tempat_magang_sendiri'];
+            $payload['alamat_tempat_sendiri']  = $dataValid['alamat_tempat_sendiri'];
+            $payload['kontak_tempat_sendiri']  = $dataValid['kontak_tempat_sendiri'];
+            $payload['tanggal_mulai']          = $dataValid['tanggal_mulai'];
+        }
+
+        $kerjaPraktek->update($payload);
+
+        // Kirim notifikasi ke superadmin untuk penugasan dosen pembimbing
+        $tempatInfo = '';
+        if ($choice === 1) {
+            $tempatMagang = TempatMagang::find($dataValid['tempat_magang_id']);
+            $tempatInfo = 'di ' . $tempatMagang->nama_perusahaan;
+        } else {
+            $tempatInfo = 'di ' . $dataValid['tempat_magang_sendiri'];
+        }
+
+        NotificationService::sendToRole(
+            'superadmin',
+            'Pengajuan Kerja Praktek Diperbarui',
+            'Mahasiswa ' . auth()->user()->name . ' telah memperbarui pengajuan kerja praktek dengan judul "' . $payload['judul_kp'] . '" ' . $tempatInfo . '',
+            'warning',
+            $kerjaPraktek->id,
+            route('superadmin.kerja-praktek.index')
+        );
+
+        // Kirim notifikasi ke dosen pembimbing yang sudah ditugaskan (jika ada)
+        $assignedDosen = \App\Models\DosenPembimbing::whereHas('kerjaPraktek', function($q) use ($kerjaPraktek) {
+            $q->where('mahasiswa_id', $kerjaPraktek->mahasiswa_id);
+        })->where('jenis_pembimbingan', 'akademik')->pluck('dosen_id');
+
+        if ($assignedDosen->isNotEmpty()) {
+            foreach ($assignedDosen as $dosenId) {
+                NotificationService::sendToUser(
+                    $dosenId,
+                    'Pengajuan Kerja Praktek Diperbarui',
+                    'Mahasiswa ' . auth()->user()->name . ' telah memperbarui pengajuan kerja praktek dengan judul: ' . $payload['judul_kp'],
+                    'info',
+                    $kerjaPraktek->id,
+                    route('admin.kerja-praktek.show', $kerjaPraktek->id)
+                );
+            }
+        }
+
+        return redirect()->route('mahasiswa.kerja-praktek.index')
+            ->with('success', 'Pengajuan kerja praktek berhasil diperbarui.');
+    }
+
+    /** Upload Revisi Laporan */
+    public function uploadRevisi(Request $request, KerjaPraktek $kerjaPraktek)
+    {
+        $this->authorize('update', $kerjaPraktek);
+
+        if (!$kerjaPraktek->acc_seminar || !$kerjaPraktek->rata_rata_seminar) {
+            return back()->with('error', 'Anda hanya dapat upload revisi setelah seminar di-ACC dan nilai seminar sudah diinput.');
+        }
+
+        $request->validate([
+            'file_revisi' => ['required','file','mimes:pdf','max:10240'], // 10MB
+        ]);
+
+        if ($kerjaPraktek->file_revisi) {
+            Storage::disk('public')->delete($kerjaPraktek->file_revisi);
+        }
+
+        $path = $request->file('file_revisi')->store('revisi-laporan', 'public');
+
+        $kerjaPraktek->update([
+            'file_revisi' => $path,
+        ]);
+
+        // Kirim notifikasi ke dosen pembimbing yang sudah ditugaskan
+        $assignedDosen = \App\Models\DosenPembimbing::whereHas('kerjaPraktek', function($q) use ($kerjaPraktek) {
+            $q->where('mahasiswa_id', $kerjaPraktek->mahasiswa_id);
+        })->where('jenis_pembimbingan', 'akademik')->pluck('dosen_id');
+
+        if ($assignedDosen->isNotEmpty()) {
+            foreach ($assignedDosen as $dosenId) {
+                NotificationService::sendToUser(
+                    $dosenId,
+                    'Revisi Laporan KP Diunggah',
+                    'Mahasiswa ' . auth()->user()->name . ' telah mengunggah revisi laporan kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
+                    'info',
+                    $kerjaPraktek->id,
+                    route('admin.kerja-praktek.show', $kerjaPraktek->id)
+                );
+            }
+        }
+
+        // Kirim notifikasi ke dosen penguji yang sudah ditugaskan
+        $assignedPenguji = \App\Models\DosenPenguji::whereHas('kerjaPraktek', function($q) use ($kerjaPraktek) {
+            $q->where('mahasiswa_id', $kerjaPraktek->mahasiswa_id);
+        })->pluck('dosen_id');
+
+        if ($assignedPenguji->isNotEmpty()) {
+            foreach ($assignedPenguji as $dosenId) {
+                NotificationService::sendToUser(
+                    $dosenId,
+                    'Revisi Laporan KP Diunggah',
+                    'Mahasiswa ' . auth()->user()->name . ' telah mengunggah revisi laporan kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
+                    'info',
+                    $kerjaPraktek->id,
+                    route('admin.seminar.show', $kerjaPraktek->id)
+                );
+            }
+        }
+
+        return back()->with('success', 'Revisi laporan berhasil diupload.');
+    }
+
     /** Endpoint untuk cek KP terbaru (untuk polling auto-refresh) */
     public function checkLatestKP()
     {

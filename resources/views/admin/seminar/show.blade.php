@@ -147,6 +147,18 @@
                                     </div>
                                 </div>
                             @endif
+
+                            {{-- REVISI LAPORAN --}}
+                            @if($kerjaPraktek->file_revisi)
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600">Revisi Laporan Kerja Praktek</label>
+                                    <div class="mt-1">
+                                        <a href="{{ Storage::url($kerjaPraktek->file_revisi) }}" target="_blank" class="text-green-600 hover:text-green-800">
+                                            <i class="fas fa-file-pdf text-red-500 mr-1"></i> Lihat Revisi Laporan
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -257,6 +269,7 @@
                                 @elseif($kerjaPraktek->tanggal_seminar)
                                     <p class="text-xs text-gray-500 mt-1">{{ $kerjaPraktek->tanggal_seminar->locale('id')->translatedFormat('d F Y') }}</p>
                                 @endif
+                                {{-- Tombol ACC Seminar dihapus karena sekarang ditangani oleh dosen penguji --}}
                             </div>
 
                             {{-- Ujian --}}

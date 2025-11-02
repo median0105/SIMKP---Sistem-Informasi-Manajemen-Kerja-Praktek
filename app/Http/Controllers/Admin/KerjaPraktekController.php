@@ -391,7 +391,8 @@ class KerjaPraktekController extends Controller
         }
 
         $kerjaPraktek->update([
-            'status' => KerjaPraktek::STATUS_DISETUJUI,
+            'status' => KerjaPraktek::STATUS_SEDANG_KP,
+            'tanggal_mulai' => now()
         ]);
 
         // tetapkan pembimbing akademik = dosen yang approve
@@ -402,14 +403,28 @@ class KerjaPraktekController extends Controller
 
         Notifikasi::create([
             'user_id'          => $kerjaPraktek->mahasiswa_id,
-            'title'            => 'Proposal KP Di-ACC',
-            'message'          => "Proposal KP '{$kerjaPraktek->judul_kp}' telah di-ACC oleh pembimbing.",
+            'title'            => 'Proposal KP Di-ACC - Kerja Praktek Dimulai',
+            'message'          => "Proposal KP '{$kerjaPraktek->judul_kp}' telah di-ACC oleh pembimbing. Status KP Anda langsung berubah menjadi 'Sedang KP'. Mulai dokumentasikan kegiatan dan bimbingan Anda.",
             'type'             => 'success',
             'kerja_praktek_id' => $kerjaPraktek->id,
             'action_url'       => route('mahasiswa.kerja-praktek.index'),
         ]);
 
-        return back()->with('success', 'Proposal di-ACC dan notifikasi dikirim ke mahasiswa.');
+        // Kirim notifikasi ke pengawas lapangan tempat magang tersebut
+        if ($kerjaPraktek->tempatMagang && $kerjaPraktek->tempatMagang->pengawasAktif) {
+            foreach ($kerjaPraktek->tempatMagang->pengawasAktif as $pengawas) {
+                Notifikasi::create([
+                    'user_id' => $pengawas->id,
+                    'title' => 'Mahasiswa Mulai Kerja Praktek',
+                    'message' => "Mahasiswa {$kerjaPraktek->mahasiswa->name} (NPM: {$kerjaPraktek->mahasiswa->npm}) dengan judul KP '{$kerjaPraktek->judul_kp}' telah mulai kerja praktek di tempat magang Anda.",
+                    'type' => 'info',
+                    'kerja_praktek_id' => $kerjaPraktek->id,
+                    'action_url' => route('pengawas.mahasiswa.show', $kerjaPraktek)
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Proposal di-ACC, status KP langsung berubah menjadi "Sedang KP", dan notifikasi dikirim ke mahasiswa.');
     }
 
     public function rejectProposal(Request $request, KerjaPraktek $kerjaPraktek)

@@ -206,7 +206,7 @@
                             <div class="flex justify-end">
                                 <button type="submit"
                                         class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
-                                    <i class="fas fa-paper-plane mr-2"></i> Submit Pengajuan
+                                    <i class="fas fa-paper-plane mr-2"></i> Kirim Pengajuan
                                 </button>
                             </div>
                         </form>
@@ -289,9 +289,15 @@
                                                 @endif
                                             </div>
                                         @elseif($s === \App\Models\KerjaPraktek::STATUS_DITOLAK)
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-                                                <i class="fas fa-times-circle mr-2"></i> Ditolak
-                                            </span>
+                                            <div class="flex flex-col space-y-2">
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                                    <i class="fas fa-times-circle mr-2"></i> Ditolak
+                                                </span>
+                                                <a href="{{ route('mahasiswa.kerja-praktek.edit', $kerjaPraktek) }}"
+                                                   class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition">
+                                                    <i class="fas fa-edit mr-2"></i> Edit Pengajuan
+                                                </a>
+                                            </div>
                                         @endif
                                     </div>
                                 </div>
@@ -375,7 +381,7 @@
                                                     </div>
                                                 @else
                                                     <span class="inline-flex items-center text-yellow-600">
-                                                        <i class="fas fa-clock mr-2"></i> Menunggu ACC Pendaftaran Seminar
+                                                        <i class="fas fa-clock mr-2"></i> Menunggu Jadwal Seminar
                                                     </span>
                                                     @if($kerjaPraktek->tanggal_daftar_seminar)
                                                         <div class="text-sm text-gray-500 mt-1">
@@ -394,6 +400,30 @@
                                                 @else
                                                     <span class="text-gray-500 text-sm">Belum memenuhi syarat untuk mendaftar seminar</span>
                                                 @endif
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
+
+                                {{-- Upload Revisi --}}
+                                @if($kerjaPraktek->acc_seminar && $kerjaPraktek->rata_rata_seminar)
+                                    <div>
+                                        <label class="text-sm font-medium text-gray-600">Upload Revisi Laporan</label>
+                                        <div class="mt-2">
+                                            @if($kerjaPraktek->file_revisi)
+                                                <div class="flex items-center space-x-2">
+                                                    <i class="fas fa-file-pdf text-red-500"></i>
+                                                    <a href="{{ Storage::url($kerjaPraktek->file_revisi) }}" target="_blank" class="text-unib-blue-600 hover:text-unib-blue-800">Lihat Revisi</a>
+                                                </div>
+                                            @else
+                                                <form method="POST" action="{{ route('mahasiswa.kerja-praktek.upload-revisi', $kerjaPraktek) }}" enctype="multipart/form-data" class="space-y-3">
+                                                    @csrf
+                                                    <input type="file" name="file_revisi" accept=".pdf" required
+                                                        class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
+                                                        <i class="fas fa-upload mr-2"></i> Upload Revisi
+                                                    </button>
+                                                </form>
                                             @endif
                                         </div>
                                     </div>

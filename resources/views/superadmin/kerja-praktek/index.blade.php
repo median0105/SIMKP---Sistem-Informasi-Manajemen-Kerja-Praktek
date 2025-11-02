@@ -63,6 +63,8 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mahasiswa</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul KP</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tempat Magang</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dosen Pembimbing</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dosen Penguji</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Dibuat</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -80,6 +82,62 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900">{{ $kp->tempatMagang->nama_perusahaan ?? '-' }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @php
+                                            $dosenPembimbingAkademik = $kp->dosenPembimbing->where('jenis_pembimbingan', 'akademik')->where('is_active', true)->first();
+                                            $dosenPengujiAktif = $kp->dosenPenguji->where('is_active', true)->first();
+                                            $excludedDosenIds = [];
+                                            if ($dosenPengujiAktif) {
+                                                $excludedDosenIds[] = $dosenPengujiAktif->dosen_id;
+                                            }
+                                        @endphp
+                                        @if($dosenPembimbingAkademik && $dosenPembimbingAkademik->dosen)
+                                            <div class="text-sm text-gray-900">{{ $dosenPembimbingAkademik->dosen->name }}</div>
+                                        @else
+                                            <form method="POST" action="{{ route('superadmin.kerja-praktek.assign-dosen-pembimbing', $kp) }}" class="inline">
+                                                @csrf
+                                                <select name="dosen_id" class="text-xs border-gray-300 rounded px-2 py-1" required>
+                                                    <option value="">Pilih Dosen</option>
+                                                    @foreach($dosen as $d)
+                                                        @if(!in_array($d->id, $excludedDosenIds))
+                                                        <option value="{{ $d->id }}">{{ $d->name }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                                <button type="submit" class="text-blue-600 hover:text-blue-900 text-xs ml-1" title="Assign">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @php
+                                            $dosenPembimbingAkademik = $kp->dosenPembimbing->where('jenis_pembimbingan', 'akademik')->where('is_active', true)->first();
+                                            $dosenPengujiAktif = $kp->dosenPenguji->where('is_active', true)->first();
+                                            $excludedDosenIds = [];
+                                            if ($dosenPembimbingAkademik) {
+                                                $excludedDosenIds[] = $dosenPembimbingAkademik->dosen_id;
+                                            }
+                                        @endphp
+                                        @if($dosenPengujiAktif && $dosenPengujiAktif->dosen)
+                                            <div class="text-sm text-gray-900">{{ $dosenPengujiAktif->dosen->name }}</div>
+                                        @else
+                                            <form method="POST" action="{{ route('superadmin.kerja-praktek.assign-dosen-penguji', $kp) }}" class="inline">
+                                                @csrf
+                                                <select name="dosen_id" class="text-xs border-gray-300 rounded px-2 py-1" required>
+                                                    <option value="">Pilih Dosen</option>
+                                                    @foreach($dosen as $d)
+                                                        @if(!in_array($d->id, $excludedDosenIds))
+                                                        <option value="{{ $d->id }}">{{ $d->name }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                                <button type="submit" class="text-blue-600 hover:text-blue-900 text-xs ml-1" title="Assign">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
@@ -118,7 +176,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                    <td colspan="8" class="px-6 py-4 text-center text-gray-500">
                                         Tidak ada data KP ditemukan.
                                     </td>
                                 </tr>

@@ -70,9 +70,16 @@ Route::middleware(['auth', 'verified', 'role:mahasiswa'])
             Route::post('/', [MahasiswaKerjaPraktekController::class, 'store'])->name('store');
             Route::get('/check', [MahasiswaKerjaPraktekController::class, 'checkLatestKP'])->name('check');
 
+            // Edit dan update KP ditolak
+            Route::get('{kerjaPraktek}/edit', [MahasiswaKerjaPraktekController::class, 'edit'])->name('edit');
+            Route::put('{kerjaPraktek}', [MahasiswaKerjaPraktekController::class, 'update'])->name('update');
+
             // Upload laporan & kartu implementasi
             Route::post('{kerjaPraktek}/upload-laporan', [MahasiswaKerjaPraktekController::class, 'uploadLaporan'])->name('upload-laporan');
             // Route::post('{kerjaPraktek}/upload-kartu',   [MahasiswaKerjaPraktekController::class, 'uploadKartu'])->name('upload-kartu'); // Removed kartu implementasi upload
+
+            // Upload revisi
+            Route::post('{kerjaPraktek}/upload-revisi', [MahasiswaKerjaPraktekController::class, 'uploadRevisi'])->name('upload-revisi');
 
             // Seminar registration
             Route::post('{kerjaPraktek}/daftar-seminar', [MahasiswaKerjaPraktekController::class, 'daftarSeminar'])->name('daftar-seminar');
@@ -171,6 +178,8 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
         Route::get('kerja-praktek', [SAUserController::class, 'indexKP'])->name('kerja-praktek.index');
         Route::get('kerja-praktek/{kerjaPraktek}/edit', [SAUserController::class, 'editKP'])->name('kerja-praktek.edit');
         Route::put('kerja-praktek/{kerjaPraktek}', [SAUserController::class, 'updateKP'])->name('kerja-praktek.update');
+        Route::post('kerja-praktek/{kerjaPraktek}/assign-dosen-pembimbing', [SAUserController::class, 'assignDosenPembimbing'])->name('kerja-praktek.assign-dosen-pembimbing');
+        Route::post('kerja-praktek/{kerjaPraktek}/assign-dosen-penguji', [SAUserController::class, 'assignDosenPenguji'])->name('kerja-praktek.assign-dosen-penguji');
 
         // Tempat Magang
         Route::resource('tempat-magang', SATempatMagangController::class);

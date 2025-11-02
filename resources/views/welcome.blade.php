@@ -51,7 +51,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="bg-gradient-to-br from-unib-blue-50 to-white py-20">
+    <section class="bg-gradient-to-br from-unib-blue-50 to-white min-h-screen flex items-center">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h1 class="text-4xl md:text-6xl font-bold text-unib-blue-800 mb-6">

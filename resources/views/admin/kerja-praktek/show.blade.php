@@ -146,6 +146,18 @@
                                     </div>
                                 </div>
                             @endif
+
+                            {{-- REVISI LAPORAN --}}
+                            @if($kerjaPraktek->file_revisi)
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600">Revisi Laporan Kerja Praktek</label>
+                                    <div class="mt-1">
+                                        <a href="{{ Storage::url($kerjaPraktek->file_revisi) }}" target="_blank" class="text-green-600 hover:text-green-800">
+                                            <i class="fas fa-file-pdf text-red-500 mr-1"></i> Lihat Revisi Laporan
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -164,12 +176,7 @@
                                 </button>
                             @endif
 
-                            @if($kerjaPraktek->status === 'disetujui')
-                                <button onclick="startKP({{ $kerjaPraktek->id }})"
-                                        class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-lg">
-                                    <i class="fas fa-play mr-2"></i>Mulai KP
-                                </button>
-                            @endif
+                            {{-- Tombol Mulai KP dihapus karena sekarang langsung mulai saat ACC Proposal --}}
 
                             @if(in_array($kerjaPraktek->status, ['sedang_kp','selesai']) && $kerjaPraktek->file_laporan)
                                 @if(!$kerjaPraktek->acc_pembimbing_laporan)
