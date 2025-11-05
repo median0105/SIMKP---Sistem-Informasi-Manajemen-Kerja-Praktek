@@ -53,6 +53,7 @@
                                 <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tempat</th>
                                 <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                 <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nilai</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"></th>
                                 <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
                             </tr>
                         </thead>
@@ -67,6 +68,18 @@
                                     <td class="px-4 py-2">{{ $row->tempatMagang->nama_perusahaan ?? $row->tempat_magang_sendiri ?? '-' }}</td>
                                     <td class="px-4 py-2 capitalize">{{ $row->display_status === 'tidak_lulus' ? 'Tidak Lulus' : str_replace('_',' ',$row->display_status) }}</td>
                                     <td class="px-4 py-2">{{ $row->nilai_akhir ?? '-' }}</td>
+                                    <td class="px-4 py-2">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                            @if($row->grade === 'A') bg-green-100 text-green-800
+                                            @elseif($row->grade === 'B') bg-blue-100 text-blue-800
+                                            @elseif($row->grade === 'C') bg-yellow-100 text-yellow-800
+                                            @elseif($row->grade === 'D') bg-orange-100 text-orange-800
+                                            @elseif($row->grade === 'E') bg-red-100 text-red-800
+                                            @else bg-gray-100 text-gray-800
+                                            @endif">
+                                            {{ $row->grade }}
+                                        </span>
+                                    </td>
                                     <td class="px-4 py-2 text-sm text-gray-600">{{ $row->created_at->locale('id')->translatedFormat('d F Y') }}</td>
                                 </tr>
                             @empty

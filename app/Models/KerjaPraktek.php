@@ -93,7 +93,7 @@ class KerjaPraktek extends Model
     const STATUS_SELESAI   = 'selesai';
     const STATUS_DITOLAK   = 'ditolak';
 
-    protected $appends = ['display_status'];
+    protected $appends = ['display_status', 'grade'];
 
     // Relationships
     public function mahasiswa()       { return $this->belongsTo(User::class, 'mahasiswa_id'); }
@@ -208,6 +208,27 @@ public static function rejectedCountFor(int $mahasiswaId): int
             return 'tidak_lulus';
         }
         return $this->status;
+    }
+
+    public function getGradeAttribute()
+    {
+        if (!$this->nilai_akhir) {
+            return '-';
+        }
+
+        $nilai = $this->nilai_akhir;
+
+        if ($nilai >= 85) {
+            return 'A';
+        } elseif ($nilai >= 75) {
+            return 'B';
+        } elseif ($nilai >= 65) {
+            return 'C';
+        } elseif ($nilai >= 55) {
+            return 'D';
+        } else {
+            return 'E';
+        }
     }
 
     // Relationship with Dosen Penguji

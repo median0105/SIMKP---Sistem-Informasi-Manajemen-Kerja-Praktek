@@ -434,6 +434,7 @@ class UserController extends Controller
     {
         $search = trim((string) $request->get('search', ''));
         $status = $request->get('status'); // filter status
+        $tempat_magang_id = $request->get('tempat_magang_id'); // filter tempat magang
 
         // Map "berjalan" to "sedang_kp" for filtering
         $statusMap = [
@@ -447,10 +448,16 @@ class UserController extends Controller
                     $qq->where('name', 'like', "%{$search}%")
                     ->orWhere('npm', 'like', "%{$search}%");
                 })
-                ->orWhere('judul_kp', 'like', "%{$search}%");
+                ->orWhere('judul_kp', 'like', "%{$search}%")
+                ->orWhereHas('tempatMagang', function ($qq) use ($search) {
+                    $qq->where('nama_perusahaan', 'like', "%{$search}%");
+                });
             })
             ->when($filterStatus, function ($q) use ($filterStatus) {
                 $q->where('status', $filterStatus);
+            })
+            ->when($tempat_magang_id, function ($q) use ($tempat_magang_id) {
+                $q->where('tempat_magang_id', $tempat_magang_id);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(15)
@@ -459,6 +466,9 @@ class UserController extends Controller
         // Get all dosen for dropdowns
         $dosen = User::where('role', User::ROLE_ADMIN_DOSEN)->orderBy('name')->get();
 
+        // Get all active tempat magang for dropdown
+        $tempatMagang = \App\Models\TempatMagang::active()->orderBy('nama_perusahaan')->get();
+
         // Fetch unread notifications for superadmin related to rejected proposals
         $notifications = \App\Models\Notifikasi::where('type', 'warning')
             ->where('is_read', false)
@@ -466,7 +476,7 @@ class UserController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return view('superadmin.kerja-praktek.index', compact('kerjaPrakteks', 'search', 'status', 'dosen', 'notifications'));
+        return view('superadmin.kerja-praktek.index', compact('kerjaPrakteks', 'search', 'status', 'tempat_magang_id', 'dosen', 'tempatMagang', 'notifications'));
     }
 
     /**

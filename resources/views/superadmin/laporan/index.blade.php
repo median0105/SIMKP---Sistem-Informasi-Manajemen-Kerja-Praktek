@@ -250,6 +250,7 @@
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Mahasiswa</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Judul KP</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nilai</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"></th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                 </tr>
                             </thead>
@@ -267,6 +268,18 @@
                                         </td>
                                         <td class="px-4 py-3">{{ $kp->judul_kp ?? '-' }}</td>
                                         <td class="px-4 py-3">{{ $kp->nilai_akhir ?? '-' }}</td>
+                                        <td class="px-4 py-3">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                @if($kp->grade === 'A') bg-green-100 text-green-800
+                                                @elseif($kp->grade === 'B') bg-blue-100 text-blue-800
+                                                @elseif($kp->grade === 'C') bg-yellow-100 text-yellow-800
+                                                @elseif($kp->grade === 'D') bg-orange-100 text-orange-800
+                                                @elseif($kp->grade === 'E') bg-red-100 text-red-800
+                                                @else bg-gray-100 text-gray-800
+                                                @endif">
+                                                {{ $kp->grade }}
+                                            </span>
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @php
                                                 $displayStatus = $kp->display_status ?? '';
@@ -323,6 +336,7 @@
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Mahasiswa</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Judul KP</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nilai</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Grade</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
                                 </tr>
@@ -341,6 +355,18 @@
                                         </td>
                                         <td class="px-4 py-3">{{ $kp->judul_kp ?? '-' }}</td>
                                         <td class="px-4 py-3">{{ $kp->nilai_akhir ?? '-' }}</td>
+                                        <td class="px-4 py-3">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                @if($kp->grade === 'A') bg-green-100 text-green-800
+                                                @elseif($kp->grade === 'B') bg-blue-100 text-blue-800
+                                                @elseif($kp->grade === 'C') bg-yellow-100 text-yellow-800
+                                                @elseif($kp->grade === 'D') bg-orange-100 text-orange-800
+                                                @elseif($kp->grade === 'E') bg-red-100 text-red-800
+                                                @else bg-gray-100 text-gray-800
+                                                @endif">
+                                                {{ $kp->grade }}
+                                            </span>
+                                        </td>
                                         <td class="px-4 py-3">
                                             <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                                 Tidak Lulus

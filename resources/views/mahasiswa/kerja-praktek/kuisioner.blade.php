@@ -57,6 +57,52 @@
                     <form method="POST" action="{{ route('mahasiswa.kerja-praktek.store-kuisioner', $kerjaPraktek) }}" class="space-y-6">
                         @csrf
 
+                        {{-- Pertanyaan Dinamis --}}
+                        @foreach($questions as $question)
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    {{ $question->question_text }}
+                                    @if($question->type === 'rating' || $question->type === 'yes_no')
+                                        *
+                                    @endif
+                                </label>
+
+                                @if($question->type === 'rating')
+                                    <div class="flex items-center gap-4">
+                                        @for($i=1;$i<=5;$i++)
+                                            <label class="inline-flex items-center">
+                                                <input type="radio" name="dynamic_answers[{{ $question->id }}]" value="{{ $i }}"
+                                                       class="text-unib-blue-600 focus:ring-unib-blue-500"
+                                                       {{ (old('dynamic_answers.' . $question->id, $kuisioner->dynamic_answers[$question->id] ?? null) == $i) ? 'checked' : '' }} required>
+                                                <span class="ml-2">{{ $i }}</span>
+                                            </label>
+                                        @endfor
+                                    </div>
+                                @elseif($question->type === 'text')
+                                    <textarea name="dynamic_answers[{{ $question->id }}]" rows="3"
+                                              class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                              placeholder="Tuliskan jawaban Anda...">{{ old('dynamic_answers.' . $question->id, $kuisioner->dynamic_answers[$question->id] ?? '') }}</textarea>
+                                @elseif($question->type === 'yes_no')
+                                    <div class="flex items-center gap-6">
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" name="dynamic_answers[{{ $question->id }}]" value="1"
+                                                   class="text-unib-blue-600 focus:ring-unib-blue-500"
+                                                   {{ (string)old('dynamic_answers.' . $question->id, (string)($kuisioner->dynamic_answers[$question->id] ?? '')) === '1' ? 'checked' : '' }} required>
+                                            <span class="ml-2">Ya</span>
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" name="dynamic_answers[{{ $question->id }}]" value="0"
+                                                   class="text-unib-blue-600 focus:ring-unib-blue-500"
+                                                   {{ (string)old('dynamic_answers.' . $question->id, (string)($kuisioner->dynamic_answers[$question->id] ?? '')) === '0' ? 'checked' : '' }} required>
+                                            <span class="ml-2">Tidak</span>
+                                        </label>
+                                    </div>
+                                @endif
+
+                                @error('dynamic_answers.' . $question->id) <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            </div>
+                        @endforeach
+
                         {{-- Rating Tempat Magang --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">

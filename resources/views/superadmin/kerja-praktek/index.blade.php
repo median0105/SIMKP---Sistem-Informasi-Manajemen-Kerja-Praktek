@@ -39,7 +39,13 @@
                     <div class="mb-6 flex flex-col sm:flex-row gap-4">
                         <form method="GET" class="flex-1">
                             <div class="flex gap-2">
-                                <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama mahasiswa, NPM, atau judul KP..." class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama mahasiswa, NPM, judul KP, atau tempat magang..." class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                <select name="tempat_magang_id" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <option value="">Semua Tempat Magang</option>
+                                    @foreach($tempatMagang as $tm)
+                                    <option value="{{ $tm->id }}" {{ $tempat_magang_id == $tm->id ? 'selected' : '' }}>{{ $tm->nama_perusahaan }}</option>
+                                    @endforeach
+                                </select>
                                 <select name="status" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                     <option value="">Semua Status</option>
                                     <option value="pengajuan" {{ $status === 'pengajuan' ? 'selected' : '' }}>Pengajuan</option>

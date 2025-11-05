@@ -58,6 +58,31 @@
                     <h3 class="text-lg font-semibold text-gray-900">Hasil Kuisioner</h3>
                 </div>
                 <div class="p-6 space-y-4">
+                    {{-- Pertanyaan Dinamis --}}
+                    @if($kuisioner->dynamic_answers)
+                        @php
+                            $questions = \App\Models\KuisionerQuestion::where('is_active', true)->orderBy('order')->get();
+                        @endphp
+                        @foreach($questions as $question)
+                            @if(isset($kuisioner->dynamic_answers[$question->id]))
+                                <div>
+                                    <p class="text-sm text-gray-600 mb-1">{{ $question->question_text }}</p>
+                                    @if($question->type === 'rating')
+                                        <p class="text-2xl font-bold text-green-600">{{ $kuisioner->dynamic_answers[$question->id] }}/5</p>
+                                    @elseif($question->type === 'yes_no')
+                                        @if($kuisioner->dynamic_answers[$question->id])
+                                            <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Ya</span>
+                                        @else
+                                            <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">Tidak</span>
+                                        @endif
+                                    @else
+                                        <p class="text-gray-900">{{ $kuisioner->dynamic_answers[$question->id] ?: '-' }}</p>
+                                    @endif
+                                </div>
+                            @endif
+                        @endforeach
+                    @endif
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <p class="text-sm text-gray-600">Rating Tempat</p>
