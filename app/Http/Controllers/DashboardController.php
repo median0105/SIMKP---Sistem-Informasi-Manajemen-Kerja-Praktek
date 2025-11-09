@@ -303,6 +303,9 @@ class DashboardController extends Controller
         'totalPengawas'    => User::where('role', User::ROLE_PENGAWAS_LAPANGAN)->count(),
         'totalTempatMagang'=> TempatMagang::where('is_active', true)->count(),
         'totalKerjaPraktek'=> array_sum($statistikStatus),
+        'totalInstansiPending' => KerjaPraktek::where('pilihan_tempat', 3)
+            ->where('status', KerjaPraktek::STATUS_PENGAJUAN)
+            ->count(),
         'statistikStatus'  => $statistikStatus,
         'notifications'    => $notifications,
         'rejectedKPs'      => $rejectedKPs,

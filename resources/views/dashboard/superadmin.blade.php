@@ -13,9 +13,10 @@
 </div>
 
 <!-- Stats Cards -->
-<div class="flex gap-4 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Row 1 -->
     <!-- Total Mahasiswa -->
-    <div class="bg-white rounded-lg shadow p-4 flex-1">
+    <div class="bg-white rounded-lg shadow p-4">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-600">Total Mahasiswa</p>
@@ -28,7 +29,7 @@
     </div>
 
     <!-- Total Dosen Pembimbing -->
-    <div class="bg-white rounded-lg shadow p-4 flex-1">
+    <div class="bg-white rounded-lg shadow p-4">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-600">Total Dosen Pembimbing</p>
@@ -41,7 +42,7 @@
     </div>
 
     <!-- Total Dosen Penguji -->
-    <div class="bg-white rounded-lg shadow p-4 flex-1">
+    <div class="bg-white rounded-lg shadow p-4">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-600">Total Dosen Penguji</p>
@@ -53,8 +54,9 @@
         </div>
     </div>
 
+    <!-- Row 2 -->
     <!-- Total Pengawas -->
-    <div class="bg-white rounded-lg shadow p-4 flex-1">
+    <div class="bg-white rounded-lg shadow p-4">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-600 whitespace-nowrap">Total Pengawas Lapangan</p>
@@ -67,7 +69,7 @@
     </div>
 
     <!-- Total Tempat Magang -->
-    <div class="bg-white rounded-lg shadow p-4 flex-1">
+    <div class="bg-white rounded-lg shadow p-4">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-600">Total Tempat Magang</p>
@@ -78,10 +80,37 @@
             </div>
         </div>
     </div>
+
+    <!-- Total Kerja Praktek -->
+    <div class="bg-white rounded-lg shadow p-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Total Kerja Praktek</p>
+                <p class="text-2xl font-semibold text-red-600 mt-2">{{ $data['totalKerjaPraktek'] ?? 0 }}</p>
+            </div>
+            <div class="bg-red-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-briefcase text-red-600 "></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3 -->
+    <!-- Instansi Mandiri Pending -->
+    <div class="bg-white rounded-lg shadow p-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Instansi Mandiri Pending</p>
+                <p class="text-2xl font-semibold text-orange-600 mt-2">{{ $data['totalInstansiPending'] ?? 0 }}</p>
+            </div>
+            <div class="bg-orange-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-clock text-orange-600 "></i>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Management Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+{{-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
     <!-- Data Dosen -->
     <div class="bg-white rounded-lg shadow">
         <div class="px-4 py-3 border-b border-gray-200">
@@ -138,7 +167,7 @@
             </a>
         </div>
     </div>
-</div>
+</div> --}}
 
 <!-- Statistics Overview -->
 <div class="mb-6">

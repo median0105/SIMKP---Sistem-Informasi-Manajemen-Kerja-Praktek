@@ -1,20 +1,21 @@
 {{-- resources/views/superadmin/users/index.blade.php --}}
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Manajemen User
-            </h2>
-            <a href="{{ route('superadmin.users.create') }}"
-               class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
-                <i class="fas fa-plus mr-2"></i>Tambah User
-            </a>
+            <div class="flex items-center space-x-4">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Manajemen User
+                </h2>
+            </div>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 px-4 sm:px-6 lg:px-8 space-y-6">
+            <a href="{{ route('superadmin.users.create') }}"
+                   class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    <i class="fas fa-plus mr-2"></i>Tambah User
+                </a>
             {{-- Flash --}}
             @if (session('success'))
                 <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
@@ -311,4 +312,4 @@
 
         </div>
     </div>
-</x-app-layout>
+</x-sidebar-layout>

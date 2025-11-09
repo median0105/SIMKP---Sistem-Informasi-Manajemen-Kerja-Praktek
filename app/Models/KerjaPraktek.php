@@ -37,6 +37,11 @@ class KerjaPraktek extends Model
         'perlu_responsi',
         'catatan_dosen',
         'catatan_pengawas',
+        'bidang_usaha_sendiri',
+        'email_perusahaan_sendiri',
+        'telepon_perusahaan_sendiri',
+        'kuota_mahasiswa_sendiri',
+        'deskripsi_perusahaan_sendiri',
 
         // Seminar registration fields
         'pendaftaran_seminar',
@@ -110,9 +115,8 @@ class KerjaPraktek extends Model
     // Helpers
     public function isDuplicateTitle()
     {
-        // First check for exact matches with same tempat_magang
+        // Check for exact matches regardless of tempat_magang
         $exactDuplicate = static::where('judul_kp', $this->judul_kp)
-            ->where('tempat_magang_id', $this->tempat_magang_id)
             ->where('id', '!=', $this->id)
             ->exists();
 
@@ -133,6 +137,39 @@ class KerjaPraktek extends Model
         }
 
         return false;
+    }
+
+    public function getDuplicateInfo()
+    {
+        $duplicates = [];
+
+        // Get all existing titles except current one
+        $allKPs = static::where('id', '!=', $this->id)
+            ->with(['mahasiswa', 'tempatMagang'])
+            ->get();
+
+        foreach ($allKPs as $kp) {
+            $similarity = $this->calculateSimilarity($this->judul_kp, $kp->judul_kp);
+
+            if ($similarity >= 50) { // Show similarities 50% and above
+                $duplicates[] = [
+                    'id' => $kp->id,
+                    'judul_kp' => $kp->judul_kp,
+                    'mahasiswa' => $kp->mahasiswa->name ?? 'N/A',
+                    'npm' => $kp->mahasiswa->npm ?? 'N/A',
+                    'tempat_magang' => $kp->tempatMagang->nama_perusahaan ?? ($kp->tempat_magang_sendiri ?? 'N/A'),
+                    'similarity' => round($similarity, 1),
+                    'status' => $kp->status
+                ];
+            }
+        }
+
+        // Sort by similarity descending
+        usort($duplicates, function($a, $b) {
+            return $b['similarity'] <=> $a['similarity'];
+        });
+
+        return $duplicates;
     }
 
     private function calculateSimilarity($str1, $str2)

@@ -1,5 +1,5 @@
 {{-- resources/views/superadmin/laporan/index.blade.php --}}
-<x-app-layout>
+<x-sidebar-layout>
     @php
         // Fallback agar view tetap aman walau controller belum mengirim variabelnya
         $startDate = ($startDate ?? now()->startOfMonth()->subMonths(5));
@@ -25,6 +25,11 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Laporan & Analisis
             </h2>
+        </div>
+    </x-slot>
+
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             <div class="flex space-x-2">
                 <a href="{{ route('superadmin.laporan.export-kp') }}"
                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">
@@ -35,12 +40,6 @@
                     <i class="fas fa-download mr-2"></i>Export Mahasiswa
                 </a>
             </div>
-        </div>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-
             {{-- Filter Periode --}}
             {{-- <div class="bg-white rounded-lg shadow">
                 <div class="px-6 py-4 border-b border-gray-200">
@@ -387,7 +386,7 @@
 
         </div>
     </div>
-</x-app-layout>
+</x-sidebar-layout>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

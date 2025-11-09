@@ -1,12 +1,12 @@
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Kerja Praktek') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @if(!$kerjaPraktek)
                 {{-- FORM PENGAJUAN --}}
@@ -90,7 +90,7 @@
                                         <div class="flex items-center gap-3">
                                             <input type="radio" id="radio-prodi" name="pilihan_tempat" value="1" required
                                                    class="text-unib-blue-600 focus:ring-unib-blue-500"
-                                                   @change="toggleCustomInput(false)" onclick="toggleCustomInput(false)">
+                                                   onchange="toggleCustomInput(false); validateForm();">
                                             <label for="radio-prodi" class="font-medium text-gray-900">Pilih Tempat dari Prodi</label>
                                         </div>
 
@@ -123,6 +123,7 @@
                                                                    document.getElementById('tempat_magang_id').value = '{{ $tempat->id }}';
                                                                    const r = document.getElementById('radio-prodi'); if (r) r.checked = true;
                                                                    toggleCustomInput(false);
+                                                                   validateForm();
                                                                ">
                                                         <div class="ml-3 flex-1">
                                                             <div class="font-medium text-gray-900">{{ $tempat->nama_perusahaan }}</div>
@@ -156,37 +157,77 @@
                                         <label class="flex items-start cursor-pointer">
                                             <input type="radio" name="pilihan_tempat" value="3" required
                                                    class="mt-1 text-unib-blue-600 focus:ring-unib-blue-500"
-                                                   onchange="toggleCustomInput(true)" onclick="toggleCustomInput(true)">
+                                                   onchange="toggleCustomInput(true); validateForm();">
                                             <div class="ml-3 flex-1">
                                                 <div class="font-medium text-gray-900">Mencari Tempat Magang Sendiri</div>
                                                 <div class="text-sm text-gray-600 mt-1">Anda dapat mencari dan mengajukan tempat magang sendiri</div>
 
                                                 <div id="custom-input" class="mt-4 space-y-4 hidden">
-                                                    <div>
-                                                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Perusahaan/Instansi</label>
-                                                        <input type="text" name="tempat_magang_sendiri"
-                                                               class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
-                                                               value="{{ old('tempat_magang_sendiri') }}">
-                                                        @error('tempat_magang_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Perusahaan/Instansi *</label>
+                                                            <input type="text" name="tempat_magang_sendiri"
+                                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                                                   value="{{ old('tempat_magang_sendiri') }}" required>
+                                                            @error('tempat_magang_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                        </div>
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700 mb-1">Bidang Usaha *</label>
+                                                            <input type="text" name="bidang_usaha_sendiri"
+                                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                                                   value="{{ old('bidang_usaha_sendiri') }}" required>
+                                                            @error('bidang_usaha_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                        </div>
                                                     </div>
                                                     <div>
-                                                        <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap</label>
+                                                        <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap *</label>
                                                         <textarea name="alamat_tempat_sendiri" rows="3"
-                                                                  class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">{{ old('alamat_tempat_sendiri') }}</textarea>
+                                                                  class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500" required>{{ old('alamat_tempat_sendiri') }}</textarea>
                                                         @error('alamat_tempat_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                                     </div>
-                                                    <div>
-                                                        <label class="block text-sm font-medium text-gray-700 mb-1">Kontak Person</label>
-                                                        <input type="text" name="kontak_tempat_sendiri"
-                                                               class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
-                                                               value="{{ old('kontak_tempat_sendiri') }}">
-                                                        @error('kontak_tempat_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700 mb-1">Email Perusahaan *</label>
+                                                            <input type="email" name="email_perusahaan_sendiri"
+                                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                                                   value="{{ old('email_perusahaan_sendiri') }}" required>
+                                                            @error('email_perusahaan_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                        </div>
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700 mb-1">No. Telepon Perusahaan *</label>
+                                                            <input type="text" name="telepon_perusahaan_sendiri"
+                                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                                                   value="{{ old('telepon_perusahaan_sendiri') }}" required>
+                                                            @error('telepon_perusahaan_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700 mb-1">Kontak Person *</label>
+                                                            <input type="text" name="kontak_tempat_sendiri"
+                                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                                                   value="{{ old('kontak_tempat_sendiri') }}" required>
+                                                            @error('kontak_tempat_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                        </div>
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700 mb-1">Kuota Mahasiswa *</label>
+                                                            <input type="number" name="kuota_mahasiswa_sendiri" min="1" max="50"
+                                                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                                                   value="{{ old('kuota_mahasiswa_sendiri', 1) }}" required>
+                                                            @error('kuota_mahasiswa_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                        </div>
                                                     </div>
                                                     <div>
-                                                        <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai KP</label>
+                                                        <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Perusahaan</label>
+                                                        <textarea name="deskripsi_perusahaan_sendiri" rows="3"
+                                                                  class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">{{ old('deskripsi_perusahaan_sendiri') }}</textarea>
+                                                        @error('deskripsi_perusahaan_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai KP *</label>
                                                         <input type="date" name="tanggal_mulai"
                                                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
-                                                               value="{{ old('tanggal_mulai') }}">
+                                                               value="{{ old('tanggal_mulai') }}" required>
                                                         @error('tanggal_mulai') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                                     </div>
                                                 </div>
@@ -204,8 +245,8 @@
 
                             {{-- SUBMIT --}}
                             <div class="flex justify-end">
-                                <button type="submit"
-                                        class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
+                                 <button type="submit" id="submit-btn"
+                                        class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                     <i class="fas fa-paper-plane mr-2"></i> Kirim Pengajuan
                                 </button>
                             </div>
@@ -476,7 +517,7 @@
         </div>
     </div>
 
-    <script>
+    {{-- <script>
         function toggleCustomInput(show) {
             const box = document.getElementById('custom-input');
             if (!box) return;
@@ -499,10 +540,99 @@
             }
         }
 
+            // Function to validate form before submission
+        function validateForm() {
+            const submitBtn = document.getElementById('submit-btn');
+            const form = document.querySelector('form');
+            let isValid = true;
+            let errors = [];
+
+            // Check if pilihan_tempat is selected
+            const pilihanTempat = form.querySelector('input[name="pilihan_tempat"]:checked');
+            if (!pilihanTempat) {
+                isValid = false;
+                errors.push('Pilihan tempat required');
+            } else {
+                if (pilihanTempat.value === '1') {
+                    // For 'Pilih Tempat dari Prodi', require specific tempat selection
+                    const tempatMagangId = document.getElementById('tempat_magang_id');
+                    if (!tempatMagangId || !tempatMagangId.value) {
+                        isValid = false;
+                        errors.push('Tempat magang dari prodi required');
+                    }
+                } else if (pilihanTempat.value === '3') {
+                    // For 'Mencari Tempat Magang Sendiri', enable button immediately
+                    isValid = true;
+                }
+            }
+
+            // Check basic required fields (but don't disable button for these)
+            const judulKp = form.querySelector('input[name="judul_kp"]');
+            if (!judulKp || !judulKp.value.trim()) {
+                errors.push('Judul KP required');
+            }
+
+            const semesterKe = form.querySelector('input[name="semester_ke"]');
+            if (!semesterKe || !semesterKe.value.trim()) {
+                errors.push('Semester ke required');
+            }
+
+            const ipkSemester = form.querySelector('input[name="ipk_semester"]');
+            if (!ipkSemester || !ipkSemester.value.trim()) {
+                errors.push('IPK semester required');
+            }
+
+            // Check custom fields when choosing custom place
+            if (pilihanTempat && pilihanTempat.value === '3') {
+                const customFields = ['tempat_magang_sendiri', 'bidang_usaha_sendiri', 'alamat_tempat_sendiri', 'email_perusahaan_sendiri', 'telepon_perusahaan_sendiri', 'kontak_tempat_sendiri', 'kuota_mahasiswa_sendiri', 'tanggal_mulai'];
+                customFields.forEach(fieldName => {
+                    const field = form.querySelector(`[name="${fieldName}"]`);
+                    if (field && !field.value.trim()) {
+                        errors.push(`${fieldName} required`);
+                    }
+                });
+            }
+
+            // Check file uploads (but don't disable button for these)
+            const fileKrs = form.querySelector('input[name="file_krs"]');
+            const fileProposal = form.querySelector('input[name="file_proposal"]');
+            if (fileKrs && !fileKrs.files[0]) {
+                errors.push('File KRS required');
+            }
+            if (fileProposal && !fileProposal.files[0]) {
+                errors.push('File proposal required');
+            }
+
+            // Debug logging
+            console.log('Form validation:', isValid, errors);
+
+            // Button is always enabled - validation handled server-side
+            submitBtn.disabled = false;
+            return isValid;
+
         // Set initial state berdasarkan old input
         document.addEventListener('DOMContentLoaded', () => {
             const oldChoice = '{{ old('pilihan_tempat') }}';
             toggleCustomInput(oldChoice === '3');
+
+            // Add event listeners for validation
+            const form = document.querySelector('form');
+            if (form) {
+                const inputs = form.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    input.addEventListener('input', validateForm);
+                    input.addEventListener('change', validateForm);
+                });
+
+                // Specifically add listeners for pilihan_tempat radio buttons
+                const pilihanTempatRadios = form.querySelectorAll('input[name="pilihan_tempat"]');
+                pilihanTempatRadios.forEach(radio => {
+                    radio.addEventListener('change', validateForm);
+                });
+
+                // Initial validation - enable button if form is already valid
+                setTimeout(validateForm, 100);
+            }
         });
 
         @if($kerjaPraktek && $kerjaPraktek->status === \App\Models\KerjaPraktek::STATUS_DITOLAK)
@@ -518,5 +648,117 @@
                 .catch(error => console.error('Polling error:', error));
         }, 30000); // 30 detik
         @endif
-    </script>
-</x-app-layout>
+    </script> --}}
+
+    <script>
+function toggleCustomInput(show) {
+    const box = document.getElementById('custom-input');
+    if (!box) return;
+    box.classList.toggle('hidden', !show);
+
+    // Enable/disable input fields untuk custom tempat
+    const customFields = [
+        'tempat_magang_sendiri', 'bidang_usaha_sendiri', 'alamat_tempat_sendiri',
+        'email_perusahaan_sendiri', 'telepon_perusahaan_sendiri', 
+        'kontak_tempat_sendiri', 'kuota_mahasiswa_sendiri', 'tanggal_mulai'
+    ];
+    
+    customFields.forEach(fieldName => {
+        const el = document.querySelector(`[name="${fieldName}"]`);
+        if (el) {
+            el.disabled = !show;
+            if (!show) el.value = '';
+        }
+    });
+
+    // Reset hidden field ketika pilih custom
+    const hidden = document.getElementById('tempat_magang_id');
+    if (show && hidden) {
+        hidden.value = '';
+    }
+}
+
+function validateForm() {
+    const submitBtn = document.getElementById('submit-btn');
+    if (!submitBtn) return true;
+
+    // SELALU enable tombol submit - validasi dilakukan di server
+    submitBtn.disabled = false;
+    return true;
+}
+
+// Initialize form state
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial state berdasarkan old input
+    const oldChoice = '{{ old('pilihan_tempat') }}';
+    if (oldChoice === '3') {
+        toggleCustomInput(true);
+    } else {
+        toggleCustomInput(false);
+        
+        // Set default tempat jika ada dari old input
+        const oldTempatId = '{{ old('tempat_magang_id') }}';
+        if (oldTempatId) {
+            document.getElementById('tempat_magang_id').value = oldTempatId;
+        }
+    }
+
+    // Enable tombol submit dari awal
+    const submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) {
+        submitBtn.disabled = false;
+    }
+
+    // Event listeners untuk radio buttons pilihan tempat
+    const pilihanTempatRadios = document.querySelectorAll('input[name="pilihan_tempat"]');
+    pilihanTempatRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === '3') {
+                toggleCustomInput(true);
+            } else {
+                toggleCustomInput(false);
+            }
+            validateForm();
+        });
+    });
+
+    // Event listener untuk pilihan tempat dari prodi
+    const tempatProdiRadios = document.querySelectorAll('input[name="tempat_prodi_picker"]');
+    tempatProdiRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Otomatis pilih radio "Pilih Tempat dari Prodi"
+            const prodiRadio = document.getElementById('radio-prodi');
+            if (prodiRadio) {
+                prodiRadio.checked = true;
+                toggleCustomInput(false);
+            }
+            validateForm();
+        });
+    });
+
+    // Event listeners untuk input changes
+    const form = document.querySelector('form');
+    if (form) {
+        const inputs = form.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.addEventListener('input', validateForm);
+            input.addEventListener('change', validateForm);
+        });
+    }
+});
+
+// Polling untuk refresh otomatis jika KP ditolak dihapus
+@if($kerjaPraktek && $kerjaPraktek->status === \App\Models\KerjaPraktek::STATUS_DITOLAK)
+setInterval(function() {
+    fetch('{{ route('mahasiswa.kerja-praktek.check') }}')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.has_kp) {
+                location.reload();
+            }
+        })
+        .catch(error => console.error('Polling error:', error));
+}, 30000); // 30 detik
+@endif
+</script>
+</x-sidebar-layout>

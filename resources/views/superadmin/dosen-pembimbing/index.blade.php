@@ -1,19 +1,19 @@
 {{-- resources/views/superadmin/dosen-pembimbing/index.blade.php --}}
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Data Dosen Pembimbing
             </h2>
-            <div class="flex gap-2">
+            {{-- <div class="flex gap-2">
                 <a href="{{ route('dashboard') }}" class="text-unib-blue-600 hover:text-unib-blue-800">
                 <i class="fas fa-arrow-left mr-2"></i>Kembali
-            </a>
+            </a> --}}
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
             {{-- Flash --}}
             @if (session('success'))
@@ -112,4 +112,4 @@
 
         </div>
     </div>
-</x-app-layout>
+</x-sidebar-layout>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\KerjaPraktek;
 use App\Models\DosenPenguji;
+use App\Models\TempatMagang;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -137,6 +138,11 @@ class UserController extends Controller
             'is_active' => 'boolean',
         ];
 
+        // Add tempat_magang_id validation for pengawas_lapangan
+        if ($request->role === 'pengawas_lapangan') {
+            $rules['tempat_magang_id'] = 'nullable|exists:tempat_magang,id';
+        }
+
         if ($request->filled('password')) {
             $rules['password'] = 'string|min:8|confirmed';
         }
@@ -145,11 +151,33 @@ class UserController extends Controller
 
         $data = $request->only(['name', 'email', 'role', 'npm', 'nip', 'phone', 'is_active']);
 
+        // Include tempat_magang_id if provided
+        if ($request->has('tempat_magang_id')) {
+            $data['tempat_magang_id'] = $request->tempat_magang_id;
+        }
+
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
 
         $user->update($data);
+
+        // Handle PengawasTempatMagang relationship
+        if ($request->role === 'pengawas_lapangan' && $request->filled('tempat_magang_id')) {
+            // Update or create relationship
+            \App\Models\PengawasTempatMagang::updateOrCreate(
+                ['pengawas_id' => $user->id],
+                [
+                    'tempat_magang_id' => $request->tempat_magang_id,
+                    'is_active' => true,
+                    'jabatan_pengawas' => 'Pengawas Lapangan',
+                    'deskripsi_tugas' => 'Pengawas lapangan untuk tempat magang ini',
+                ]
+            );
+        } elseif ($request->role !== 'pengawas_lapangan') {
+            // Remove relationship if role changed from pengawas_lapangan
+            \App\Models\PengawasTempatMagang::where('pengawas_id', $user->id)->delete();
+        }
 
         return back()->with('success', 'User berhasil diupdate.');
     }
@@ -476,7 +504,25 @@ class UserController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return view('superadmin.kerja-praktek.index', compact('kerjaPrakteks', 'search', 'status', 'tempat_magang_id', 'dosen', 'tempatMagang', 'notifications'));
+        // Calculate duplicate statistics
+        $totalKPs = KerjaPraktek::count();
+        $duplicateTitles = KerjaPraktek::select('judul_kp')
+            ->groupBy('judul_kp')
+            ->havingRaw('COUNT(*) > 1')
+            ->pluck('judul_kp');
+
+        $duplicateKPs = 0;
+        foreach ($duplicateTitles as $title) {
+            $duplicateKPs += KerjaPraktek::where('judul_kp', $title)->count() - 1; // count duplicates, not originals
+        }
+        $duplicatePercentage = $totalKPs > 0 ? round(($duplicateKPs / $totalKPs) * 100, 2) : 0;
+
+        // Add duplicate info to each KP
+        $kerjaPrakteks->each(function($kp) {
+            $kp->duplicate_info = $kp->getDuplicateInfo();
+        });
+
+        return view('superadmin.kerja-praktek.index', compact('kerjaPrakteks', 'search', 'status', 'tempat_magang_id', 'dosen', 'tempatMagang', 'notifications', 'duplicateTitles', 'duplicatePercentage'));
     }
 
     /**
@@ -604,5 +650,143 @@ class UserController extends Controller
         );
 
         return back()->with('success', 'Dosen penguji berhasil ditugaskan.');
+    }
+
+    /**
+     * Index verifikasi instansi mandiri.
+     */
+    public function indexVerifikasiInstansi(Request $request)
+    {
+        $search = trim((string) $request->get('search', ''));
+        $status = $request->get('status');
+
+        $query = KerjaPraktek::with('mahasiswa')
+            ->where('pilihan_tempat', 3) // Hanya yang mandiri
+            ->whereHas('mahasiswa'); // Pastikan mahasiswa masih ada
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('tempat_magang_sendiri', 'like', "%{$search}%")
+                  ->orWhere('bidang_usaha_sendiri', 'like', "%{$search}%")
+                  ->orWhere('alamat_tempat_sendiri', 'like', "%{$search}%")
+                  ->orWhereHas('mahasiswa', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('npm', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Filter status: default hanya pengajuan jika tidak ada filter
+        if ($status) {
+            $query->where('status', $status);
+        } else {
+            $query->where('status', KerjaPraktek::STATUS_PENGAJUAN);
+        }
+
+        $kerjaPrakteks = $query->orderByDesc('created_at')->paginate(15);
+
+        return view('superadmin.verifikasi-instansi.index', compact('kerjaPrakteks', 'search', 'status'));
+    }
+
+    /**
+     * Approve instansi mandiri.
+     */
+    public function approveInstansi(KerjaPraktek $kerjaPraktek)
+    {
+        // Pastikan hanya untuk pilihan_tempat = 3
+        if ($kerjaPraktek->pilihan_tempat !== 3) {
+            return back()->with('error', 'Data ini bukan instansi mandiri.');
+        }
+
+        // Pastikan status masih pengajuan
+        if ($kerjaPraktek->status !== KerjaPraktek::STATUS_PENGAJUAN) {
+            return back()->with('error', 'Instansi ini sudah diproses.');
+        }
+
+        // Cek apakah tempat magang dengan nama yang sama sudah ada
+        $existingTempatMagang = TempatMagang::where('nama_perusahaan', $kerjaPraktek->tempat_magang_sendiri)->first();
+
+        if ($existingTempatMagang) {
+            // Jika sudah ada, gunakan yang existing dan update kuota jika perlu
+            $tempatMagangId = $existingTempatMagang->id;
+            // Update kuota jika kuota existing lebih kecil
+            if ($existingTempatMagang->kuota_mahasiswa < $kerjaPraktek->kuota_mahasiswa_sendiri) {
+                $existingTempatMagang->update(['kuota_mahasiswa' => $kerjaPraktek->kuota_mahasiswa_sendiri]);
+            }
+        } else {
+            // Jika belum ada, buat tempat magang baru
+            $tempatMagang = TempatMagang::create([
+                'nama_perusahaan' => $kerjaPraktek->tempat_magang_sendiri,
+                'bidang_usaha' => $kerjaPraktek->bidang_usaha_sendiri,
+                'alamat' => $kerjaPraktek->alamat_tempat_sendiri,
+                'email_perusahaan' => $kerjaPraktek->email_perusahaan_sendiri,
+                'telepon_perusahaan' => $kerjaPraktek->telepon_perusahaan_sendiri,
+                'kontak_person' => $kerjaPraktek->kontak_tempat_sendiri,
+                'kuota_mahasiswa' => $kerjaPraktek->kuota_mahasiswa_sendiri,
+                'deskripsi' => $kerjaPraktek->deskripsi_perusahaan_sendiri,
+                'is_active' => true,
+                'tanggal_mulai' => $kerjaPraktek->tanggal_mulai,
+            ]);
+            $tempatMagangId = $tempatMagang->id;
+        }
+
+        // Update kerja praktek: set status disetujui, ubah pilihan_tempat ke 1, dan set tempat_magang_id
+        $kerjaPraktek->update([
+            'status' => KerjaPraktek::STATUS_DISETUJUI,
+            'pilihan_tempat' => 1, // Ubah ke pilihan dari prodi
+            'tempat_magang_id' => $tempatMagangId,
+            // Kosongkan field mandiri karena sudah menjadi tempat magang resmi
+            'tempat_magang_sendiri' => null,
+            'bidang_usaha_sendiri' => null,
+            'alamat_tempat_sendiri' => null,
+            'email_perusahaan_sendiri' => null,
+            'telepon_perusahaan_sendiri' => null,
+            'kontak_tempat_sendiri' => null,
+            'kuota_mahasiswa_sendiri' => null,
+            'deskripsi_perusahaan_sendiri' => null,
+            'tanggal_mulai' => null,
+        ]);
+
+        // Kirim notifikasi ke mahasiswa
+        \App\Services\NotificationService::sendToUser(
+            $kerjaPraktek->mahasiswa_id,
+            'Instansi Mandiri Disetujui',
+            "Instansi magang mandiri Anda '{$kerjaPraktek->tempat_magang_sendiri}' telah disetujui oleh superadmin dan terdaftar sebagai tempat magang resmi.",
+            'success',
+            $kerjaPraktek->id,
+            route('mahasiswa.kerja-praktek.index')
+        );
+
+        return back()->with('success', 'Instansi mandiri berhasil disetujui dan terdaftar sebagai tempat magang.');
+    }
+
+    /**
+     * Reject instansi mandiri.
+     */
+    public function rejectInstansi(KerjaPraktek $kerjaPraktek)
+    {
+        // Pastikan hanya untuk pilihan_tempat = 3
+        if ($kerjaPraktek->pilihan_tempat !== 3) {
+            return back()->with('error', 'Data ini bukan instansi mandiri.');
+        }
+
+        // Pastikan status masih pengajuan
+        if ($kerjaPraktek->status !== KerjaPraktek::STATUS_PENGAJUAN) {
+            return back()->with('error', 'Instansi ini sudah diproses.');
+        }
+
+        $kerjaPraktek->update(['status' => KerjaPraktek::STATUS_DITOLAK]);
+
+        // Kirim notifikasi ke mahasiswa
+        \App\Services\NotificationService::sendToUser(
+            $kerjaPraktek->mahasiswa_id,
+            'Instansi Mandiri Ditolak',
+            "Instansi magang mandiri Anda '{$kerjaPraktek->tempat_magang_sendiri}' ditolak. Silakan ajukan ulang atau pilih dari daftar instansi yang tersedia.",
+            'warning',
+            $kerjaPraktek->id,
+            route('mahasiswa.kerja-praktek.index')
+        );
+
+        return back()->with('success', 'Instansi mandiri berhasil ditolak.');
     }
 }

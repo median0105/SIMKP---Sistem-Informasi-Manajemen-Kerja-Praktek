@@ -1,19 +1,20 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
+<x-sidebar-layout>
+<x-slot name="header">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Manajemen Tempat Magang') }}
             </h2>
-            <a href="{{ route('superadmin.tempat-magang.create') }}" 
+        </div>
+    </div>
+</x-slot>
+
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <a href="{{ route('superadmin.tempat-magang.create') }}"
                class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
                 <i class="fas fa-plus mr-2"></i>Tambah Tempat Magang
             </a>
-        </div>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            
             <!-- Statistics Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="bg-white rounded-lg shadow p-6">
@@ -325,4 +326,4 @@
             }
         }
     </script>
-</x-app-layout>
+</x-sidebar-layout>

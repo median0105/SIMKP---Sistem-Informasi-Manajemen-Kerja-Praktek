@@ -12,23 +12,24 @@ class KerjaPraktekDuplicateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_exact_duplicate_with_same_tempat_magang()
+    public function test_exact_duplicate_regardless_of_tempat_magang()
     {
         $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);
-        $tempatMagang = TempatMagang::factory()->create();
+        $tempatMagang1 = TempatMagang::factory()->create();
+        $tempatMagang2 = TempatMagang::factory()->create();
 
         // Create first KP
         $kp1 = KerjaPraktek::create([
             'mahasiswa_id' => $mahasiswa->id,
-            'tempat_magang_id' => $tempatMagang->id,
+            'tempat_magang_id' => $tempatMagang1->id,
             'judul_kp' => 'Pengembangan Sistem Informasi',
             'status' => 'pengajuan'
         ]);
 
-        // Create second KP with same title and tempat_magang
+        // Create second KP with same title but different tempat_magang
         $kp2 = new KerjaPraktek([
             'mahasiswa_id' => $mahasiswa->id,
-            'tempat_magang_id' => $tempatMagang->id,
+            'tempat_magang_id' => $tempatMagang2->id,
             'judul_kp' => 'Pengembangan Sistem Informasi',
             'status' => 'pengajuan'
         ]);
@@ -36,7 +37,7 @@ class KerjaPraktekDuplicateTest extends TestCase
         $this->assertTrue($kp2->isDuplicateTitle());
     }
 
-    public function test_no_duplicate_with_different_tempat_magang()
+    public function test_no_duplicate_with_different_titles()
     {
         $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);
         $tempatMagang1 = TempatMagang::factory()->create();
@@ -50,11 +51,11 @@ class KerjaPraktekDuplicateTest extends TestCase
             'status' => 'pengajuan'
         ]);
 
-        // Create second KP with same title but different tempat_magang
+        // Create second KP with different title
         $kp2 = new KerjaPraktek([
             'mahasiswa_id' => $mahasiswa->id,
             'tempat_magang_id' => $tempatMagang2->id,
-            'judul_kp' => 'Pengembangan Sistem Informasi',
+            'judul_kp' => 'Analisis Data Mining',
             'status' => 'pengajuan'
         ]);
 
@@ -125,5 +126,67 @@ class KerjaPraktekDuplicateTest extends TestCase
         // Test different strings
         $similarity = $kp->calculateSimilarity('Machine Learning', 'Web Development');
         $this->assertLessThan(50, $similarity);
+    }
+
+    public function test_duplicate_notification_in_superadmin_view()
+    {
+        $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);
+        $tempatMagang1 = TempatMagang::factory()->create();
+        $tempatMagang2 = TempatMagang::factory()->create();
+
+        // Create two KP with same title
+        KerjaPraktek::create([
+            'mahasiswa_id' => $mahasiswa->id,
+            'tempat_magang_id' => $tempatMagang1->id,
+            'judul_kp' => 'Pengembangan Sistem Informasi',
+            'status' => 'pengajuan'
+        ]);
+
+        KerjaPraktek::create([
+            'mahasiswa_id' => $mahasiswa->id,
+            'tempat_magang_id' => $tempatMagang2->id,
+            'judul_kp' => 'Pengembangan Sistem Informasi',
+            'status' => 'pengajuan'
+        ]);
+
+        // Test that duplicate titles are detected
+        $duplicateTitles = KerjaPraktek::select('judul_kp')
+            ->groupBy('judul_kp')
+            ->havingRaw('COUNT(*) > 1')
+            ->pluck('judul_kp');
+
+        $this->assertCount(1, $duplicateTitles);
+        $this->assertEquals('Pengembangan Sistem Informasi', $duplicateTitles->first());
+    }
+
+    public function test_similarity_percentage_display()
+    {
+        // Create test data
+        $mahasiswa1 = User::factory()->create(['role' => 'mahasiswa']);
+        $mahasiswa2 = User::factory()->create(['role' => 'mahasiswa']);
+        $tempatMagang1 = TempatMagang::factory()->create();
+        $tempatMagang2 = TempatMagang::factory()->create();
+
+        // Create KP with similar titles
+        $kp1 = KerjaPraktek::factory()->create([
+            'mahasiswa_id' => $mahasiswa1->id,
+            'tempat_magang_id' => $tempatMagang1->id,
+            'judul_kp' => 'Pengembangan Sistem Informasi Akademik'
+        ]);
+
+        $kp2 = KerjaPraktek::factory()->create([
+            'mahasiswa_id' => $mahasiswa2->id,
+            'tempat_magang_id' => $tempatMagang2->id,
+            'judul_kp' => 'Pengembangan Sistem Informasi Akademik Universitas'
+        ]);
+
+        // Test getDuplicateInfo method
+        $duplicates = $kp1->getDuplicateInfo();
+
+        $this->assertNotEmpty($duplicates);
+        $this->assertArrayHasKey('similarity', $duplicates[0]);
+        $this->assertIsFloat($duplicates[0]['similarity']);
+        $this->assertGreaterThanOrEqual(50, $duplicates[0]['similarity']);
+        $this->assertLessThanOrEqual(100, $duplicates[0]['similarity']);
     }
 }

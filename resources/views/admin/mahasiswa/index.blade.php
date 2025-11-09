@@ -1,12 +1,12 @@
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Daftar Mahasiswa Bimbingan') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- === Statistik === --}}
             {{-- <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
@@ -226,7 +226,7 @@
                                     </div>
 
                                     <div class="ml-6 flex flex-col space-y-2">
-                                        <a href="{{ route('admin.bimbingan.show', $item) }}"
+                                        <a href="{{ route('admin.bimbingan.show', ['mahasiswa' => $item->mahasiswa_id]) }}"
                                            class="text-unib-blue-600 hover:text-unib-blue-800 font-medium text-sm">
                                             <i class="fas fa-eye mr-1"></i>Detail
                                         </a>
@@ -323,4 +323,4 @@
 
         </div>
     </div>
-</x-app-layout>
+</x-sidebar-layout>

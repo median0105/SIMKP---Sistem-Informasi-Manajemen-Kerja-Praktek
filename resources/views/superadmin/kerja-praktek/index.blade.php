@@ -1,12 +1,12 @@
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Data Kerja Praktek') }}
-        </h2>
+       </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6 lg:p-8 bg-white border-b border-gray-200">
                     <!-- Notifications -->
@@ -34,6 +34,27 @@
                         </div>
                     </div>
                     @endif --}}
+
+                    <!-- Alert judul duplikat -->
+                    @if(isset($duplicateTitles) && $duplicateTitles->count() > 0)
+                        <div class="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                            <div class="flex">
+                                <i class="fas fa-exclamation-triangle text-yellow-400 mt-1"></i>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-yellow-800">Peringatan: Judul Duplikat Ditemukan</h3>
+                                    <div class="mt-2 text-sm text-yellow-700">
+                                        <p>{{ $duplicateTitles->count() }} judul KP terdeteksi duplikat dari total {{ $kerjaPrakteks->total() }} data KP ({{ $duplicatePercentage }}% duplikat).</p>
+                                        <p>Judul KP berikut terdeteksi duplikat:</p>
+                                        <ul class="list-disc list-inside mt-1">
+                                            @foreach($duplicateTitles as $title)
+                                                <li>{{ $title }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
                     <!-- Search and Filter -->
                     <div class="mb-6 flex flex-col sm:flex-row gap-4">
@@ -85,10 +106,51 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="text-sm text-gray-900">{{ $kp->judul_kp }}</div>
+                                        {{-- @if($kp->duplicate_info && count($kp->duplicate_info) > 0)
+                                            <div class="mt-2">
+                                                <button type="button" onclick="toggleDuplicates({{ $kp->id }})"
+                                                        class="text-xs text-blue-600 hover:text-blue-800 underline">
+                                                    Lihat kemiripan ({{ count($kp->duplicate_info) }})
+                                                </button>
+                                                <div id="duplicates-{{ $kp->id }}" class="hidden mt-2 space-y-1">
+                                                    @foreach($kp->duplicate_info as $duplicate)
+                                                        <div class="text-xs bg-gray-50 p-2 rounded border">
+                                                            <div class="font-medium">{{ $duplicate['judul_kp'] }}</div>
+                                                            <div class="text-gray-600">
+                                                                {{ $duplicate['mahasiswa'] }} ({{ $duplicate['npm'] }}) -
+                                                                {{ $duplicate['tempat_magang'] }}
+                                                            </div>
+                                                            <div class="text-green-600 font-medium">
+                                                                Kemiripan: {{ $duplicate['similarity'] }}%
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif --}}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ $kp->tempatMagang->nama_perusahaan ?? '-' }}</div>
+                                        <div class="text-sm text-gray-900">
+                                            @if($kp->pilihan_tempat == 3)
+                                                {{ $kp->tempat_magang_sendiri ?? '-' }}
+                                            @else
+                                                {{ $kp->tempatMagang->nama_perusahaan ?? '-' }}
+                                            @endif
+                                        </div>
                                     </td>
+                                    {{-- <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($kp->duplicate_info && count($kp->duplicate_info) > 0)
+                                            <div class="space-y-1">
+                                                @foreach($kp->duplicate_info as $duplicate)
+                                                    <div class="text-xs bg-red-50 text-red-700 px-2 py-1 rounded">
+                                                        {{ $duplicate['similarity'] }}% - {{ $duplicate['mahasiswa'] }} ({{ $duplicate['npm'] }})
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <span class="text-xs text-gray-500">-</span>
+                                        @endif
+                                    </td> --}}
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @php
                                             $dosenPembimbingAkademik = $kp->dosenPembimbing->where('jenis_pembimbingan', 'akademik')->where('is_active', true)->first();
@@ -182,7 +244,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="8" class="px-6 py-4 text-center text-gray-500">
+                                    <td colspan="9" class="px-6 py-4 text-center text-gray-500">
                                         Tidak ada data KP ditemukan.
                                     </td>
                                 </tr>
@@ -214,5 +276,10 @@
                 }
             });
         }
+
+        function toggleDuplicates(kpId) {
+            const element = document.getElementById(`duplicates-${kpId}`);
+            element.classList.toggle('hidden');
+        }
     </script>
-</x-app-layout>
+</x-sidebar-layout>

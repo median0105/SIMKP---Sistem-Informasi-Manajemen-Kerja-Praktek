@@ -57,8 +57,13 @@ class KerjaPraktekController extends Controller
 
             // MANDIRI → hanya wajib kalau pilihan_tempat=3
             'tempat_magang_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:255'],
+            'bidang_usaha_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:255'],
             'alamat_tempat_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:5000'],
+            'email_perusahaan_sendiri' => ['nullable','required_if:pilihan_tempat,3','email','max:255'],
+            'telepon_perusahaan_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:20'],
             'kontak_tempat_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:255'],
+            'kuota_mahasiswa_sendiri' => ['nullable','required_if:pilihan_tempat,3','integer','min:1','max:50'],
+            'deskripsi_perusahaan_sendiri' => ['nullable','string','max:5000'],
             'tanggal_mulai'         => ['nullable','required_if:pilihan_tempat,3','date'],
 
             // Wajib saat daftar KP
@@ -71,8 +76,12 @@ class KerjaPraktekController extends Controller
         $messages = [
             'tempat_magang_id.exists'           => 'Tempat magang yang dipilih tidak valid.',
             'tempat_magang_sendiri.required_if' => 'Nama perusahaan wajib diisi jika mencari sendiri.',
+            'bidang_usaha_sendiri.required_if' => 'Bidang usaha wajib diisi jika mencari sendiri.',
             'alamat_tempat_sendiri.required_if' => 'Alamat wajib diisi jika mencari sendiri.',
-            'kontak_tempat_sendiri.required_if' => 'Kontak wajib diisi jika mencari sendiri.',
+            'email_perusahaan_sendiri.required_if' => 'Email perusahaan wajib diisi jika mencari sendiri.',
+            'telepon_perusahaan_sendiri.required_if' => 'No. telepon perusahaan wajib diisi jika mencari sendiri.',
+            'kontak_tempat_sendiri.required_if' => 'Kontak person wajib diisi jika mencari sendiri.',
+            'kuota_mahasiswa_sendiri.required_if' => 'Kuota mahasiswa wajib diisi jika mencari sendiri.',
             'tanggal_mulai.required_if'         => 'Tanggal mulai wajib diisi jika mencari sendiri.',
             'ipk_semester.required'             => 'IPK semester wajib diisi.',
             'semester_ke.required'              => 'Semester ke- wajib diisi.',
@@ -101,6 +110,15 @@ class KerjaPraktekController extends Controller
         if ($existing) {
             return back()->withInput()->with('error',
                 'Anda masih memiliki pengajuan/KP aktif. Selesaikan dulu atau hubungi admin untuk menutupnya.');
+        }
+
+        // Check for duplicate title regardless of internship location
+        $tempKp = new KerjaPraktek(['judul_kp' => $dataValid['judul_kp']]);
+        if ($tempKp->isDuplicateTitle()) {
+            $duplicateInfo = $tempKp->getDuplicateInfo();
+            $duplicatePercentage = count($duplicateInfo) > 0 ? round((count($duplicateInfo) / KerjaPraktek::count()) * 100, 2) : 0;
+            return back()->withInput()->with('error',
+                'Judul KP yang Anda ajukan sudah ada atau mirip dengan judul KP yang sudah ada di sistem (' . $duplicatePercentage . '% duplikat dari total judul KP). Silakan gunakan judul yang berbeda.');
         }
 
         $choice = (int) $dataValid['pilihan_tempat'];
@@ -142,15 +160,25 @@ class KerjaPraktekController extends Controller
             // dari prodi
             $payload['tempat_magang_id']       = (int) $dataValid['tempat_magang_id'];
             $payload['tempat_magang_sendiri']  = null;
+            $payload['bidang_usaha_sendiri']   = null;
             $payload['alamat_tempat_sendiri']  = null;
+            $payload['email_perusahaan_sendiri'] = null;
+            $payload['telepon_perusahaan_sendiri'] = null;
             $payload['kontak_tempat_sendiri']  = null;
+            $payload['kuota_mahasiswa_sendiri'] = null;
+            $payload['deskripsi_perusahaan_sendiri'] = null;
             $payload['tanggal_mulai']          = null;
         } else {
             // cari sendiri
             $payload['tempat_magang_id']       = null;
             $payload['tempat_magang_sendiri']  = $dataValid['tempat_magang_sendiri'];
+            $payload['bidang_usaha_sendiri']   = $dataValid['bidang_usaha_sendiri'];
             $payload['alamat_tempat_sendiri']  = $dataValid['alamat_tempat_sendiri'];
+            $payload['email_perusahaan_sendiri'] = $dataValid['email_perusahaan_sendiri'];
+            $payload['telepon_perusahaan_sendiri'] = $dataValid['telepon_perusahaan_sendiri'];
             $payload['kontak_tempat_sendiri']  = $dataValid['kontak_tempat_sendiri'];
+            $payload['kuota_mahasiswa_sendiri'] = $dataValid['kuota_mahasiswa_sendiri'];
+            $payload['deskripsi_perusahaan_sendiri'] = $dataValid['deskripsi_perusahaan_sendiri'] ?? null;
             $payload['tanggal_mulai']          = $dataValid['tanggal_mulai'];
         }
 
@@ -165,14 +193,27 @@ class KerjaPraktekController extends Controller
             $tempatInfo = 'di ' . $dataValid['tempat_magang_sendiri'];
         }
 
-        NotificationService::sendToRole(
-            'superadmin',
-            'Pengajuan Kerja Praktek Baru',
-            'Mahasiswa ' . auth()->user()->name . ' mengajukan kerja praktek dengan judul "' . $payload['judul_kp'] . '" ' . $tempatInfo . '. Silakan pilihkan dosen pembimbing untuk mahasiswa ini.',
-            'warning',
-            $kerjaPraktek->id,
-            route('superadmin.kerja-praktek.index')
-        );
+        // Jika pilihan mandiri (pilihan_tempat = 3), kirim notifikasi ke halaman verifikasi instansi
+        if ($choice === 3) {
+            NotificationService::sendToRole(
+                'superadmin',
+                'Pengajuan Instansi Mandiri Baru',
+                'Mahasiswa ' . auth()->user()->name . ' mengajukan kerja praktek dengan instansi mandiri "' . $dataValid['tempat_magang_sendiri'] . '" dengan judul "' . $payload['judul_kp'] . '". Silakan verifikasi instansi ini.',
+                'warning',
+                $kerjaPraktek->id,
+                route('superadmin.verifikasi-instansi.index')
+            );
+        } else {
+            // Jika pilihan dari prodi, kirim notifikasi ke halaman data KP
+            NotificationService::sendToRole(
+                'superadmin',
+                'Pengajuan Kerja Praktek Baru',
+                'Mahasiswa ' . auth()->user()->name . ' mengajukan kerja praktek dengan judul "' . $payload['judul_kp'] . '" ' . $tempatInfo . '. Silakan pilihkan dosen pembimbing untuk mahasiswa ini.',
+                'warning',
+                $kerjaPraktek->id,
+                route('superadmin.kerja-praktek.index')
+            );
+        }
 
         // Kirim notifikasi ke dosen pembimbing yang sudah ditugaskan (jika ada)
         $assignedDosen = \App\Models\DosenPembimbing::whereHas('kerjaPraktek', function($q) use ($mahasiswaId) {
@@ -450,8 +491,13 @@ class KerjaPraktekController extends Controller
 
             // MANDIRI → hanya wajib kalau pilihan_tempat=3
             'tempat_magang_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:255'],
+            'bidang_usaha_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:255'],
             'alamat_tempat_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:5000'],
+            'email_perusahaan_sendiri' => ['nullable','email','max:255'],
+            'telepon_perusahaan_sendiri' => ['nullable','string','max:20'],
             'kontak_tempat_sendiri' => ['nullable','required_if:pilihan_tempat,3','string','max:255'],
+            'kuota_mahasiswa_sendiri' => ['nullable','required_if:pilihan_tempat,3','integer','min:1','max:50'],
+            'deskripsi_perusahaan_sendiri' => ['nullable','string','max:5000'],
             'tanggal_mulai'         => ['nullable','required_if:pilihan_tempat,3','date'],
 
             // Wajib saat update
@@ -461,13 +507,26 @@ class KerjaPraktekController extends Controller
         $messages = [
             'tempat_magang_id.exists'           => 'Tempat magang yang dipilih tidak valid.',
             'tempat_magang_sendiri.required_if' => 'Nama perusahaan wajib diisi jika mencari sendiri.',
+            'bidang_usaha_sendiri.required_if' => 'Bidang usaha wajib diisi jika mencari sendiri.',
             'alamat_tempat_sendiri.required_if' => 'Alamat wajib diisi jika mencari sendiri.',
-            'kontak_tempat_sendiri.required_if' => 'Kontak wajib diisi jika mencari sendiri.',
+            'email_perusahaan_sendiri.required_if' => 'Email perusahaan wajib diisi jika mencari sendiri.',
+            'telepon_perusahaan_sendiri.required_if' => 'No. telepon perusahaan wajib diisi jika mencari sendiri.',
+            'kontak_tempat_sendiri.required_if' => 'Kontak person wajib diisi jika mencari sendiri.',
+            'kuota_mahasiswa_sendiri.required_if' => 'Kuota mahasiswa wajib diisi jika mencari sendiri.',
             'tanggal_mulai.required_if'         => 'Tanggal mulai wajib diisi jika mencari sendiri.',
             'file_proposal.required'            => 'File proposal wajib diupload.',
         ];
 
         $dataValid = $request->validate($rules, $messages);
+
+        // Check for duplicate title regardless of internship location
+        $tempKp = new KerjaPraktek(['judul_kp' => $dataValid['judul_kp']]);
+        if ($tempKp->isDuplicateTitle()) {
+            $duplicateInfo = $tempKp->getDuplicateInfo();
+            $duplicatePercentage = count($duplicateInfo) > 0 ? round((count($duplicateInfo) / KerjaPraktek::count()) * 100, 2) : 0;
+            return back()->withInput()->with('error',
+                'Judul KP yang Anda ajukan sudah ada atau mirip dengan judul KP yang sudah ada di sistem (' . $duplicatePercentage . '% duplikat dari total judul KP). Silakan gunakan judul yang berbeda.');
+        }
 
         $choice = (int) $dataValid['pilihan_tempat'];
 
@@ -509,15 +568,25 @@ class KerjaPraktekController extends Controller
             // dari prodi
             $payload['tempat_magang_id']       = (int) $dataValid['tempat_magang_id'];
             $payload['tempat_magang_sendiri']  = null;
+            $payload['bidang_usaha_sendiri']   = null;
             $payload['alamat_tempat_sendiri']  = null;
+            $payload['email_perusahaan_sendiri'] = null;
+            $payload['telepon_perusahaan_sendiri'] = null;
             $payload['kontak_tempat_sendiri']  = null;
+            $payload['kuota_mahasiswa_sendiri'] = null;
+            $payload['deskripsi_perusahaan_sendiri'] = null;
             $payload['tanggal_mulai']          = null;
         } else {
             // cari sendiri
             $payload['tempat_magang_id']       = null;
             $payload['tempat_magang_sendiri']  = $dataValid['tempat_magang_sendiri'];
+            $payload['bidang_usaha_sendiri']   = $dataValid['bidang_usaha_sendiri'];
             $payload['alamat_tempat_sendiri']  = $dataValid['alamat_tempat_sendiri'];
+            $payload['email_perusahaan_sendiri'] = $dataValid['email_perusahaan_sendiri'];
+            $payload['telepon_perusahaan_sendiri'] = $dataValid['telepon_perusahaan_sendiri'];
             $payload['kontak_tempat_sendiri']  = $dataValid['kontak_tempat_sendiri'];
+            $payload['kuota_mahasiswa_sendiri'] = $dataValid['kuota_mahasiswa_sendiri'];
+            $payload['deskripsi_perusahaan_sendiri'] = $dataValid['deskripsi_perusahaan_sendiri'] ?? null;
             $payload['tanggal_mulai']          = $dataValid['tanggal_mulai'];
         }
 
@@ -532,14 +601,27 @@ class KerjaPraktekController extends Controller
             $tempatInfo = 'di ' . $dataValid['tempat_magang_sendiri'];
         }
 
-        NotificationService::sendToRole(
-            'superadmin',
-            'Pengajuan Kerja Praktek Diperbarui',
-            'Mahasiswa ' . auth()->user()->name . ' telah memperbarui pengajuan kerja praktek dengan judul "' . $payload['judul_kp'] . '" ' . $tempatInfo . '',
-            'warning',
-            $kerjaPraktek->id,
-            route('superadmin.kerja-praktek.index')
-        );
+        // Jika pilihan mandiri (pilihan_tempat = 3), kirim notifikasi ke halaman verifikasi instansi
+        if ($choice === 3) {
+            NotificationService::sendToRole(
+                'superadmin',
+                'Pengajuan Instansi Mandiri Diperbarui',
+                'Mahasiswa ' . auth()->user()->name . ' telah memperbarui pengajuan kerja praktek dengan instansi mandiri "' . $dataValid['tempat_magang_sendiri'] . '" dengan judul "' . $payload['judul_kp'] . '". Silakan verifikasi instansi ini.',
+                'warning',
+                $kerjaPraktek->id,
+                route('superadmin.verifikasi-instansi.index')
+            );
+        } else {
+            // Jika pilihan dari prodi, kirim notifikasi ke halaman data KP
+            NotificationService::sendToRole(
+                'superadmin',
+                'Pengajuan Kerja Praktek Diperbarui',
+                'Mahasiswa ' . auth()->user()->name . ' telah memperbarui pengajuan kerja praktek dengan judul "' . $payload['judul_kp'] . '" ' . $tempatInfo . '',
+                'warning',
+                $kerjaPraktek->id,
+                route('superadmin.kerja-praktek.index')
+            );
+        }
 
         // Kirim notifikasi ke dosen pembimbing yang sudah ditugaskan (jika ada)
         $assignedDosen = \App\Models\DosenPembimbing::whereHas('kerjaPraktek', function($q) use ($kerjaPraktek) {

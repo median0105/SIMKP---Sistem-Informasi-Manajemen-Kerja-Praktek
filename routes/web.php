@@ -131,9 +131,12 @@ Route::middleware(['auth', 'verified', 'role:admin_dosen'])
         // Bimbingan Management
         Route::prefix('bimbingan')->name('bimbingan.')->group(function () {
             Route::get('/',            [AdminBimbinganController::class, 'index'])->name('index');
-            Route::get('/{bimbingan}', [AdminBimbinganController::class, 'show'])->name('show');
+            Route::get('/create',      [AdminBimbinganController::class, 'create'])->name('create');
+            Route::post('/',           [AdminBimbinganController::class, 'store'])->name('store');
+            Route::get('/show',        [AdminBimbinganController::class, 'show'])->name('show');
             Route::post('/{bimbingan}/verify',   [AdminBimbinganController::class, 'verify'])->name('verify');
             Route::post('/{bimbingan}/feedback', [AdminBimbinganController::class, 'addFeedback'])->name('feedback');
+            Route::post('/verify-all/{mahasiswa}', [AdminBimbinganController::class, 'verifyAll'])->name('verify-all');
         });
 
         Route::resource('mahasiswa', AdminMahasiswaController::class)->only(['index', 'show']);
@@ -180,6 +183,11 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
         Route::put('kerja-praktek/{kerjaPraktek}', [SAUserController::class, 'updateKP'])->name('kerja-praktek.update');
         Route::post('kerja-praktek/{kerjaPraktek}/assign-dosen-pembimbing', [SAUserController::class, 'assignDosenPembimbing'])->name('kerja-praktek.assign-dosen-pembimbing');
         Route::post('kerja-praktek/{kerjaPraktek}/assign-dosen-penguji', [SAUserController::class, 'assignDosenPenguji'])->name('kerja-praktek.assign-dosen-penguji');
+
+        // Verifikasi Instansi Mandiri
+        Route::get('verifikasi-instansi', [SAUserController::class, 'indexVerifikasiInstansi'])->name('verifikasi-instansi.index');
+        Route::patch('verifikasi-instansi/{kerjaPraktek}/approve', [SAUserController::class, 'approveInstansi'])->name('verifikasi-instansi.approve');
+        Route::patch('verifikasi-instansi/{kerjaPraktek}/reject', [SAUserController::class, 'rejectInstansi'])->name('verifikasi-instansi.reject');
 
         // Tempat Magang
         Route::resource('tempat-magang', SATempatMagangController::class);

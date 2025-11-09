@@ -1,19 +1,20 @@
 {{-- resources/views/mahasiswa/kerja-praktek/kuisioner.blade.php --}}
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Kuisioner Evaluasi KP
-            </h2>
-            <a href="{{ route('mahasiswa.kerja-praktek.index') }}"
-               class="text-unib-blue-600 hover:text-unib-blue-800">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
-            </a>
+            <div class="flex items-center space-x-4">
+                <a href="{{ route('mahasiswa.kerja-praktek.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                </a>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Kuisioner Evaluasi KP
+                </h2>
+            </div>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- Flash --}}
             @if (session('success'))
@@ -210,4 +211,4 @@
 
         </div>
     </div>
-</x-app-layout>
+</x-sidebar-layout>

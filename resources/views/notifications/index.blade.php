@@ -1,25 +1,25 @@
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Notifikasi') }}
             </h2>
-
-            {{-- Tampilkan tombol "Tandai semua" hanya bila ada notifikasi --}}
-            @if($notifications->count() > 0)
-                <form method="POST" action="{{ route('notifications.mark-all-read') }}">
-                    @csrf
-                    <button type="submit" class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
-                        <i class="fas fa-check-double mr-1"></i>
-                        Tandai Semua Sudah Dibaca
-                    </button>
-                </form>
-            @endif
         </div>  
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            @if($notifications->count() > 0)
+                <div class="mb-6">
+                    <form method="POST" action="{{ route('notifications.mark-all-read') }}">
+                        @csrf
+                        <button type="submit" class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
+                            <i class="fas fa-check-double mr-1"></i>
+                            Tandai Semua Sudah Dibaca
+                        </button>
+                    </form>
+                </div>
+            @endif
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 @if($notifications->count() > 0)
                     <div class="divide-y divide-gray-200">
@@ -130,4 +130,4 @@
         });
       });
     </script>
-</x-app-layout>
+</x-sidebar-layout>

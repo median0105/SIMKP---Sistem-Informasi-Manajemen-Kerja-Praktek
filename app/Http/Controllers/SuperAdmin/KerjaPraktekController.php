@@ -36,10 +36,16 @@ class KerjaPraktekController extends Controller
                                    if ($kp->status === KerjaPraktek::STATUS_SELESAI && !$kp->lulus_ujian) {
                                        $kp->display_status = 'tidak_lulus';
                                    }
+                                   $kp->duplicate_info = $kp->getDuplicateInfo();
                                    return $kp;
                                });
 
+        // Get duplicate titles for notification
+        $duplicateTitles = KerjaPraktek::select('judul_kp')
+            ->groupBy('judul_kp')
+            ->havingRaw('COUNT(*) > 1')
+            ->pluck('judul_kp');
 
-        return view('superadmin.kerja-praktek.index', compact('kerjaPrakteks', 'search', 'status'));
+        return view('superadmin.kerja-praktek.index', compact('kerjaPrakteks', 'search', 'status', 'duplicateTitles'));
     }
 }

@@ -1,15 +1,17 @@
 {{-- resources/views/pengawas/mahasiswa/show.blade.php --}}
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800">Detail Mahasiswa</h2>
-            <a href="{{ route('pengawas.mahasiswa.index') }}" class="text-unib-blue-600 hover:text-unib-blue-800">
-                <i class="fas fa-arrow-left mr-1"></i>Kembali
-            </a>
+            <div class="flex items-center space-x-4">
+                <a href="{{ route('pengawas.mahasiswa.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                </a>
+                <h2 class="font-semibold text-xl text-gray-800">Detail Mahasiswa</h2>
+            </div>
         </div>
     </x-slot>
 
-    <div class="py-8 max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-start justify-between">
                 <div>
@@ -270,4 +272,4 @@
             calculateRataRata(); // Initial calculation
         });
     </script>
-</x-app-layout>
+</x-sidebar-layout>

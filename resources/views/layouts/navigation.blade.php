@@ -108,6 +108,7 @@
             </div>
             <!-- Notification + User Dropdown -->
         <div class="hidden sm:flex sm:items-center sm:space-x-4">
+
             <!-- Notification Bell -->
             <div class="relative">
                 @php

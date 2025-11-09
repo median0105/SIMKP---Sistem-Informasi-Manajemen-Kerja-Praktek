@@ -1,5 +1,5 @@
 {{-- resources/views/superadmin/laporan/detail-kp.blade.php --}}
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -11,8 +11,8 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
             <div class="bg-white rounded-lg shadow p-6">
                 <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -97,7 +97,7 @@
 
         </div>
     </div>
-</x-app-layout>
+</x-sidebar-layout>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

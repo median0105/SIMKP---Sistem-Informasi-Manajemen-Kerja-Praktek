@@ -40,6 +40,17 @@ class BimbinganController extends Controller
             'catatan_mahasiswa' => 'required|string',
         ]);
 
+        // Cek apakah sudah ada bimbingan di tanggal yang sama
+        $existingBimbingan = Bimbingan::where('mahasiswa_id', auth()->id())
+            ->where('tanggal_bimbingan', $request->tanggal_bimbingan)
+            ->first();
+
+        if ($existingBimbingan) {
+            return back()->withInput()->withErrors([
+                'tanggal_bimbingan' => 'Anda sudah memiliki bimbingan di tanggal ini.'
+            ]);
+        }
+
         $bimbingan = Bimbingan::create([
             'kerja_praktek_id' => $kerjaPraktek ? $kerjaPraktek->id : null,
             'mahasiswa_id' => auth()->id(),
@@ -62,7 +73,7 @@ class BimbinganController extends Controller
                         'Mahasiswa ' . auth()->user()->name . ' mengajukan bimbingan untuk topik: ' . $request->topik_bimbingan,
                         'info',
                         $kerjaPraktek->id,
-                        route('admin.bimbingan.show', $bimbingan->id)
+                        route('admin.bimbingan.show', ['mahasiswa' => $bimbingan->mahasiswa_id])
                     );
                 }
             }

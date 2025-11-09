@@ -1,12 +1,19 @@
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit Kerja Praktek Ditolak') }}
-        </h2>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <a href="{{ route('mahasiswa.kerja-praktek.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                </a>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{ __('Edit Kerja Praktek Ditolak') }}
+                </h2>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
@@ -138,30 +145,64 @@
 
                                             <div id="custom-input" class="mt-4 space-y-4 {{ $kerjaPraktek->pilihan_tempat == 3 ? '' : 'hidden' }}">
                                                 <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Perusahaan/Instansi</label>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Perusahaan/Instansi *</label>
                                                     <input type="text" name="tempat_magang_sendiri"
                                                            class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
-                                                           value="{{ old('tempat_magang_sendiri', $kerjaPraktek->tempat_magang_sendiri) }}">
+                                                           value="{{ old('tempat_magang_sendiri', $kerjaPraktek->tempat_magang_sendiri) }}" required>
                                                     @error('tempat_magang_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                                 </div>
                                                 <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap</label>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Bidang Usaha *</label>
+                                                    <input type="text" name="bidang_usaha_sendiri"
+                                                           class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                                           value="{{ old('bidang_usaha_sendiri', $kerjaPraktek->bidang_usaha_sendiri) }}" required>
+                                                    @error('bidang_usaha_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap *</label>
                                                     <textarea name="alamat_tempat_sendiri" rows="3"
-                                                              class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">{{ old('alamat_tempat_sendiri', $kerjaPraktek->alamat_tempat_sendiri) }}</textarea>
+                                                              class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500" required>{{ old('alamat_tempat_sendiri', $kerjaPraktek->alamat_tempat_sendiri) }}</textarea>
                                                     @error('alamat_tempat_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                                 </div>
                                                 <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Kontak Person</label>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Perusahaan</label>
+                                                    <input type="email" name="email_perusahaan_sendiri"
+                                                           class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                                           value="{{ old('email_perusahaan_sendiri', $kerjaPraktek->email_perusahaan_sendiri) }}">
+                                                    @error('email_perusahaan_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Telepon Perusahaan</label>
+                                                    <input type="text" name="telepon_perusahaan_sendiri"
+                                                           class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                                           value="{{ old('telepon_perusahaan_sendiri', $kerjaPraktek->telepon_perusahaan_sendiri) }}">
+                                                    @error('telepon_perusahaan_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Kontak Person *</label>
                                                     <input type="text" name="kontak_tempat_sendiri"
                                                            class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
-                                                           value="{{ old('kontak_tempat_sendiri', $kerjaPraktek->kontak_tempat_sendiri) }}">
+                                                           value="{{ old('kontak_tempat_sendiri', $kerjaPraktek->kontak_tempat_sendiri) }}" required>
                                                     @error('kontak_tempat_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                                 </div>
                                                 <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai KP</label>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Kuota Mahasiswa *</label>
+                                                    <input type="number" name="kuota_mahasiswa_sendiri" min="1"
+                                                           class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
+                                                           value="{{ old('kuota_mahasiswa_sendiri', $kerjaPraktek->kuota_mahasiswa_sendiri) }}" required>
+                                                    @error('kuota_mahasiswa_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Perusahaan</label>
+                                                    <textarea name="deskripsi_perusahaan_sendiri" rows="3"
+                                                              class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500">{{ old('deskripsi_perusahaan_sendiri', $kerjaPraktek->deskripsi_perusahaan_sendiri) }}</textarea>
+                                                    @error('deskripsi_perusahaan_sendiri') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai KP *</label>
                                                     <input type="date" name="tanggal_mulai"
                                                            class="w-full border-gray-300 rounded-md shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500"
-                                                           value="{{ old('tanggal_mulai', $kerjaPraktek->tanggal_mulai ? $kerjaPraktek->tanggal_mulai->format('Y-m-d') : '') }}">
+                                                           value="{{ old('tanggal_mulai', $kerjaPraktek->tanggal_mulai ? $kerjaPraktek->tanggal_mulai->format('Y-m-d') : '') }}" required>
                                                     @error('tanggal_mulai') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                                 </div>
                                             </div>
@@ -200,7 +241,7 @@
             if (!box) return;
             box.classList.toggle('hidden', !show);
 
-            const names = ['tempat_magang_sendiri','alamat_tempat_sendiri','kontak_tempat_sendiri','tanggal_mulai'];
+            const names = ['tempat_magang_sendiri','bidang_usaha_sendiri','alamat_tempat_sendiri','email_perusahaan_sendiri','telepon_perusahaan_sendiri','kontak_tempat_sendiri','kuota_mahasiswa_sendiri','deskripsi_perusahaan_sendiri','tanggal_mulai'];
             names.forEach(n => {
                 const el = document.querySelector(`[name="${n}"]`);
                 if (el) {
@@ -217,10 +258,76 @@
             }
         }
 
+        // Function to validate form before submission
+        function validateForm() {
+            const submitBtn = document.getElementById('submit-btn');
+            const form = document.querySelector('form');
+            let isValid = true;
+
+            // Check text inputs, textareas, and selects (exclude file inputs)
+            const textFields = form.querySelectorAll('input[required]:not([type="file"]):not([type="radio"]), textarea[required], select[required]');
+            textFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                }
+            });
+
+            // Check if pilihan_tempat is selected
+            const pilihanTempat = form.querySelector('input[name="pilihan_tempat"]:checked');
+            if (!pilihanTempat) {
+                isValid = false;
+            } else {
+                if (pilihanTempat.value === '1') {
+                    // For 'Pilih Tempat dari Prodi', require specific tempat selection
+                    const tempatMagangId = document.getElementById('tempat_magang_id');
+                    if (!tempatMagangId || !tempatMagangId.value) {
+                        isValid = false;
+                    }
+                } else if (pilihanTempat.value === '3') {
+                    // For 'Mencari Tempat Magang Sendiri', enable button immediately
+                    isValid = true;
+                }
+            }
+
+            // Check custom fields when choosing custom place
+            if (pilihanTempat && pilihanTempat.value === '3') {
+                const customFields = ['tempat_magang_sendiri', 'bidang_usaha_sendiri', 'alamat_tempat_sendiri', 'email_perusahaan_sendiri', 'telepon_perusahaan_sendiri', 'kontak_tempat_sendiri', 'kuota_mahasiswa_sendiri', 'deskripsi_perusahaan_sendiri', 'tanggal_mulai'];
+                customFields.forEach(fieldName => {
+                    const field = form.querySelector(`[name="${fieldName}"]`);
+                    if (field && !field.value.trim()) {
+                        isValid = false;
+                    }
+                });
+            }
+
+            // Check file uploads
+            const fileProposal = form.querySelector('input[name="file_proposal"]');
+            if (fileProposal && !fileProposal.files[0]) {
+                isValid = false;
+            }
+
+            // Button is always enabled - validation handled server-side
+            submitBtn.disabled = false;
+            return isValid;
+        }
+
         // Set initial state berdasarkan pilihan_tempat
         document.addEventListener('DOMContentLoaded', () => {
             const pilihanTempat = '{{ $kerjaPraktek->pilihan_tempat }}';
             toggleCustomInput(pilihanTempat == '3');
+
+            // Add event listeners for validation
+            const form = document.querySelector('form');
+            if (form) {
+                const inputs = form.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    input.addEventListener('input', validateForm);
+                    input.addEventListener('change', validateForm);
+                });
+
+                // Initial validation - enable button if form is already valid
+                setTimeout(validateForm, 100);
+            }
         });
     </script>
-</x-app-layout>
+</x-sidebar-layout>

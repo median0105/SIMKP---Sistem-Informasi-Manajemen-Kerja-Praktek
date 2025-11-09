@@ -11,7 +11,7 @@ use App\Models\Notifikasi;
 class BimbinganController extends Controller
 {
     /**
-     * List bimbingan milik mahasiswa yang dibimbing dosen (user) ini.
+     * List mahasiswa yang dibimbing dosen (user) ini.
      */
     public function index(Request $request)
     {
@@ -20,55 +20,61 @@ class BimbinganController extends Controller
             $q->where('dosen_id', auth()->id());
         })->pluck('id');
 
-        $bimbingan = Bimbingan::query()
+        $mahasiswa = \App\Models\User::query()
             ->with([
-                'mahasiswa:id,name,npm,email',
-                'kerjaPraktek.tempatMagang',
-            ])
-            ->whereIn('kerja_praktek_id', $kerjaPraktekIds)
-            ->whereNotNull('kerja_praktek_id')
-            // filter status - jika tidak ada status filter atau 'all', tampilkan semua
-            ->when($request->filled('status') && $request->status !== 'all', function ($q) use ($request) {
-                if ($request->status === 'verified') {
-                    $q->where('status_verifikasi', true);
-                } elseif ($request->status === 'pending') {
-                    $q->where('status_verifikasi', false);
+                'kerjaPraktek' => function ($q) {
+                    $q->with('tempatMagang');
+                },
+                'bimbingan' => function ($q) {
+                    $q->orderByDesc('tanggal_bimbingan');
                 }
+            ])
+            ->whereHas('kerjaPraktek', function ($q) use ($kerjaPraktekIds) {
+                $q->whereIn('id', $kerjaPraktekIds);
             })
-            // search (DIKELOMPOKKAN agar OR tidak "bocor")
             ->when($request->filled('search'), function ($q) use ($request) {
                 $search = trim($request->search);
                 $q->where(function ($qq) use ($search) {
-                    $qq->where('topik_bimbingan', 'like', "%{$search}%")
-                       ->orWhereHas('mahasiswa', function ($sub) use ($search) {
-                           $sub->where('name', 'like', "%{$search}%")
-                               ->orWhere('npm', 'like', "%{$search}%");
-                       });
+                    $qq->where('name', 'like', "%{$search}%")
+                       ->orWhere('npm', 'like', "%{$search}%");
                 });
             })
-            ->orderByDesc('tanggal_bimbingan') // utamakan tanggal terbaru
-            ->orderByDesc('id')
+            ->orderBy('name')
             ->paginate(15)
             ->withQueryString();
 
-        return view('admin.bimbingan.index', compact('bimbingan'));
+        return view('admin.bimbingan.index', compact('mahasiswa'));
     }
 
     /**
-     * Detail satu bimbingan.
+     * Detail semua bimbingan mahasiswa.
      */
-    public function show(Bimbingan $bimbingan)
+    public function show(Request $request)
     {
-        $this->authorize('view', $bimbingan);
+        $mahasiswaId = $request->query('mahasiswa');
 
-        $bimbingan->load([
-            'mahasiswa:id,name,npm,email',
+        if (!$mahasiswaId) {
+            abort(404, 'Mahasiswa tidak ditemukan');
+        }
+
+        $mahasiswa = \App\Models\User::with([
             'kerjaPraktek.tempatMagang',
-            // jika ada relasi feedbacks, bisa diaktifkan:
-            // 'feedbacks.user:id,name',
-        ]);
+            'bimbingan' => function ($q) {
+                $q->orderByDesc('tanggal_bimbingan');
+            }
+        ])->findOrFail($mahasiswaId);
 
-        return view('admin.bimbingan.show', compact('bimbingan'));
+        // Pastikan dosen ini memang membimbing mahasiswa ini
+        $kerjaPraktek = KerjaPraktek::where('mahasiswa_id', $mahasiswaId)
+            ->whereHas('dosenAkademik', function ($q) {
+                $q->where('dosen_id', auth()->id());
+            })->first();
+
+        if (!$kerjaPraktek) {
+            abort(403, 'Anda tidak memiliki akses untuk melihat bimbingan mahasiswa ini.');
+        }
+
+        return view('admin.bimbingan.show', compact('mahasiswa', 'kerjaPraktek'));
     }
 
     /**
@@ -100,6 +106,110 @@ class BimbinganController extends Controller
         }
 
         return back()->with('success', 'Bimbingan berhasil diverifikasi.');
+    }
+
+    /**
+     * Form untuk membuat bimbingan baru.
+     */
+    public function create()
+    {
+        // Ambil mahasiswa yang sedang KP dan dibimbing oleh dosen ini
+        $kerjaPraktekIds = KerjaPraktek::whereHas('dosenAkademik', function ($q) {
+            $q->where('dosen_id', auth()->id());
+        })->pluck('id');
+
+        $mahasiswa = \App\Models\User::whereHas('kerjaPraktek', function ($q) use ($kerjaPraktekIds) {
+            $q->whereIn('id', $kerjaPraktekIds);
+        })->select('id', 'name', 'npm')->orderBy('name')->get();
+
+        return view('admin.bimbingan.create', compact('mahasiswa'));
+    }
+
+    /**
+     * Simpan bimbingan baru.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'mahasiswa_id'       => 'required|exists:users,id',
+            'tanggal_bimbingan'  => 'required|date',
+            'topik_bimbingan'    => 'required|string|max:255',
+            'catatan_dosen'      => 'required|string|max:2000',
+            'status_verifikasi'  => 'nullable|boolean',
+        ]);
+
+        // Pastikan mahasiswa ini memang dibimbing oleh dosen ini
+        $kerjaPraktek = KerjaPraktek::where('mahasiswa_id', $request->mahasiswa_id)
+            ->whereHas('dosenAkademik', function ($q) {
+                $q->where('dosen_id', auth()->id());
+            })->first();
+
+        if (!$kerjaPraktek) {
+            return back()->with('error', 'Anda tidak memiliki akses untuk membuat bimbingan untuk mahasiswa ini.');
+        }
+
+        $bimbingan = Bimbingan::create([
+            'kerja_praktek_id'    => $kerjaPraktek->id,
+            'mahasiswa_id'        => $request->mahasiswa_id,
+            'tanggal_bimbingan'   => $request->tanggal_bimbingan,
+            'topik_bimbingan'     => $request->topik_bimbingan,
+            'catatan_dosen'       => $request->catatan_dosen,
+            'catatan_mahasiswa'   => '',
+            'status_verifikasi'   => $request->boolean('status_verifikasi'),
+        ]);
+
+        // Notifikasi ke mahasiswa
+        if (class_exists(Notifikasi::class)) {
+            Notifikasi::create([
+                'user_id'          => $bimbingan->mahasiswa_id,
+                'title'            => 'Bimbingan baru',
+                'message'          => "Dosen memberikan bimbingan baru: '{$bimbingan->topik_bimbingan}'.",
+                'type'             => 'info',
+                'kerja_praktek_id' => $bimbingan->kerja_praktek_id,
+                'action_url'       => route('mahasiswa.bimbingan.show', $bimbingan),
+            ]);
+        }
+
+        return redirect()->route('admin.bimbingan.index')->with('success', 'Bimbingan berhasil dibuat.');
+    }
+
+    /**
+     * Verifikasi semua bimbingan mahasiswa yang belum diverifikasi.
+     */
+    public function verifyAll(\App\Models\User $mahasiswa)
+    {
+        // Pastikan dosen ini memang membimbing mahasiswa ini
+        $kerjaPraktek = KerjaPraktek::where('mahasiswa_id', $mahasiswa->id)
+            ->whereHas('dosenAkademik', function ($q) {
+                $q->where('dosen_id', auth()->id());
+            })->first();
+
+        if (!$kerjaPraktek) {
+            return back()->with('error', 'Anda tidak memiliki akses untuk memverifikasi bimbingan mahasiswa ini.');
+        }
+
+        // Verifikasi semua bimbingan yang belum diverifikasi
+        $updatedCount = Bimbingan::where('mahasiswa_id', $mahasiswa->id)
+            ->where('status_verifikasi', false)
+            ->update(['status_verifikasi' => true]);
+
+        if ($updatedCount > 0) {
+            // Notifikasi ke mahasiswa
+            if (class_exists(Notifikasi::class)) {
+                Notifikasi::create([
+                    'user_id'          => $mahasiswa->id,
+                    'title'            => 'Bimbingan diverifikasi',
+                    'message'          => "Semua bimbingan Anda telah diverifikasi oleh dosen pembimbing.",
+                    'type'             => 'success',
+                    'kerja_praktek_id' => $kerjaPraktek->id,
+                    'action_url'       => route('mahasiswa.bimbingan.index'),
+                ]);
+            }
+
+            return back()->with('success', "Berhasil memverifikasi {$updatedCount} bimbingan.");
+        }
+
+        return back()->with('info', 'Tidak ada bimbingan yang perlu diverifikasi.');
     }
 
     /**

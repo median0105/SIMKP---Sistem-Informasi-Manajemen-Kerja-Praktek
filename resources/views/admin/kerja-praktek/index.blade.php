@@ -1,12 +1,12 @@
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Verifikasi Kerja Praktek') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {{-- Filter & Search --}}
             <div class="bg-white rounded-lg shadow mb-6 p-6">
                 <form method="GET" action="{{ route('admin.kerja-praktek.index') }}" class="flex flex-col md:flex-row gap-4">
@@ -257,4 +257,4 @@
             document.getElementById(modalId).classList.add('hidden');
         }
     </script>
-</x-app-layout>
+</x-sidebar-layout>

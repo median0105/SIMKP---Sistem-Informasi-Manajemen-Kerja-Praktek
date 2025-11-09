@@ -1,1 +1,0 @@
-'- Type: ' . \$latestNotification- . PHP_EOL;

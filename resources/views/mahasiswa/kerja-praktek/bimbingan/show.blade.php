@@ -1,18 +1,19 @@
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Detail Bimbingan
-            </h2>
-            <a href="{{ route('mahasiswa.bimbingan.index') }}"
-               class="text-unib-blue-600 hover:text-unib-blue-800 text-sm">
-                <i class="fas fa-arrow-left mr-1"></i>Kembali ke Daftar
-            </a>
+            <div class="flex items-center space-x-4">
+                <a href="{{ route('mahasiswa.bimbingan.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg inline-flex items-center text-sm">
+                    <i class="fas fa-arrow-left mr-2"></i>Kembali ke Daftar
+                </a>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Detail Bimbingan
+                </h2>
+            </div>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-6">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
             {{-- Ringkasan --}}
             <div class="bg-white rounded-lg shadow">
@@ -94,4 +95,4 @@
 
         </div>
     </div>
-</x-app-layout>
+</x-sidebar-layout>

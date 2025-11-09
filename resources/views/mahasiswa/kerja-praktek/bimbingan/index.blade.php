@@ -1,26 +1,27 @@
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Bimbingan Kerja Praktek') }}
             </h2>
-            @if($kerjaPraktek && $kerjaPraktek->status === 'sedang_kp')
-                <a href="{{ route('mahasiswa.bimbingan.create') }}" 
-                   class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
-                    <i class="fas fa-plus mr-2"></i>
-                    Tambah Bimbingan
-                </a>
-            @endif
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+               @if($kerjaPraktek && $kerjaPraktek->status === 'sedang_kp')
+                <div class="mb-6">
+                    <a href="{{ route('mahasiswa.bimbingan.create') }}"
+                       class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
+                        <i class="fas fa-plus mr-2"></i>
+                        Tambah Bimbingan
+                    </a>
+                </div>
+            @endif
             <!-- Bimbingan List -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 mb-6">Riwayat Bimbingan</h3>
-
                     @if($bimbingan->count() > 0)
                         <div class="space-y-6">
                             @foreach($bimbingan as $item)
@@ -92,4 +93,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-sidebar-layout>

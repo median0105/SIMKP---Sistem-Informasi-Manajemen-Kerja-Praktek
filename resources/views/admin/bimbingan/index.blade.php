@@ -1,19 +1,20 @@
-<x-app-layout>
+<x-sidebar-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Manajemen Bimbingan') }}
             </h2>
-            <div class="flex space-x-2">
-                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">
-                    Pending: {{ $bimbingan->where('status_verifikasi', false)->count() }}
-                </span>
-            </div>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-2 mb-6">
+                <a href="{{ route('admin.bimbingan.create') }}"
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg inline-flex items-center text-sm">
+                    <i class="fas fa-plus mr-2"></i>Tambah Bimbingan
+                </a>
+            </div>
             {{-- Filter --}}
             <div class="bg-white rounded-lg shadow mb-6 p-6">
                 <form method="GET" class="flex flex-col md:flex-row gap-4">
@@ -36,102 +37,79 @@
                 </form>
             </div>
 
-            {{-- Daftar Bimbingan --}}
+            {{-- Daftar Mahasiswa --}}
             <div class="bg-white rounded-lg shadow overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Daftar Bimbingan Mahasiswa</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">Daftar Mahasiswa Bimbingan</h3>
                 </div>
 
-                @if($bimbingan->count())
-                    <div class="divide-y divide-gray-200">
-                        @foreach($bimbingan as $item)
-                            <div class="p-6 hover:bg-gray-50 transition">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-3 mb-1">
-                                            <h4 class="text-base md:text-lg font-medium text-gray-900">
-                                                {{ $item->topik_bimbingan }}
-                                            </h4>
-                                            @if($item->status_verifikasi)
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                    <i class="fas fa-check mr-1"></i>Terverifikasi
-                                                </span>
-                                            @else
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                    <i class="fas fa-clock mr-1"></i>Menunggu
-                                                </span>
-                                            @endif
-                                        </div>
-
-                                        <p class="text-sm text-gray-600">
-                                            Mahasiswa:
-                                            <span class="font-medium text-gray-900">
-                                                {{ optional($item->mahasiswa)->name }}
-                                                @if(optional($item->mahasiswa)->npm)
-                                                    ({{ $item->mahasiswa->npm }})
-                                                @endif
-                                            </span>
-                                        </p>
-
-                                        <p class="text-sm text-gray-600">
-                                            Tanggal:
-                                            <span class="font-medium text-gray-900">
-                                                @if($item->tanggal_bimbingan)
-                                                    {{ \Illuminate\Support\Carbon::parse($item->tanggal_bimbingan)->locale('id')->translatedFormat('d F Y') }}
+                @if($mahasiswa->count())
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mahasiswa</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tempat KP</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Bimbingan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bimbingan Terakhir</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach($mahasiswa as $mhs)
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        {{ $mhs->name }}
+                                                    </div>
+                                                    <div class="text-sm text-gray-500">
+                                                        {{ $mhs->npm }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm text-gray-900">
+                                                @if($mhs->kerjaPraktek && $mhs->kerjaPraktek->first() && $mhs->kerjaPraktek->first()->pilihan_tempat == 3)
+                                                    {{ $mhs->kerjaPraktek->first()->tempat_magang_sendiri }}
+                                                @elseif($mhs->kerjaPraktek && $mhs->kerjaPraktek->first() && $mhs->kerjaPraktek->first()->tempatMagang)
+                                                    {{ $mhs->kerjaPraktek->first()->tempatMagang->nama_perusahaan }}
                                                 @else
                                                     -
                                                 @endif
-                                            </span>
-                                        </p>
-
-                                        @if($item->catatan_mahasiswa)
-                                            <p class="text-sm text-gray-700 mt-2">
-                                                {{ \Illuminate\Support\Str::limit($item->catatan_mahasiswa, 180) }}
-                                            </p>
-                                        @endif
-
-                                        @if($item->catatan_dosen)
-                                            <div class="mt-3 bg-green-50 border border-green-200 rounded-lg p-3">
-                                                <p class="text-xs font-medium text-green-800 mb-1">Feedback Dosen</p>
-                                                <p class="text-sm text-green-900">{{ $item->catatan_dosen }}</p>
                                             </div>
-                                        @endif
-                                    </div>
-
-                                    <div class="ml-6 flex flex-col space-y-2">
-                                        <a href="{{ route('admin.bimbingan.show', $item) }}"
-                                           class="text-unib-blue-600 hover:text-unib-blue-800 text-sm font-medium">
-                                            <i class="fas fa-eye mr-1"></i>Detail
-                                        </a>
-
-                                        @if(!$item->status_verifikasi)
-                                            <form method="POST" action="{{ route('admin.bimbingan.verify', $item) }}"
-                                                  onsubmit="return confirm('Verifikasi bimbingan ini?')">
-                                                @csrf
-                                                <button class="text-green-600 hover:text-green-800 text-left text-sm font-medium">
-                                                    <i class="fas fa-check mr-1"></i>Verify
-                                                </button>
-                                            </form>
-
-                                            <button type="button"
-                                                    onclick="openFeedback({{ $item->id }})"
-                                                    class="text-blue-600 hover:text-blue-800 text-left text-sm font-medium">
-                                                <i class="fas fa-comment mr-1"></i>Feedback
-                                            </button>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ $mhs->bimbingan->count() }} bimbingan
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            @if($mhs->bimbingan->first())
+                                                {{ \Illuminate\Support\Carbon::parse($mhs->bimbingan->first()->tanggal_bimbingan)->locale('id')->translatedFormat('d F Y') }}
+                                            @else
+                                                Belum ada
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="{{ route('admin.bimbingan.show', ['mahasiswa' => $mhs->id]) }}"
+                                               class="text-unib-blue-600 hover:text-unib-blue-800 inline-flex items-center">
+                                                <i class="fas fa-eye mr-1"></i>Detail Bimbingan
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
 
                     <div class="px-6 py-4 border-t border-gray-200">
-                        {{ $bimbingan->withQueryString()->links() }}
+                        {{ $mahasiswa->withQueryString()->links() }}
                     </div>
                 @else
                     <div class="p-10 text-center">
-                        <i class="fas fa-comments text-5xl text-gray-300 mb-3"></i>
-                        <p class="text-gray-600">Belum ada bimbingan.</p>
+                        <i class="fas fa-users text-5xl text-gray-300 mb-3"></i>
+                        <p class="text-gray-600">Belum ada mahasiswa yang dibimbing.</p>
                     </div>
                 @endif
             </div>
@@ -171,4 +149,4 @@
             document.getElementById('feedbackModal').classList.add('hidden');
         }
     </script>
-</x-app-layout>
+</x-sidebar-layout>
