@@ -405,45 +405,6 @@ class KerjaPraktekController extends Controller
 
         return back()->with('success', 'Kuisioner berhasil disimpan.');
     }
-
-    // /** Upload kartu implementasi (setelah ACC seminar) - REMOVED */
-    // public function uploadKartu(Request $request, KerjaPraktek $kerjaPraktek)
-    // {
-    //     $this->authorize('update', $kerjaPraktek);
-
-    //     if (!$kerjaPraktek->acc_seminar) {
-    //         return back()->with('error', 'Anda hanya dapat upload kartu implementasi setelah mendapat ACC seminar.');
-    //     }
-
-    //     $request->validate([
-    //         'file_kartu_implementasi' => ['required','file','mimes:pdf,jpg,jpeg,png','max:5120'], // 5MB
-    //     ]);
-
-    //     if ($kerjaPraktek->file_kartu_implementasi) {
-    //         Storage::disk('public')->delete($kerjaPraktek->file_kartu_implementasi);
-    //     }
-
-    //     $path = $request->file('file_kartu_implementasi')->store('kartu-implementasi', 'public');
-
-    //     $kerjaPraktek->update([
-    //         'file_kartu_implementasi' => $path,
-    //         'acc_pembimbing_lapangan' => false, // reset ACC lapangan
-    //     ]);
-
-    //     // Kirim notifikasi ke dosen bahwa mahasiswa telah upload kartu implementasi
-    //     NotificationService::sendToRole(
-    //         'admin_dosen',
-    //         'Kartu Implementasi KP Diunggah',
-    //         'Mahasiswa ' . auth()->user()->name . ' telah mengunggah kartu implementasi kerja praktek dengan judul: ' . $kerjaPraktek->judul_kp,
-    //         'info',
-    //         $kerjaPraktek->id,
-    //         route('admin.kerja-praktek.show', $kerjaPraktek->id)
-    //     );
-
-    //     return back()->with('success', 'Kartu implementasi berhasil diupload. Menunggu ACC dari pembimbing lapangan.');
-    // }
-
-    /** Edit KP yang ditolak */
     public function edit(KerjaPraktek $kerjaPraktek)
     {
         $this->authorize('update', $kerjaPraktek);

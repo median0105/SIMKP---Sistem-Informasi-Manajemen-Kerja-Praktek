@@ -87,7 +87,7 @@
                 <a href="{{ route('superadmin.users.index') }}"
                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('superadmin.users.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
                     <i class="fas fa-users-cog mr-3 w-5 text-center"></i>
-                    Kelola User
+                    Kelola Akun
                 </a>
 
                 <!-- Tempat Magang -->

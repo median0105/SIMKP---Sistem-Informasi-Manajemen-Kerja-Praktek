@@ -54,7 +54,7 @@
         /* Level 2: Nama Pengawas */
         .level-2 {
             position: absolute;
-            top: 90mm; /* SESUAIKAN: Di bawah garis pertama */
+            top: 85mm; /* SESUAIKAN: Di bawah garis pertama */
             left: 50%;
             transform: translateX(-50%);
             font-size: 34pt;
@@ -67,10 +67,10 @@
         /* Level 3: Deskripsi */
         .level-3 {
             position: absolute;
-            top: 115mm; /* SESUAIKAN: Di bawah nama */
+            top: 110mm; /* SESUAIKAN: Di bawah nama */
             left: 50%;
             transform: translateX(-50%);
-            font-size: 16pt;
+            font-size: 14pt;
             color: #000000;
             text-align: center;
             width: 65%;
@@ -80,7 +80,7 @@
         /* Level 4: Kaprodi */
         .level-4 {
             position: absolute;
-            bottom: 45mm; /* SESUAIKAN: Di bawah garis kedua */
+            bottom: 25mm; /* SESUAIKAN: Di bawah garis kedua */
             left: 50%;
             transform: translateX(-50%);
             font-size: 14pt;
@@ -93,7 +93,7 @@
         /* Level 5: NIP */
         .level-5 {
             position: absolute;
-            bottom: 40mm; /* SESUAIKAN: Di bawah kaprodi */
+            bottom: 20mm; /* SESUAIKAN: Di bawah kaprodi */
             left: 50%;
             transform: translateX(-50%);
             font-size: 12pt;
@@ -105,7 +105,7 @@
         /* Level 6: Tanggal */
         .level-6 {
             position: absolute;
-            bottom: 30mm; /* SESUAIKAN: Paling bawah */
+            bottom: 65mm; /* SESUAIKAN: Paling bawah */
             left: 50%;
             transform: translateX(-50%);
             font-size: 11pt;
@@ -121,7 +121,7 @@
     <div class="content">
         <!-- Level 1: Nomor Sertifikat -->
         <div class="level-1">
-            {{ $sertifikat->nomor_sertifikat }}/SIMKP/SJ/FT/UNIB/{{ $sertifikat->tahun_ajaran }}
+            NO. {{ $sertifikat->nomor_sertifikat }}/SIMKP/SI/FT/UNIB/{{ $sertifikat->tahun_ajaran }}
         </div>
         
         <!-- Level 2: Nama Pengawas -->
@@ -148,7 +148,7 @@
         
         <!-- Level 6: Tanggal -->
         <div class="level-6">
-            Diserahkan pada tanggal {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
+            Bengkulu, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
         </div>
     </div>
 </body>
