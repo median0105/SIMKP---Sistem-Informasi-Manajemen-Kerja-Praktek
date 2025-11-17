@@ -129,9 +129,9 @@
                                         @if(Auth::user()->avatar)
                                             <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
                                                  alt="Avatar"
-                                                 class="w-8 h-8 rounded-full border-2 border-gray-300 shadow-sm mr-2 object-cover">
+                                                 class="w-10 h-10 rounded-full border-2 border-gray-300 shadow-sm mr-2 object-cover">
                                         @else
-                                            <div class="w-8 h-8 rounded-full bg-gray-200 border-2 border-gray-300 flex items-center justify-center text-gray-700 font-semibold mr-2 shadow-sm">
+                                            <div class="w-10 h-10 rounded-full bg-gray-200 border-2 border-gray-300 flex items-center justify-center text-gray-700 font-semibold mr-2 shadow-sm">
                                                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                                             </div>
                                         @endif

@@ -676,11 +676,16 @@ class UserController extends Controller
             });
         }
 
-        // Filter status: default hanya pengajuan jika tidak ada filter
+        // Filter status: default hanya yang belum diverifikasi jika tidak ada filter
         if ($status) {
             $query->where('status', $status);
         } else {
-            $query->where('status', KerjaPraktek::STATUS_PENGAJUAN);
+            $query->where('instansi_verified', false);
+        }
+
+        // Filter berdasarkan instansi_verified jika ada
+        if ($request->filled('instansi_verified')) {
+            $query->where('instansi_verified', $request->boolean('instansi_verified'));
         }
 
         $kerjaPrakteks = $query->orderByDesc('created_at')->paginate(15);
@@ -730,9 +735,9 @@ class UserController extends Controller
             $tempatMagangId = $tempatMagang->id;
         }
 
-        // Update kerja praktek: set status disetujui, ubah pilihan_tempat ke 1, dan set tempat_magang_id
+        // Update kerja praktek: hanya set instansi_verified, jangan ubah status KP
         $kerjaPraktek->update([
-            'status' => KerjaPraktek::STATUS_DISETUJUI,
+            'instansi_verified' => true,
             'pilihan_tempat' => 1, // Ubah ke pilihan dari prodi
             'tempat_magang_id' => $tempatMagangId,
             // Kosongkan field mandiri karena sudah menjadi tempat magang resmi
@@ -750,14 +755,14 @@ class UserController extends Controller
         // Kirim notifikasi ke mahasiswa
         \App\Services\NotificationService::sendToUser(
             $kerjaPraktek->mahasiswa_id,
-            'Instansi Mandiri Disetujui',
-            "Instansi magang mandiri Anda '{$kerjaPraktek->tempat_magang_sendiri}' telah disetujui oleh superadmin dan terdaftar sebagai tempat magang resmi.",
+            'Instansi Mandiri Diverifikasi',
+            "Instansi magang mandiri Anda '{$kerjaPraktek->tempat_magang_sendiri}' telah diverifikasi oleh superadmin dan terdaftar sebagai tempat magang resmi. Anda dapat melanjutkan proses pengajuan KP.",
             'success',
             $kerjaPraktek->id,
             route('mahasiswa.kerja-praktek.index')
         );
 
-        return back()->with('success', 'Instansi mandiri berhasil disetujui dan terdaftar sebagai tempat magang.');
+        return back()->with('success', 'Instansi mandiri berhasil diverifikasi dan terdaftar sebagai tempat magang.');
     }
 
     /**

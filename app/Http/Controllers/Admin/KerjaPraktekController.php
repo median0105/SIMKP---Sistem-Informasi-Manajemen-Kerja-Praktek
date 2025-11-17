@@ -25,6 +25,12 @@ class KerjaPraktekController extends Controller
             });
         }
 
+        // Filter untuk hanya menampilkan KP yang instansi_verified = true atau pilihan_tempat != 3
+        $query->where(function($q) {
+            $q->where('instansi_verified', true)
+              ->orWhere('pilihan_tempat', '!=', 3);
+        });
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {

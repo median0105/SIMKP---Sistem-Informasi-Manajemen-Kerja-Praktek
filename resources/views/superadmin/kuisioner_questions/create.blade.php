@@ -1,15 +1,16 @@
 <x-sidebar-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Tambah Pertanyaan Kuisioner
-            </h2>
-            <a href="{{ route('superadmin.kuisioner_questions.index') }}" class="text-unib-blue-600 hover:text-unib-blue-800">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
-            </a>
+            <div class="flex items-center space-x-4">
+                <a href="{{ route('superadmin.kuisioner_questions.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                </a>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Tambah Pertanyaan Kuisioner
+                </h2>
+            </div>
         </div>
     </x-slot>
-
     <div class="py-6">
         <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white shadow rounded-lg p-6">

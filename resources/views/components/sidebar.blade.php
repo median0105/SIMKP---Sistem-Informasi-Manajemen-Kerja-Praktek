@@ -158,6 +158,13 @@
                     </div>
                 </div>
 
+                <!-- Sertifikat Pengawas -->
+                <a href="{{ route('superadmin.sertifikat-pengawas.index') }}"
+                   class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('superadmin.sertifikat-pengawas.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
+                    <i class="fas fa-certificate mr-3 w-5 text-center"></i>
+                    Sertifikat Pengawas
+                </a>
+
                 <!-- Kegiatan Mahasiswa -->
                 <a href="{{ route('superadmin.kegiatan.index') }}"
                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('superadmin.kegiatan.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
@@ -179,6 +186,13 @@
                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('pengawas.kegiatan.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
                     <i class="fas fa-tasks mr-3 w-5 text-center"></i>
                     Kegiatan Mahasiswa
+                </a>
+
+                <!-- Sertifikat Pengawas -->
+                <a href="{{ route('pengawas.sertifikat.index') }}"
+                   class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('pengawas.sertifikat.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
+                    <i class="fas fa-certificate mr-3 w-5 text-center"></i>
+                    Sertifikat
                 </a>
             @endif
         </nav>

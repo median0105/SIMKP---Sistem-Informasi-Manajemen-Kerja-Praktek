@@ -29,6 +29,12 @@ class KerjaPraktekController extends Controller
             $query->where('status', $status);
         }
 
+        // Filter untuk hanya menampilkan KP yang instansi_verified = true atau pilihan_tempat != 3
+        $query->where(function($q) {
+            $q->where('instansi_verified', true)
+              ->orWhere('pilihan_tempat', '!=', 3);
+        });
+
         $kerjaPrakteks = $query->orderByDesc('created_at')
                                ->paginate(15)
                                ->through(function ($kp) {
@@ -41,7 +47,7 @@ class KerjaPraktekController extends Controller
                                });
 
         // Get duplicate titles for notification
-        $duplicateTitles = KerjaPraktek::select('judul_kp')
+        $duplicateTitles = KerjaPraktek::select('judul_kp')         
             ->groupBy('judul_kp')
             ->havingRaw('COUNT(*) > 1')
             ->pluck('judul_kp');

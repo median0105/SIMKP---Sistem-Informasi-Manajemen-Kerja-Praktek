@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="text-sm text-gray-500">
-                    <div>Mulai: {{ optional($kp->tanggal_mulai)->locale('id')->translatedFormat('d F Y') }}</div>
+                    <div>Mulai: {{ $kp->tanggal_mulai ? $kp->tanggal_mulai->locale('id')->translatedFormat('d F Y') : '-' }}</div>
                     {{-- <div>Selesai: {{ optional($kp->tanggal_selesai)->format('d M Y') ?: '-' }}</div> --}}
                 </div>
             </div>

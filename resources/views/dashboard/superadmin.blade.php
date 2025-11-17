@@ -13,7 +13,7 @@
 </div>
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <!-- Row 1 -->
     <!-- Total Mahasiswa -->
     <div class="bg-white rounded-lg shadow p-4">
@@ -90,20 +90,6 @@
             </div>
             <div class="bg-red-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                 <i class="fas fa-briefcase text-red-600 "></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- Row 3 -->
-    <!-- Instansi Mandiri Pending -->
-    <div class="bg-white rounded-lg shadow p-4">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm font-medium text-gray-600">Instansi Mandiri Pending</p>
-                <p class="text-2xl font-semibold text-orange-600 mt-2">{{ $data['totalInstansiPending'] ?? 0 }}</p>
-            </div>
-            <div class="bg-orange-100 rounded-full p-3 w-10 h-10 flex items-center justify-center">
-                <i class="fas fa-clock text-orange-600 "></i>
             </div>
         </div>
     </div>

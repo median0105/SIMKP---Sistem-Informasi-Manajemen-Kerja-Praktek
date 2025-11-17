@@ -89,6 +89,7 @@
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mahasiswa</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul KP</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duplikat</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tempat Magang</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dosen Pembimbing</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dosen Penguji</th>
@@ -130,15 +131,6 @@
                                         @endif --}}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">
-                                            @if($kp->pilihan_tempat == 3)
-                                                {{ $kp->tempat_magang_sendiri ?? '-' }}
-                                            @else
-                                                {{ $kp->tempatMagang->nama_perusahaan ?? '-' }}
-                                            @endif
-                                        </div>
-                                    </td>
-                                    {{-- <td class="px-6 py-4 whitespace-nowrap">
                                         @if($kp->duplicate_info && count($kp->duplicate_info) > 0)
                                             <div class="space-y-1">
                                                 @foreach($kp->duplicate_info as $duplicate)
@@ -148,9 +140,21 @@
                                                 @endforeach
                                             </div>
                                         @else
-                                            <span class="text-xs text-gray-500">-</span>
+                                            <div class="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">
+                                                0% - Tidak ada kemiripan terdeteksi
+                                            </div>
                                         @endif
-                                    </td> --}}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">
+                                            @if($kp->pilihan_tempat == 3)
+                                                {{ $kp->tempat_magang_sendiri ?? '-' }}
+                                            @else
+                                                {{ $kp->tempatMagang->nama_perusahaan ?? '-' }}
+                                            @endif
+                                        </div>
+                                    </td>
+                                    
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @php
                                             $dosenPembimbingAkademik = $kp->dosenPembimbing->where('jenis_pembimbingan', 'akademik')->where('is_active', true)->first();

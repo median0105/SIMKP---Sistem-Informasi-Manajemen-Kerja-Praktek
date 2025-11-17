@@ -42,6 +42,7 @@ class KerjaPraktek extends Model
         'telepon_perusahaan_sendiri',
         'kuota_mahasiswa_sendiri',
         'deskripsi_perusahaan_sendiri',
+        'instansi_verified',
 
         // Seminar registration fields
         'pendaftaran_seminar',
@@ -61,6 +62,7 @@ class KerjaPraktek extends Model
         'penilaian_dosen',
         'rata_rata_dosen',
         'rata_rata_seminar',
+        'instansi_verified',
     ];
 
     protected $casts = [
@@ -88,6 +90,7 @@ class KerjaPraktek extends Model
         'penilaian_dosen' => 'array',
         'rata_rata_dosen' => 'decimal:2',
         'rata_rata_seminar' => 'decimal:2',
+        'instansi_verified' => 'boolean',
     ];
 
 

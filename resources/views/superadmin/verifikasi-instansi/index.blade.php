@@ -20,6 +20,11 @@
                                     <option value="disetujui" {{ $status === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                                     <option value="ditolak" {{ $status === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                                 </select>
+                                <select name="instansi_verified" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <option value="">Semua Verifikasi</option>
+                                    <option value="1" {{ request('instansi_verified') === '1' ? 'selected' : '' }}>Sudah Diverifikasi</option>
+                                    <option value="0" {{ request('instansi_verified') === '0' ? 'selected' : '' }}>Belum Diverifikasi</option>
+                                </select>
                                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                     Cari
                                 </button>
@@ -41,7 +46,8 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kontak Person</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kuota</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status KP</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Verifikasi Instansi</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Dibuat</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
@@ -87,16 +93,24 @@
                                             {{ ucfirst($kp->status) }}
                                         </span>
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            @if($kp->instansi_verified) bg-green-100 text-green-800
+                                            @else bg-yellow-100 text-yellow-800
+                                            @endif">
+                                            {{ $kp->instansi_verified ? 'Diverifikasi' : 'Belum Diverifikasi' }}
+                                        </span>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $kp->created_at->locale('id')->translatedFormat('d F Y') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        @if($kp->status === 'pengajuan')
+                                        @if(!$kp->instansi_verified)
                                         <form method="POST" action="{{ route('superadmin.verifikasi-instansi.approve', $kp) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui instansi ini?')">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="text-green-600 hover:text-green-900 mr-2" title="Setujui">
-                                                <i class="fas fa-check"></i> Setujui</button>
+                                                <i class="fas fa-check"></i> Verifikasi</button>
                                         </form>
                                         <form method="POST" action="{{ route('superadmin.verifikasi-instansi.reject', $kp) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menolak instansi ini?')">
                                             @csrf
@@ -105,13 +119,13 @@
                                                 <i class="fas fa-times"></i> Tolak</button>
                                         </form>
                                         @else
-                                        <span class="text-gray-500">{{ ucfirst($kp->status) }}</span>
+                                        <span class="text-green-500">Sudah Diverifikasi</span>
                                         @endif
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="12" class="px-6 py-4 text-center text-gray-500">
+                                    <td colspan="13" class="px-6 py-4 text-center text-gray-500">
                                         Tidak ada data instansi mandiri ditemukan.
                                     </td>
                                 </tr>

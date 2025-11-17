@@ -128,7 +128,7 @@
                                     @endif
                                     </td>
                                     <td class="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">
-                                        {{ optional($item->tanggal_mulai)->locale('id')->translatedFormat('d F Y') }}
+                                        {{ $item->tanggal_mulai ? $item->tanggal_mulai->locale('id')->translatedFormat('d F Y') : '-' }}
                                     </td>
                                     <td class="px-4 py-2">
                                         <div class="flex items-center gap-3">

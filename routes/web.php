@@ -212,6 +212,12 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
         });
 
         Route::resource('kuisioner_questions', \App\Http\Controllers\SuperAdmin\KuisionerQuestionController::class);
+
+        // Sertifikat Pengawas
+        Route::resource('sertifikat-pengawas', \App\Http\Controllers\SuperAdmin\SertifikatPengawasController::class);
+        Route::post('sertifikat-pengawas/{sertifikatPengawa}/generate', [\App\Http\Controllers\SuperAdmin\SertifikatPengawasController::class, 'generate'])->name('sertifikat-pengawas.generate');
+        Route::post('sertifikat-pengawas/generate-all', [\App\Http\Controllers\SuperAdmin\SertifikatPengawasController::class, 'generateAll'])->name('sertifikat-pengawas.generate-all');
+        Route::get('sertifikat-pengawas/{sertifikatPengawa}/download', [\App\Http\Controllers\SuperAdmin\SertifikatPengawasController::class, 'download'])->name('sertifikat-pengawas.download');
     });
 
 /*
@@ -230,6 +236,12 @@ Route::middleware(['auth', 'verified', 'role:pengawas_lapangan'])
 
         // Kegiatan
         Route::resource('kegiatan', \App\Http\Controllers\PengawasLapangan\KegiatanController::class)->only(['index']);
+
+        // Sertifikat
+        Route::prefix('sertifikat')->name('sertifikat.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\PengawasLapangan\SertifikatController::class, 'index'])->name('index');
+            Route::get('/{sertifikat}/download', [\App\Http\Controllers\PengawasLapangan\SertifikatController::class, 'download'])->name('download');
+        });
 
         // Alihkan menu kuisioner pengawas ke daftar mahasiswa
         Route::get('kuisioner', fn () => redirect()->route('pengawas.mahasiswa.index'))->name('kuisioner.index');
