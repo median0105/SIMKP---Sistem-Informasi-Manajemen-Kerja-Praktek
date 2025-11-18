@@ -136,9 +136,9 @@
                 </div>
 
                 <!-- Kuisioner Dropdown -->
-                <div x-data="{ open: {{ request()->routeIs('superadmin.kuisioner.*') || request()->routeIs('superadmin.kuisioner_questions.*') ? 'true' : 'false' }} }" class="relative">
+                <div x-data="{ open: {{ request()->routeIs('superadmin.kuisioner.*') || request()->routeIs('superadmin.kuisioner_questions.*') || request()->routeIs('superadmin.kuisioner_pengawas_questions.*') ? 'true' : 'false' }} }" class="relative">
                     <button @click="open = !open"
-                            class="flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('superadmin.kuisioner.*') || request()->routeIs('superadmin.kuisioner_questions.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
+                            class="flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('superadmin.kuisioner.*') || request()->routeIs('superadmin.kuisioner_questions.*') || request()->routeIs('superadmin.kuisioner_pengawas_questions.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
                         <i class="fas fa-clipboard-list mr-3 w-5 text-center"></i>
                         Kuisioner
                         <svg class="ml-auto h-4 w-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
@@ -149,11 +149,15 @@
                     <div x-show="open" @click.away="open = false" x-transition class="mt-1 ml-4 space-y-1">
                         <a href="{{ route('superadmin.kuisioner.index') }}"
                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg {{ request()->routeIs('superadmin.kuisioner.index') ? 'bg-unib-blue-50 text-unib-blue-700' : '' }}">
-                            Lihat Kuisioner
+                            Lihat Data Kuisioner 
                         </a>
                         <a href="{{ route('superadmin.kuisioner_questions.index') }}"
                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg {{ request()->routeIs('superadmin.kuisioner_questions.index') ? 'bg-unib-blue-50 text-unib-blue-700' : '' }}">
-                            Kelola Pertanyaan
+                            Kelola Pertanyaan Mahasiswa
+                        </a>
+                        <a href="{{ route('superadmin.kuisioner_pengawas_questions.index') }}"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg {{ request()->routeIs('superadmin.kuisioner_pengawas_questions.index') ? 'bg-unib-blue-50 text-unib-blue-700' : '' }}">
+                            Kelola Pertanyaan Pengawas
                         </a>
                     </div>
                 </div>
@@ -187,6 +191,33 @@
                     <i class="fas fa-tasks mr-3 w-5 text-center"></i>
                     Kegiatan Mahasiswa
                 </a>
+                 <a href="{{ route('pengawas.kuisioner-pengawas.index') }}"
+                   class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('pengawas.kuisioner-pengawas.index') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
+                    <i class="fas fa-clipboard-list mr-3 w-5 text-center"></i>
+                    Kuisioner
+                </a>
+                <!-- Kuisioner Dropdown -->
+                    {{-- <div x-data="{ open: {{ request()->routeIs('pengawas.kuisioner.*') || request()->routeIs('pengawas.kuisioner-pengawas.*') ? 'true' : 'false' }} }" class="relative">
+                        <button @click="open = !open"
+                                class="flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('pengawas.kuisioner.*') || request()->routeIs('pengawas.kuisioner-pengawas.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
+                            <i class="fas fa-clipboard-list mr-3 w-5 text-center"></i>
+                            Kuisioner
+                            <svg class="ml-auto h-4 w-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.08 1.04l-4.25 4.25a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 010-1.06z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+
+                        <div x-show="open" @click.away="open = false" x-transition class="mt-1 ml-4 space-y-1">
+                            <a href="{{ route('pengawas.kuisioner.index') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg {{ request()->routeIs('pengawas.kuisioner.index') ? 'bg-unib-blue-50 text-unib-blue-700' : '' }}">
+                                Kuisioner Mahasiswa
+                            </a>
+                            <a href="{{ route('pengawas.kuisioner-pengawas.index') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg {{ request()->routeIs('pengawas.kuisioner-pengawas.index') ? 'bg-unib-blue-50 text-unib-blue-700' : '' }}">
+                                Kuisioner Pengawas
+                            </a>
+                        </div>
+                    </div> --}}
 
                 <!-- Sertifikat Pengawas -->
                 <a href="{{ route('pengawas.sertifikat.index') }}"

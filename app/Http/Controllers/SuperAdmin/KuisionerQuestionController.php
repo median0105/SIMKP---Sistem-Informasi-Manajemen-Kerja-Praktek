@@ -16,7 +16,8 @@ class KuisionerQuestionController extends Controller
 
     public function create()
     {
-        return view('superadmin.kuisioner_questions.create');
+        $nextOrder = KuisionerQuestion::max('order') + 1;
+        return view('superadmin.kuisioner_questions.create', compact('nextOrder'));
     }
 
     public function store(Request $request)

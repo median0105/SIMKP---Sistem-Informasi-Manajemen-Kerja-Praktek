@@ -66,28 +66,97 @@
                 </form>
             </div>
 
-            {{-- Ringkasan --}}
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-white rounded-lg shadow p-6">
-                    <p class="text-sm text-gray-600">Total Responden</p>
-                    <p class="text-3xl font-bold text-unib-blue-600 mt-2">{{ number_format($stats['total']) }}</p>
+            {{-- Ringkasan Kuisioner Mahasiswa --}}
+            {{-- <div class="bg-white shadow rounded-lg p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Ringkasan Kuisioner Mahasiswa</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-2xl mr-3"></i>
+                            <div>
+                                <p class="text-sm opacity-90">Total Responden</p>
+                                <p class="text-3xl font-bold mt-1">{{ number_format($stats['total']) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center">
+                            <i class="fas fa-building text-2xl mr-3"></i>
+                            <div>
+                                <p class="text-sm opacity-90">Rata-rata Tempat</p>
+                                <p class="text-3xl font-bold mt-1">{{ $stats['avg_tempat'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center">
+                            <i class="fas fa-chalkboard-teacher text-2xl mr-3"></i>
+                            <div>
+                                <p class="text-sm opacity-90">Rata-rata Bimbingan</p>
+                                <p class="text-3xl font-bold mt-1">{{ $stats['avg_bimbingan'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center">
+                            <i class="fas fa-thumbs-up text-2xl mr-3"></i>
+                            <div>
+                                <p class="text-sm opacity-90">Rekomendasi Tempat</p>
+                                <p class="text-3xl font-bold mt-1">{{ $stats['rekom_rate'] }}%</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-white rounded-lg shadow p-6">
-                    <p class="text-sm text-gray-600">Rata-rata Tempat</p>
-                    <p class="text-3xl font-bold text-green-600 mt-2">{{ $stats['avg_tempat'] }}</p>
+            </div> --}}
+
+            {{-- Ringkasan Kuisioner Pengawas --}}
+            {{-- <div class="bg-white shadow rounded-lg p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Ringkasan Kuisioner Pengawas Lapangan</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center">
+                            <i class="fas fa-user-tie text-2xl mr-3"></i>
+                            <div>
+                                <p class="text-sm opacity-90">Total Pengawas</p>
+                                <p class="text-3xl font-bold mt-1">{{ number_format($stats['total_pengawas_responses']) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center">
+                            <i class="fas fa-question-circle text-2xl mr-3"></i>
+                            <div>
+                                <p class="text-sm opacity-90">Total Pertanyaan</p>
+                                <p class="text-3xl font-bold mt-1">{{ number_format($stats['total_pengawas_questions']) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-pink-500 to-pink-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center">
+                            <i class="fas fa-star text-2xl mr-3"></i>
+                            <div>
+                                <p class="text-sm opacity-90">Rata-rata Rating</p>
+                                <p class="text-3xl font-bold mt-1">{{ $stats['avg_pengawas_rating'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center">
+                            <i class="fas fa-chart-line text-2xl mr-3"></i>
+                            <div>
+                                <p class="text-sm opacity-90">Tingkat Partisipasi</p>
+                                <p class="text-3xl font-bold mt-1">{{ $stats['pengawas_completion_rate'] }}%</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-white rounded-lg shadow p-6">
-                    <p class="text-sm text-gray-600">Rata-rata Bimbingan</p>
-                    <p class="text-3xl font-bold text-green-600 mt-2">{{ $stats['avg_bimbingan'] }}</p>
-                </div>
-                <div class="bg-white rounded-lg shadow p-6">
-                    <p class="text-sm text-gray-600">Rekomendasi Tempat</p>
-                    <p class="text-3xl font-bold text-purple-600 mt-2">{{ $stats['rekom_rate'] }}%</p>
-                </div>
-            </div>
+            </div> --}}
 
             {{-- Tabel --}}
             <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Jawaban Kuisioner Mahasiswa</h3>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
@@ -158,6 +227,67 @@
 
                 <div class="p-4 border-t">
                     {{ $items->links() }}
+                </div>
+            </div>
+
+            {{-- Tabel Kuisioner Pengawas --}}
+            <div class="bg-white shadow rounded-lg mt-6">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Jawaban Kuisioner Pengawas Lapangan</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pengawas</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pertanyaan</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Jawaban</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Isi</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                        @php
+                            $kuisionerPengawas = \App\Models\KuisionerPengawas::with(['pengawas', 'question'])
+                                ->join('kuisioner_pengawas_questions', 'kuisioner_pengawas.kuisioner_pengawas_question_id', '=', 'kuisioner_pengawas_questions.id')
+                                ->where('kuisioner_pengawas_questions.is_active', true)
+                                ->orderBy('kuisioner_pengawas_questions.order')
+                                ->orderBy('kuisioner_pengawas.submitted_at', 'desc')
+                                ->select('kuisioner_pengawas.*')
+                                ->get();
+                        @endphp
+                        @forelse($kuisionerPengawas as $response)
+                            <tr>
+                                <td class="px-4 py-2">
+                                    <div class="font-medium text-gray-900">{{ $response->pengawas->name ?? '-' }}</div>
+                                    <div class="text-xs text-gray-500">{{ $response->pengawas->email ?? '-' }}</div>
+                                </td>
+                                <td class="px-4 py-2">{{ $response->question->question_text ?? '-' }}</td>
+                                <td class="px-4 py-2">
+                                    @if($response->question->type === 'rating')
+                                        <span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700">{{ $response->rating }}/5</span>
+                                    @elseif($response->question->type === 'yes_no')
+                                        @if($response->yes_no)
+                                            <span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Ya</span>
+                                        @else
+                                            <span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">Tidak</span>
+                                        @endif
+                                    @else
+                                        {{ $response->answer ?? '-' }}
+                                    @endif
+                                </td>
+                                <td class="px-4 py-2 text-sm text-gray-700">
+                                    {{ $response->submitted_at ? $response->submitted_at->locale('id')->translatedFormat('d F Y') : $response->created_at->locale('id')->translatedFormat('d F Y') }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center py-8 text-gray-500">
+                                    Belum ada jawaban kuisioner pengawas.
+                                </td>
+                            </tr>
+                        @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

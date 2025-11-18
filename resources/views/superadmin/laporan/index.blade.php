@@ -335,7 +335,7 @@
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Mahasiswa</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Judul KP</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nilai</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Grade</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"></th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
                                 </tr>

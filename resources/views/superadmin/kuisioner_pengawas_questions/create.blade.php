@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <a href="{{ route('superadmin.kuisioner_questions.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg inline-flex items-center">
+                <a href="{{ route('superadmin.kuisioner_pengawas_questions.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg inline-flex items-center">
                     <i class="fas fa-arrow-left mr-2"></i>Kembali
                 </a>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Tambah Pertanyaan Kuisioner
+                    Tambah Pertanyaan Kuisioner Pengawas
                 </h2>
             </div>
         </div>
@@ -14,7 +14,7 @@
     <div class="py-6">
         <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white shadow rounded-lg p-6">
-                <form method="POST" action="{{ route('superadmin.kuisioner_questions.store') }}">
+                <form method="POST" action="{{ route('superadmin.kuisioner_pengawas_questions.store') }}">
                     @csrf
 
                     <div class="mb-4">

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'SIMKP') }}</title>
+    <title>SIMKP - Sistem Informasi Manajemen Kerja Praktek</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('storage/unib.png') }}">

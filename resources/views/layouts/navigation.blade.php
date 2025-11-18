@@ -100,9 +100,9 @@
                         <x-nav-link :href="route('pengawas.kegiatan.index')" :active="request()->routeIs('pengawas.kegiatan.*')" class="text-white hover:text-unib-blue-200">
                             {{ __('Kegiatan Mahasiswa') }}
                         </x-nav-link>
-                        {{-- <x-nav-link :href="route('pengawas.kuisioner.index')" :active="request()->routeIs('pengawas.kuisioner.*')" class="text-white hover:text-unib-blue-200">
+                        <x-nav-link :href="route('pengawas.kuisioner.index')" :active="request()->routeIs('pengawas.kuisioner.*')" class="text-white hover:text-unib-blue-200">
                             {{ __('Kuisioner') }}
-                        </x-nav-link> --}}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>

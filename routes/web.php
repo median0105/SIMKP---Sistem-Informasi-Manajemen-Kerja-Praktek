@@ -212,6 +212,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
         });
 
         Route::resource('kuisioner_questions', \App\Http\Controllers\SuperAdmin\KuisionerQuestionController::class);
+        Route::resource('kuisioner_pengawas_questions', \App\Http\Controllers\SuperAdmin\KuisionerPengawasQuestionController::class);
 
         // Sertifikat Pengawas
         Route::resource('sertifikat-pengawas', \App\Http\Controllers\SuperAdmin\SertifikatPengawasController::class);
@@ -243,8 +244,17 @@ Route::middleware(['auth', 'verified', 'role:pengawas_lapangan'])
             Route::get('/{sertifikat}/download', [\App\Http\Controllers\PengawasLapangan\SertifikatController::class, 'download'])->name('download');
         });
 
-        // Alihkan menu kuisioner pengawas ke daftar mahasiswa
-        Route::get('kuisioner', fn () => redirect()->route('pengawas.mahasiswa.index'))->name('kuisioner.index');
+        // Kuisioner
+        Route::prefix('kuisioner')->name('kuisioner.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\PengawasLapangan\KuisionerController::class, 'index'])->name('index');
+            Route::get('/{kerjaPraktek}', [\App\Http\Controllers\PengawasLapangan\KuisionerController::class, 'show'])->name('show');
+            Route::get('/{kerjaPraktek}/feedback', [\App\Http\Controllers\PengawasLapangan\KuisionerController::class, 'createFeedback'])->name('feedback');
+            Route::post('/{kerjaPraktek}/feedback', [\App\Http\Controllers\PengawasLapangan\KuisionerController::class, 'storeFeedback'])->name('store-feedback');
+            Route::get('/analytics', [\App\Http\Controllers\PengawasLapangan\KuisionerController::class, 'analytics'])->name('analytics');
+        });
+
+        // Kuisioner Pengawas
+        Route::resource('kuisioner-pengawas', \App\Http\Controllers\PengawasLapangan\KuisionerPengawasController::class)->only(['index', 'store']);
     });
 
 /*

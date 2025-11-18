@@ -56,12 +56,31 @@ class KuisionerController extends Controller
         $rekomYes       = (clone $baseAgg)->where('rekomendasi_tempat', true)->count();
         $rekomRate      = $totalResponden > 0 ? round(($rekomYes / $totalResponden) * 100, 1) : 0;
 
+        // Stats untuk kuisioner pengawas
+        $totalPengawasResponses = \App\Models\KuisionerPengawas::join('kuisioner_pengawas_questions', 'kuisioner_pengawas.kuisioner_pengawas_question_id', '=', 'kuisioner_pengawas_questions.id')
+            ->where('kuisioner_pengawas_questions.is_active', true)
+            ->distinct('kuisioner_pengawas.pengawas_id')
+            ->count('kuisioner_pengawas.pengawas_id');
+
+        $totalPengawasQuestions = \App\Models\KuisionerPengawasQuestion::where('is_active', true)->count();
+
+        $avgPengawasRating = \App\Models\KuisionerPengawas::join('kuisioner_pengawas_questions', 'kuisioner_pengawas.kuisioner_pengawas_question_id', '=', 'kuisioner_pengawas_questions.id')
+            ->where('kuisioner_pengawas_questions.is_active', true)
+            ->whereNotNull('kuisioner_pengawas.rating')
+            ->avg('kuisioner_pengawas.rating');
+
+        $pengawasCompletionRate = $totalPengawasQuestions > 0 ? round(($totalPengawasResponses / $totalPengawasQuestions) * 100, 1) : 0;
+
         $stats = [
             'total'        => $totalResponden,
             'avg_tempat'   => $avgTempat,
             'avg_bimbingan'=> $avgBimbingan,
             'avg_sistem'   => $avgSistem,
             'rekom_rate'   => $rekomRate, // dalam persen
+            'total_pengawas_responses' => $totalPengawasResponses,
+            'total_pengawas_questions' => $totalPengawasQuestions,
+            'avg_pengawas_rating' => round($avgPengawasRating ?? 0, 1),
+            'pengawas_completion_rate' => $pengawasCompletionRate,
         ];
 
         // Fetch unread notifications for superadmin related to new kuisioner
