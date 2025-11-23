@@ -72,7 +72,7 @@ class KerjaPraktekController extends Controller
         }
 
         $kerjaPraktek->update([
-            'status' => KerjaPraktek::STATUS_DISETUJUI,
+            'status' => KerjaPraktek::STATUS_SEDANG_KP,
         ]);
 
         // tetapkan pembimbing akademik = dosen yang approve
@@ -328,7 +328,7 @@ class KerjaPraktekController extends Controller
         Notifikasi::create([
             'user_id'          => $kerjaPraktek->mahasiswa_id,
             'title'            => 'Laporan KP Di-ACC',
-            'message'          => "Laporan KP '{$kerjaPraktek->judul_kp}' telah di-ACC oleh pembimbing.",
+            'message'          => "Laporan KP '{$kerjaPraktek->judul_kp}' telah di-ACC oleh pembimbing. Silakan daftar seminar untuk melanjutkan proses.",
             'type'             => 'success',
             'kerja_praktek_id' => $kerjaPraktek->id,
             'action_url'       => route('mahasiswa.kerja-praktek.index'),

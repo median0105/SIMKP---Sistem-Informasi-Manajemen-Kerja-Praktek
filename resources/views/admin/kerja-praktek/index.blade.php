@@ -1,7 +1,7 @@
 <x-sidebar-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Verifikasi Kerja Praktek') }}
+            {{ __('Pengajuan Kerja Praktek') }}
         </h2>
     </x-slot>
 
@@ -141,7 +141,7 @@
                                                     <button type="button" onclick="approveKP({{ $kp->id }})"
                                                             class="text-green-600 hover:text-green-900 {{ $kp->isDuplicateTitle() ? 'opacity-50 cursor-not-allowed' : '' }}"
                                                             {{ $kp->isDuplicateTitle() ? 'disabled' : '' }}
-                                                            title="Setujui">
+                                                            title="Mulai KP">
                                                         <i class="fas fa-check"></i>
                                                     </button>
                                                     <button type="button" onclick="rejectKP({{ $kp->id }})"
@@ -164,7 +164,7 @@
                         </table>
                     </div>
 
-                    {{-- Pagination (FIX: hapus <div class> yang salah) --}}
+                    {{-- Pagination --}}
                     <div class="px-6 py-4 border-t border-gray-200">
                         {{ $kerjaPraktek->withQueryString()->links() }}
                     </div>
@@ -179,15 +179,15 @@
         </div>
     </div>
 
-    {{-- Modal Approve --}}
+    {{-- Modal Approve (diubah untuk langsung ke status sedang_kp) --}}
     <div id="approveModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg max-w-md w-full">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Setujui Pengajuan KP</h3>
-                    <p class="text-gray-600 mb-6">Yakin ingin menyetujui pengajuan KP ini?</p>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Mulai Kerja Praktek</h3>
+                    <p class="text-gray-600 mb-6">Yakin ingin menyetujui dan memulai kerja praktek ini? Status akan berubah menjadi "Sedang KP".</p>
                     <div class="flex space-x-3">
-                        <button onclick="confirmApprove()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">Ya, Setujui</button>
+                        <button onclick="confirmApprove()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">Ya, Mulai KP</button>
                         <button onclick="closeModal('approveModal')" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg">Batal</button>
                     </div>
                 </div>
@@ -237,7 +237,7 @@
             if (currentKpId) {
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = `/admin/kerja-praktek/${currentKpId}/approve`;
+                form.action = `/admin/kerja-praktek/${currentKpId}/approve`; // Pastikan route ini mengarah ke controller yang mengupdate status ke 'sedang_kp'
                 form.innerHTML = '@csrf';
                 document.body.appendChild(form);
                 form.submit();

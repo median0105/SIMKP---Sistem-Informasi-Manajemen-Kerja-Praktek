@@ -431,16 +431,12 @@
                                                     @endif
                                                 @endif
                                             @else
-                                                @if($kerjaPraktek->canRegisterSeminar())
-                                                    <form method="POST" action="{{ route('mahasiswa.kerja-praktek.daftar-seminar', $kerjaPraktek) }}" class="inline">
-                                                        @csrf
-                                                        <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
-                                                            <i class="fas fa-calendar-plus mr-2"></i> Daftar Seminar
-                                                        </button>
-                                                    </form>
-                                                @else
-                                                    <span class="text-gray-500 text-sm">Belum memenuhi syarat untuk mendaftar seminar</span>
-                                                @endif
+                                                <form method="POST" action="{{ route('mahasiswa.kerja-praktek.daftar-seminar', $kerjaPraktek) }}" class="inline">
+                                                    @csrf
+                                                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
+                                                        <i class="fas fa-calendar-plus mr-2"></i> Daftar Seminar
+                                                    </button>
+                                                </form>
                                             @endif
                                         </div>
                                     </div>

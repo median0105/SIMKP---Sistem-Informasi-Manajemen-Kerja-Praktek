@@ -282,8 +282,12 @@ class KerjaPraktekController extends Controller
     {
         $this->authorize('update', $kerjaPraktek);
 
-        if (!$kerjaPraktek->canRegisterSeminar()) {
-            return back()->with('error', 'Anda belum memenuhi syarat untuk mendaftar seminar.');
+        if (!$kerjaPraktek->acc_pembimbing_laporan) {
+            return back()->with('error', 'Laporan KP Anda belum di-ACC oleh pembimbing.');
+        }
+
+        if ($kerjaPraktek->pendaftaran_seminar) {
+            return back()->with('error', 'Anda sudah terdaftar untuk seminar.');
         }
 
         $kerjaPraktek->update([

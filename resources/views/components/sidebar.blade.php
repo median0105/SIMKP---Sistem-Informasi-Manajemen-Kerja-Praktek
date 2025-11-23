@@ -50,21 +50,21 @@
                 <a href="{{ route('admin.mahasiswa.index') }}"
                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.mahasiswa.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
                     <i class="fas fa-user-graduate mr-3 w-5 text-center"></i>
-                    Mahasiswa
+                    Daftar Mahasiswa 
                 </a>
 
                 <!-- Verifikasi KP -->
                 <a href="{{ route('admin.kerja-praktek.index') }}"
                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.kerja-praktek.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
                     <i class="fas fa-check-circle mr-3 w-5 text-center"></i>
-                    Verifikasi KP
+                    Pengajuan Kerja Praktek
                 </a>
 
                 <!-- Bimbingan -->
                 <a href="{{ route('admin.bimbingan.index') }}"
                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.bimbingan.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
                     <i class="fas fa-chalkboard-teacher mr-3 w-5 text-center"></i>
-                    Bimbingan
+                    Bimbingan Mahasiswa
                 </a>
 
                 <!-- Kegiatan Mahasiswa -->
@@ -78,7 +78,7 @@
                 <a href="{{ route('admin.seminar.index') }}"
                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.seminar.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
                     <i class="fas fa-graduation-cap mr-3 w-5 text-center"></i>
-                    Seminar
+                    Penguji Mahasiswa
                 </a>
             @endif
 
@@ -118,7 +118,7 @@
                     <div x-show="open" @click.away="open = false" x-transition class="mt-1 ml-4 space-y-1">
                         <a href="{{ route('superadmin.kerja-praktek.index') }}"
                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg {{ request()->routeIs('superadmin.kerja-praktek.index') ? 'bg-unib-blue-50 text-unib-blue-700' : '' }}">
-                            Data KP
+                            Data Kerja Praktek
                         </a>
                         <a href="{{ route('superadmin.verifikasi-instansi.index') }}"
                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg {{ request()->routeIs('superadmin.verifikasi-instansi.index') ? 'bg-unib-blue-50 text-unib-blue-700' : '' }}">
@@ -182,7 +182,7 @@
                 <a href="{{ route('pengawas.mahasiswa.index') }}"
                    class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('pengawas.mahasiswa.*') ? 'bg-unib-blue-50 text-unib-blue-700 border-r-4 border-unib-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-unib-blue-600' }}">
                     <i class="fas fa-user-graduate mr-3 w-5 text-center"></i>
-                    Mahasiswa KP
+                    Daftar Mahasiswa
                 </a>
 
                 <!-- Kegiatan Mahasiswa -->
