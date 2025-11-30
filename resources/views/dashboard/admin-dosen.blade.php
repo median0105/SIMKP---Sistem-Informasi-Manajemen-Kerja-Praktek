@@ -152,7 +152,7 @@
     <!-- Distribusi Status KP -->
     <div class="bg-white rounded-lg shadow">
         <div class="px-6 py-4 bg-unib-blue-600 text-white rounded-t-lg">
-            <h3 class="text-lg font-semibold">Distribusi Status KP</h3>
+            <h3 class="text-lg font-semibold">Distribusi Status Kerja Praktek</h3>
         </div>
 
         <div class="p-6 space-y-4">

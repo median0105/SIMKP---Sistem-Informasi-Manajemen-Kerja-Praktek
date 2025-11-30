@@ -7,9 +7,6 @@
                    class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg inline-flex items-center transition duration-200 transform hover:scale-105 backdrop-blur-sm border border-white/30">
                     <i class="fas fa-arrow-left mr-2"></i>Kembali
                 </a>
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Detail Mahasiswa - {{ $user->name }}

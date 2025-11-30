@@ -1,11 +1,8 @@
 {{-- resources/views/superadmin/kuisioner/index.blade.php --}}
 <x-sidebar-layout>
-
-    {{-- ===================== HEADER ===================== --}}
-    <x-slot name="header">
+     <x-slot name="header">
         <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm"></div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Rekap Kuisioner Kerja Praktek
@@ -14,7 +11,6 @@
             </div>
         </div>
     </x-slot>
-
     {{-- ===================== BODY ===================== --}}
     <div class="py-8 bg-gradient-to-br from-unib-blue-50 to-gray-50 min-h-screen">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -73,7 +69,7 @@
             {{-- ======================= TABLE MAHASISWA ======================= --}}
             <div class="bg-white shadow-xl rounded-xl overflow-hidden border border-unib-blue-100 transform transition-all duration-300 hover:shadow-lg animate-fade-in-up">
 
-                {{-- HEADER TABLE --}}
+    {{-- HEADER TABLE --}}
                 <div class="px-6 py-4 border-b border-unib-blue-200 bg-gradient-to-r from-unib-blue-600 to-unib-blue-700 text-white flex items-center justify-between min-h-[70px]">
                     <h3 class="text-xl font-bold">Jawaban Kuisioner Mahasiswa</h3>
                     <div class="inline-flex items-center px-4 py-2 rounded-full text-base font-semibold bg-white/20 backdrop-blur-sm border border-white/30 shadow-sm whitespace-nowrap">
@@ -85,24 +81,24 @@
                     <div class="flex flex-col items-center justify-center py-10">
                         <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js" type="module"></script>
                         <dotlottie-wc src="https://lottie.host/f4be40d9-971a-446d-9d51-ed1128f637ef/8YGejDufWD.lottie" style="width: 260px;height: 260px" autoplay loop></dotlottie-wc>
-                        <p class="text-gray-500 text-lg mt-4">Belum ada kuisioner.</p>
+                        <p class="text-gray-500 text-lg mt-4">Belum ada Jawaban Mahasiswa.</p>
                     </div>
                 @else
                     <div class="overflow-x-auto">
-                        <table class="w-full divide-y divide-gray-200">
+                        <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gradient-to-r from-unib-blue-50 to-unib-blue-100">
                                 <tr>
-                                    <th class="th-col">Mahasiswa</th>
-                                    <th class="th-col">Judul KP</th>
-                                    <th class="th-col">Tempat</th>
-                                    <th class="th-col">Rating</th>
-                                    <th class="th-col">Rekomendasi</th>
-                                    <th class="th-col">Tanggal Isi</th>
-                                    <th class="th-col">Aksi</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-unib-blue-800">Mahasiswa</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-unib-blue-800">Judul KP</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-unib-blue-800">Tempat</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-unib-blue-800">Rating</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-unib-blue-800">Rekomendasi</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-unib-blue-800">Tanggal Isi</th>
+                                    <th class="px-6 py-4 text-center font-semibold text-unib-blue-800">Aksi</th>
                                 </tr>
                             </thead>
 
-                            <tbody class="divide-y divide-gray-200 bg-white">
+                            <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach($items as $it)
                                     @php
                                         $kp  = $it->kerjaPraktek;
@@ -111,48 +107,64 @@
                                     @endphp
 
                                     <tr class="hover:bg-unib-blue-50 transition duration-150 ease-in-out group">
-                                        <td class="td-col">
-                                            <div class="font-semibold text-gray-900">{{ $mhs?->name ?? '-' }}</div>
+                                        <td class="px-6 py-4">
+                                            <div class="font-medium text-gray-900">{{ $mhs?->name ?? '-' }}</div>
                                             @if($mhs?->npm)
-                                                <div class="text-xs text-gray-500">NPM: {{ $mhs->npm }}</div>
+                                                <div class="text-sm text-gray-500">NPM: {{ $mhs->npm }}</div>
                                             @endif
                                         </td>
 
-                                        <td class="td-col">{{ $kp?->judul_kp ?? '-' }}</td>
+                                        <td class="px-6 py-4 text-gray-700">{{ $kp?->judul_kp ?? '-' }}</td>
 
-                                        <td class="td-col">
+                                        <td class="px-6 py-4 text-gray-700">
                                             {{ $kp?->pilihan_tempat == 3 ? ($kp->tempat_magang_sendiri ?? '-') : ($tm?->nama_perusahaan ?? '-') }}
                                         </td>
 
-                                        <td class="td-col">
-                                            <span class="
-                                                px-3 py-1 rounded-lg text-xs font-semibold
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold
                                                 @class([
-                                                    'bg-green-100 text-green-700'   => $it->rating_keseluruhan === 'Sangat Baik',
-                                                    'bg-blue-100 text-blue-700'     => $it->rating_keseluruhan === 'Baik',
-                                                    'bg-yellow-100 text-yellow-700' => $it->rating_keseluruhan === 'Cukup Baik',
-                                                    'bg-red-100 text-red-700'       => $it->rating_keseluruhan === 'Kurang Baik',
-                                                    'bg-gray-100 text-gray-700'     => !$it->rating_keseluruhan,
+                                                    'bg-green-100 text-green-800 border border-green-300' => $it->rating_keseluruhan === 'Sangat Baik',
+                                                    'bg-blue-100 text-blue-800 border border-blue-300' => $it->rating_keseluruhan === 'Baik',
+                                                    'bg-yellow-100 text-yellow-800 border border-yellow-300' => $it->rating_keseluruhan === 'Cukup Baik',
+                                                    'bg-red-100 text-red-800 border border-red-300' => $it->rating_keseluruhan === 'Kurang Baik',
+                                                    'bg-gray-100 text-gray-800 border border-gray-300' => !$it->rating_keseluruhan,
                                                 ])
                                             ">
+                                                @if($it->rating_keseluruhan === 'Sangat Baik')
+                                                    <i class="fas fa-star mr-1"></i>
+                                                @elseif($it->rating_keseluruhan === 'Baik')
+                                                    <i class="fas fa-star-half-alt mr-1"></i>
+                                                @elseif($it->rating_keseluruhan === 'Cukup Baik')
+                                                    <i class="fas fa-star mr-1"></i>
+                                                @elseif($it->rating_keseluruhan === 'Kurang Baik')
+                                                    <i class="fas fa-exclamation-circle mr-1"></i>
+                                                @else
+                                                    <i class="fas fa-question-circle mr-1"></i>
+                                                @endif
                                                 {{ $it->rating_keseluruhan ?? 'N/A' }}
                                             </span>
                                         </td>
 
-                                        <td class="td-col">
+                                        <td class="px-6 py-4">
                                             @if($it->rekomendasi_tempat)
-                                                <span class="badge-green">Ya</span>
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800 border border-green-300">
+                                                    <i class="fas fa-check mr-1"></i>Ya
+                                                </span>
                                             @else
-                                                <span class="badge-red">Tidak</span>
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800 border border-red-300">
+                                                    <i class="fas fa-times mr-1"></i>Tidak
+                                                </span>
                                             @endif
                                         </td>
 
-                                        <td class="td-col">{{ $it->created_at->locale('id')->translatedFormat('d F Y') }}</td>
+                                        <td class="px-6 py-4 text-gray-700">
+                                            {{ $it->created_at->locale('id')->translatedFormat('d F Y') }}
+                                        </td>
 
-                                        <td class="td-col">
+                                        <td class="px-6 py-4 text-center">
                                             <a href="{{ route('superadmin.kuisioner.show', $it) }}"
-                                                class="text-unib-blue-600 hover:text-unib-blue-900 font-semibold">
-                                                <i class="fas fa-eye"></i> Detail
+                                                class="inline-flex items-center px-4 py-2 text-sm font-semibold text-unib-blue-600 hover:text-unib-blue-800 bg-unib-blue-50 hover:bg-unib-blue-100 rounded-lg transition duration-200">
+                                                <i class="fas fa-eye mr-2"></i>Detail
                                             </a>
                                         </td>
                                     </tr>
@@ -161,7 +173,7 @@
                         </table>
                     </div>
 
-                    <div class="p-4 border-t">
+                    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
                         {{ $items->links() }}
                     </div>
                 @endif
@@ -169,7 +181,6 @@
 
             {{-- ======================= TABLE PENGAWAS ======================= --}}
             <div class="bg-white shadow-xl rounded-xl overflow-hidden border border-unib-blue-100 mt-6 transform transition hover:shadow-lg animate-fade-in-up">
-
                 <div class="px-6 py-4 border-b border-unib-blue-200 bg-gradient-to-r from-unib-blue-600 to-unib-blue-700 text-white flex items-center justify-between min-h-[70px]">
                     <h3 class="text-xl font-bold">Jawaban Kuisioner Pengawas Lapangan</h3>
                 </div>
@@ -192,43 +203,51 @@
                     </div>
                 @else
                     <div class="overflow-x-auto">
-                        <table class="w-full divide-y divide-gray-200">
+                        <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gradient-to-r from-unib-blue-50 to-unib-blue-100">
                                 <tr>
-                                    <th class="th-col">Pengawas</th>
-                                    <th class="th-col">Pertanyaan</th>
-                                    <th class="th-col">Jawaban</th>
-                                    <th class="th-col">Tanggal</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-unib-blue-800">Pengawas</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-unib-blue-800">Pertanyaan</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-unib-blue-800">Jawaban</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-unib-blue-800">Tanggal</th>
                                 </tr>
                             </thead>
 
-                            <tbody class="divide-y divide-gray-200 bg-white">
+                            <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach($kuisionerPengawas as $r)
-                                    <tr class="hover:bg-unib-blue-50 transition duration-150">
-                                        <td class="td-col">
-                                            <div class="font-semibold">{{ $r->pengawas->name ?? '-' }}</div>
-                                            <div class="text-xs text-gray-500">{{ $r->pengawas->email ?? '-' }}</div>
+                                    <tr class="hover:bg-unib-blue-50 transition">
+                                        <td class="px-6 py-4">
+                                            <div class="font-medium text-gray-900">{{ $r->pengawas->name ?? '-' }}</div>
+                                            <div class="text-sm text-gray-500">{{ $r->pengawas->email ?? '-' }}</div>
                                         </td>
 
-                                        <td class="td-col">{{ $r->question->question_text ?? '-' }}</td>
+                                        <td class="px-6 py-4 text-gray-900">{{ $r->question->question_text ?? '-' }}</td>
 
-                                        <td class="td-col">
+                                        <td class="px-6 py-4">
                                             @if($r->question->type === 'rating')
-                                                <span class="badge-blue">{{ $r->rating }}/5</span>
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 border border-blue-300">
+                                                    <i class="fas fa-star mr-1"></i>{{ $r->rating }}/5
+                                                </span>
                                             @elseif($r->question->type === 'yes_no')
                                                 @if($r->yes_no)
-                                                    <span class="badge-green">Ya</span>
+                                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800 border border-green-300">
+                                                        <i class="fas fa-check mr-1"></i>Ya
+                                                    </span>
                                                 @else
-                                                    <span class="badge-red">Tidak</span>
+                                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800 border border-red-300">
+                                                        <i class="fas fa-times mr-1"></i>Tidak
+                                                    </span>
                                                 @endif
                                             @elseif($r->question->type === 'qualitative_rating')
-                                                <span class="badge-purple">{{ $r->answer }}</span>
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-800 border border-purple-300">
+                                                    <i class="fas fa-chart-bar mr-1"></i>{{ $r->answer }}
+                                                </span>
                                             @else
-                                                {{ $r->answer ?? '-' }}
+                                                <span class="text-gray-700">{{ $r->answer ?? '-' }}</span>
                                             @endif
                                         </td>
 
-                                        <td class="td-col">
+                                        <td class="px-6 py-4 text-gray-700">
                                             {{ ($r->submitted_at ?? $r->created_at)->locale('id')->translatedFormat('d F Y') }}
                                         </td>
                                     </tr>
@@ -238,7 +257,6 @@
                     </div>
                 @endif
             </div>
-
         </div>
     </div>
 

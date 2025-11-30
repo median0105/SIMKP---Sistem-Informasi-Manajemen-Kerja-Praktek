@@ -2,18 +2,20 @@
     <x-slot name="header">
         <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                   
-                </div>
-                <div>
-                    <h2 class="font-bold text-xl leading-tight">
-                        Edit Pertanyaan Kuisioner Pengawas
-                    </h2>
+                <a href="{{ route('superadmin.kuisioner_pengawas_questions.index') }}" 
+                   class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg inline-flex items-center transition duration-200 transform hover:scale-105 backdrop-blur-sm border border-white/30">
+                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                </a>
+                <div class="flex items-center space-x-3">
+                    <div>
+                        <h2 class="font-bold text-xl leading-tight">
+                            Edit Pertanyaan Kuisioner Pengawas
+                        </h2>
+                    </div>
                 </div>
             </div>
         </div>
     </x-slot>
-
     <div class="py-8 bg-gradient-to-br from-unib-blue-50 to-gray-50 min-h-screen">
         <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
             
@@ -106,10 +108,6 @@
 
                         {{-- Action Buttons --}}
                         <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
-                            <a href="{{ route('superadmin.kuisioner_pengawas_questions.index') }}" 
-                               class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg text-base font-semibold shadow-md transform hover:scale-105 transition duration-200 flex items-center">
-                                <i class="fas fa-arrow-left mr-2"></i>Kembali
-                            </a>
                             <button type="submit"
                                     class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-8 py-3 rounded-lg text-base font-semibold shadow-lg transform hover:scale-105 transition duration-200 flex items-center">
                                 <i class="fas fa-save mr-2"></i>Update Pertanyaan

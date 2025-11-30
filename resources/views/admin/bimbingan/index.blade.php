@@ -3,9 +3,6 @@
     <x-slot name="header">
         <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    <!-- Ikon dihapus sesuai pattern -->
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Manajemen Bimbingan
@@ -45,8 +42,8 @@
                         </label>
                         <select name="status" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 px-4 py-3 text-base transition duration-200">
                             <option value="all" @selected(request('status')==='all' || !request('status'))>Semua Status</option>
-                            <option value="pending"  @selected(request('status')==='pending')>Pending</option>
-                            <option value="verified" @selected(request('status')==='verified')>Verified</option>
+                            <option value="pending"  @selected(request('status')==='pending')>Tertunda</option>
+                            <option value="verified" @selected(request('status')==='verified')>Terverifikasi</option>
                         </select>
                     </div>
                     
@@ -145,7 +142,7 @@
                                                     <button onclick="openFeedback({{ $mhs->bimbingan->first()->id }})"
                                                             class="text-green-600 hover:text-green-800 text-base font-medium flex items-center px-3 py-2 rounded-lg hover:bg-green-100 transition-colors duration-200"
                                                             title="Beri Feedback">
-                                                        Feedback
+                                                        Balasan
                                                     </button>
                                                 @endif
                                             </div>

@@ -31,6 +31,8 @@ class MahasiswaController extends Controller
             ->orderByDesc('created_at');
 
         $kp = $query->paginate(15)->withQueryString();
+        
+        
 
         $stats = [
             'total'     => KerjaPraktek::where('tempat_magang_id', $pengawas->tempat_magang_id)->count(),

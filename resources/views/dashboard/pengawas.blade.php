@@ -6,19 +6,24 @@
             <p class="text-blue-200 mt-2 font-bold text-lg">Pembimbing Lapangan</p>
             <p class="text-blue-200 mt-1">Monitoring Kerja Praktek</p>
         </div>
-        <div class="relative hidden md:block">
-            <div class="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                <i class="fas fa-clipboard-check text-4xl text-white"></i>
-            </div>
-            <div class="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-teknik-orange-500 flex items-center justify-center shadow-lg">
-                <i class="fas fa-user-tie text-white text-sm"></i>
+        <div class="hidden md:block">
+            <div class="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+                <!-- Gunakan URL Lottie yang lebih reliable -->
+                <dotlottie-player
+                    src="https://assets1.lottiefiles.com/packages/lf20_vybwn7df.json"
+                    background="transparent"
+                    speed="1"
+                    style="width: 65px; height: 65px;"
+                    loop
+                    autoplay>
+                </dotlottie-player>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+{{-- <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"> --}}
     <!-- Mahasiswa KP -->
     {{-- <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all duration-300 hover:shadow-xl animate-fade-in-up border border-unib-blue-100">
         <div class="flex items-center justify-between">
@@ -52,7 +57,7 @@
     </div> --}}
 
     <!-- Akses Cepat -->
-    <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all duration-300 hover:shadow-xl animate-fade-in-up border border-unib-blue-100">
+    {{-- <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all duration-300 hover:shadow-xl animate-fade-in-up border border-unib-blue-100">
         <div class="text-center">
             <p class="text-sm font-medium text-gray-600 mb-4 flex items-center justify-center">
                 <i class="fas fa-bolt text-unib-blue-500 mr-2"></i>
@@ -64,8 +69,8 @@
                 Lihat Mahasiswa KP
             </a>
         </div>
-    </div>
-</div>
+    </div> --}}
+{{-- </div> --}}
 
 <!-- Recent Activities -->
 <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl animate-fade-in-up border border-unib-blue-100">

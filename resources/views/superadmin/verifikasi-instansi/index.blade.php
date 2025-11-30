@@ -3,9 +3,6 @@
     <x-slot name="header">
         <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Verifikasi Instansi Mandiri
@@ -62,12 +59,14 @@
                     </div>
 
                     {{-- Action Buttons --}}
+                    
                     <div class="flex items-end gap-3">
-                        <button class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-3 rounded-lg text-base font-medium shadow-md transition duration-200 flex items-center justify-center flex-1">
-                            <i class="fas fa-search mr-2"></i>Cari
+                        <button type="submit"
+                                class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-3 rounded-lg text-base font-medium shadow-md transform hover:scale-105 transition duration-200 flex items-center justify-center flex-1">
+                            Cari
                         </button>
-                        <a href="{{ route('superadmin.verifikasi-instansi.index') }}" class="bg-teknik-orange-500 hover:bg-teknik-orange-600 text-white px-6 py-3 rounded-lg text-base font-medium shadow-md transition duration-200 flex items-center justify-center flex-1">
-                            <i class="fas fa-undo mr-2"></i>Reset
+                        <a href="{{ route('superadmin.verifikasi-instansi.index') }}" class="bg-teknik-orange-500 hover:bg-teknik-orange-600 text-white px-6 py-3 rounded-lg text-base font-medium shadow-md transform hover:scale-105 transition duration-200 flex items-center justify-center flex-1">
+                            Reset
                         </a>
                     </div>
                 </form>
@@ -87,7 +86,7 @@
                 </div>
 
                 {{-- Scrollable table body --}}
-                <div class="overflow-x-auto">
+               <div class="overflow-x-auto table-responsive">
                     <table class="w-full divide-y divide-gray-200">
                         {{-- Table header --}}
                         <thead class="bg-gradient-to-r from-unib-blue-50 to-unib-blue-100">
@@ -261,58 +260,60 @@
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js" type="module"></script>
 
     {{-- CSS untuk animasi kustom --}}
-    <style>
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+   <style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
         }
-        
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-        
-        /* Responsive table styles */
-        @media (max-width: 1024px) {
-            .table-container {
-                overflow-x: auto;
-            }
-            
-            table {
-                min-width: 900px;
-            }
+    }
+    
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* ---------------------------
+       RESPONSIVE TABLE PERBAIKAN
+       --------------------------- */
+    @media (max-width: 1024px) {
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        
-        @media (max-width: 768px) {
-            .table-container {
-                overflow-x: auto;
-            }
-            
-            table {
-                min-width: 1000px;
-            }
-            
-            .filter-form {
-                grid-template-columns: 1fr;
-            }
+
+        table {
+            width: 100%;
+            min-width: 850px; /* Biar tidak terlalu mepet */
         }
-        
-        @media (max-width: 640px) {
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .pagination-container {
-                flex-direction: column;
-                gap: 15px;
-            }
+    }
+
+    @media (max-width: 768px) {
+        .filter-form {
+            grid-template-columns: 1fr;
         }
-    </style>
+
+        table {
+            min-width: 900px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .header-content {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 12px;
+        }
+
+        .pagination-container {
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+        }
+    }
+</style>
+
 </x-sidebar-layout>

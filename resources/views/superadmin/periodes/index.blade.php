@@ -3,9 +3,6 @@
     <x-slot name="header">
         <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Daftar Periode
@@ -74,7 +71,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
                             @forelse($periodes as $periode)
-                                <tr class="hover:bg-unib-blue-50 transition @if($periode->status) bg-green-50 @endif">
+                                <tr class="hover:bg-unib-blue-50 transition @if($periode->status) @endif">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="font-semibold text-gray-900 text-base">{{ $periode->tahun_akademik }}</div>
                                     </td>

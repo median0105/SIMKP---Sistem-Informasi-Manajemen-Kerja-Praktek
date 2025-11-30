@@ -8,8 +8,6 @@
                     <i class="fas fa-arrow-left mr-2"></i>Kembali
                 </a>
                 <div class="flex items-center space-x-3">
-                    <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    </div>
                     <div>
                         <h2 class="font-bold text-xl leading-tight">
                             Detail Dosen Pembimbing: {{ $user->name }}

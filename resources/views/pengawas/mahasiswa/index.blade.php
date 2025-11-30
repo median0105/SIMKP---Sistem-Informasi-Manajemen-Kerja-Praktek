@@ -1,28 +1,30 @@
 <x-sidebar-layout>
     <x-slot name="header">
-        <div class="bg-gradient-to-r from-unib-blue-600 to-unib-blue-700 text-white p-4 md:p-6 rounded-xl shadow-lg">
-            <div class="flex items-center gap-4">
-                <i class="fa-solid fa-calendar-check text-xl md:text-2xl"></i>
-                <h2 class="font-bold text-xl md:text-2xl">Kegiatan Mahasiswa</h2>
+        <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
+            <div class="flex items-center space-x-3">
+                <div>
+                    <h2 class="font-bold text-xl leading-tight">
+                        {{ __('Mahasiswa Kerja Praktek') }} — {{ $place->nama_perusahaan ?? '-' }}
+                    </h2>
+                </div>
             </div>
         </div>
     </x-slot>
-
     <div class="py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
             {{-- Statistics Cards --}}
             @php
                 $cards = [
-                    ['label'=>'Total Kegiatan','value'=>$stats['total'] ?? 0,'icon'=>'fa-calendar-check','bg'=>'bg-unib-blue-100','iconColor'=>'text-unib-blue-600','numColor'=>'text-unib-blue-600'],
-                    ['label'=>'Kegiatan Hari Ini','value'=>$stats['hari_ini'] ?? 0,'icon'=>'fa-clock','bg'=>'bg-yellow-100','iconColor'=>'text-yellow-600','numColor'=>'text-yellow-600'],
-                    ['label'=>'Kegiatan Minggu Ini','value'=>$stats['minggu_ini'] ?? 0,'icon'=>'fa-calendar-week','bg'=>'bg-purple-100','iconColor'=>'text-purple-600','numColor'=>'text-purple-600'],
-                    ['label'=>'Total Durasi','value'=>($stats['total_durasi'] ?? 0) . ' jam','icon'=>'fa-hourglass','bg'=>'bg-emerald-100','iconColor'=>'text-emerald-600','numColor'=>'text-emerald-600'],
-                    ['label'=>'Mahasiswa Aktif','value'=>$stats['mahasiswa_aktif'] ?? 0,'icon'=>'fa-users','bg'=>'bg-gray-100','iconColor'=>'text-gray-600','numColor'=>'text-gray-600'],
+                    ['label'=>'Total Mahasiswa','value'=>$stats['total'] ?? 0,'icon'=>'fa-users','bg'=>'bg-unib-blue-100','iconColor'=>'text-unib-blue-600','numColor'=>'text-unib-blue-600'],
+                    ['label'=>'Pengajuan','value'=>$stats['pengajuan'] ?? 0,'icon'=>'fa-hourglass','bg'=>'bg-yellow-100','iconColor'=>'text-yellow-600','numColor'=>'text-yellow-600'],
+                    ['label'=>'Disetujui','value'=>$stats['disetujui'] ?? 0,'icon'=>'fa-check','bg'=>'bg-purple-100','iconColor'=>'text-purple-600','numColor'=>'text-purple-600'],
+                    ['label'=>'Sedang KP','value'=>$stats['sedang'] ?? 0,'icon'=>'fa-play','bg'=>'bg-emerald-100','iconColor'=>'text-emerald-600','numColor'=>'text-emerald-600'],
+                    ['label'=>'Selesai','value'=>$stats['selesai'] ?? 0,'icon'=>'fa-flag-checkered','bg'=>'bg-gray-100','iconColor'=>'text-gray-600','numColor'=>'text-gray-600'],
                 ];
             @endphp
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 items-stretch">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 items-stretch">
                 @foreach($cards as $c)
                     <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 h-full border border-unib-blue-100 transition-all duration-300 animate-fade-in-up">
                         <div class="flex items-center justify-between">
@@ -41,44 +43,47 @@
             </div>
 
             {{-- Filter --}}
-            <div class="bg-white shadow-xl rounded-xl p-6 border border-unib-blue-100 transform transition-all duration-300 hover:shadow-lg animate-fade-in-up">
-                <form method="GET" action="{{ route('pengawas.kegiatan.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-white shadow-xl rounded-xl p-4 md:p-6 border border-unib-blue-100 transform transition-all duration-300 hover:shadow-lg animate-fade-in-up">
+                <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
                     <div class="md:col-span-2">
-                        <label class="block text-base font-medium text-gray-700 mb-2">
+                        <label class="block text-sm md:text-base font-medium text-gray-700 mb-2">
                             Cari Mahasiswa
                         </label>
-                        <input 
-                            type="text" 
-                            name="search" 
+                        <input
+                            type="text"
+                            name="search"
                             value="{{ request('search') }}"
-                            placeholder="Cari nama mahasiswa atau NPM..."
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 px-4 py-3 text-base transition duration-200"
+                            placeholder="Cari nama / NPM / judul KP…"
+                            class="w-full border-gray-300 rounded-lg shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 px-3 md:px-4 py-2 md:py-3 text-sm md:text-base transition duration-200"
                         >
                     </div>
                     
                     <div>
-                        <label class="block text-base font-medium text-gray-700 mb-2">
-                            Rentang Tanggal
+                        <label class="block text-sm md:text-base font-medium text-gray-700 mb-2">
+                            Status
                         </label>
-                        <select 
-                            name="periode" 
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 px-4 py-3 text-base transition duration-200"
+                        <select
+                            name="status"
+                            class="w-full border-gray-300 rounded-lg shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 px-3 md:px-4 py-2 md:py-3 text-sm md:text-base transition duration-200"
                         >
-                            <option value="">Semua Periode</option>
-                            <option value="hari_ini" @selected(request('periode')==='hari_ini')>Hari Ini</option>
-                            <option value="minggu_ini" @selected(request('periode')==='minggu_ini')>Minggu Ini</option>
-                            <option value="bulan_ini" @selected(request('periode')==='bulan_ini')>Bulan Ini</option>
+                            <option value="">Semua Status</option>
+                            @foreach(['pengajuan','disetujui','sedang_kp','selesai','ditolak'] as $st)
+                                <option value="{{ $st }}" @selected(request('status')===$st)>
+                                    {{ ucfirst(str_replace('_',' ',$st)) }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
                     
-                    <div class="flex items-end gap-3">
-                        <button type="submit"
-                                class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-3 rounded-lg text-base font-medium shadow-md transform hover:scale-105 transition duration-200 flex items-center justify-center flex-1">
-                            <i class="fas fa-search mr-2"></i>Cari
+                    <div class="flex items-end gap-2 md:gap-3">
+                        <button
+                            class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg text-sm md:text-base font-medium shadow-md transform hover:scale-105 transition duration-200 flex items-center justify-center flex-1"
+                        >
+                            <i class="fas fa-search mr-1 md:mr-2"></i>Filter
                         </button>
-                        @if(request()->filled('search') || request()->filled('periode'))
-                            <a href="{{ route('pengawas.kegiatan.index') }}"
-                               class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg text-base font-medium shadow-md transform hover:scale-105 transition duration-200 flex items-center justify-center flex-1">
+                        @if(request()->filled('search') || request()->filled('status'))
+                            <a href="{{ request()->url() }}"
+                               class="bg-gray-500 hover:bg-gray-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg text-sm md:text-base font-medium shadow-md transform hover:scale-105 transition duration-200 flex items-center justify-center flex-1">
                                 Reset
                             </a>
                         @endif
@@ -86,15 +91,15 @@
                 </form>
             </div>
 
-            {{-- Daftar Kegiatan Table --}}
+            {{-- Daftar Mahasiswa Table --}}
             <div class="bg-white shadow-xl rounded-xl overflow-hidden border border-unib-blue-100 transform transition-all duration-300 hover:shadow-lg animate-fade-in-up">
                 {{-- Table header with UNIB gradient --}}
-                <div class="px-6 py-4 border-b border-unib-blue-200 bg-gradient-to-r from-unib-blue-600 to-unib-blue-700 text-white flex items-center justify-between min-h-[70px]">
-                    <h3 class="text-xl font-bold">
-                        Daftar Kegiatan Mahasiswa
+                <div class="px-4 md:px-6 py-3 md:py-4 border-b border-unib-blue-200 bg-gradient-to-r from-unib-blue-600 to-unib-blue-700 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between min-h-[70px] gap-2">
+                    <h3 class="text-lg md:text-xl font-bold">
+                        Daftar Mahasiswa
                     </h3>
-                    <div class="inline-flex items-center px-4 py-2 rounded-full text-base font-semibold bg-white/20 backdrop-blur-sm text-white border border-white/30 shadow-sm whitespace-nowrap">
-                        Total: {{ $kegiatan->total() }}
+                    <div class="inline-flex items-center px-3 md:px-4 py-1 md:py-2 rounded-full text-sm md:text-base font-semibold bg-white/20 backdrop-blur-sm text-white border border-white/30 shadow-sm whitespace-nowrap">
+                        Total: {{ $kp->total() }}
                     </div>
                 </div>
 
@@ -103,93 +108,126 @@
                     <table class="min-w-full divide-y divide-gray-200 table-auto">
                         <thead class="bg-gradient-to-r from-unib-blue-50 to-unib-blue-100">
                             <tr>
-                                <th class="px-6 py-4 text-left text-base font-semibold text-unib-blue-800 uppercase tracking-wider whitespace-nowrap">
+                                <th class="px-3 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-unib-blue-800 uppercase tracking-wider whitespace-nowrap">
                                     Mahasiswa
                                 </th>
-                                <th class="px-6 py-4 text-left text-base font-semibold text-unib-blue-800 uppercase tracking-wider whitespace-nowrap">
-                                    Tanggal
+                                <th class="px-3 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-unib-blue-800 uppercase tracking-wider whitespace-nowrap">
+                                    NPM
                                 </th>
-                                <th class="px-6 py-4 text-left text-base font-semibold text-unib-blue-800 uppercase tracking-wider whitespace-nowrap">
-                                    Durasi
+                                <th class="px-3 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-unib-blue-800 uppercase tracking-wider">
+                                    Judul KP
                                 </th>
-                                <th class="px-6 py-4 text-left text-base font-semibold text-unib-blue-800 uppercase tracking-wider">
-                                    Deskripsi Kegiatan
+                                <th class="px-3 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-unib-blue-800 uppercase tracking-wider whitespace-nowrap">
+                                    Status
                                 </th>
-                                <th class="px-6 py-4 text-center text-base font-semibold text-unib-blue-800 uppercase tracking-wider whitespace-nowrap">
-                                    Dokumentasi
+                                <th class="px-3 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-unib-blue-800 uppercase tracking-wider whitespace-nowrap">
+                                    Tanggal Mulai
+                                </th>
+                                <th class="px-3 md:px-6 py-3 text-center text-xs md:text-sm font-semibold text-unib-blue-800 uppercase tracking-wider whitespace-nowrap">
+                                    Aksi
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
-                            @forelse($kegiatan as $k)
+                            @forelse($kp as $item)
                                 <tr class="hover:bg-unib-blue-50 transition-colors duration-200">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="font-semibold text-gray-900 text-base">
-                                            {{ $k->mahasiswa->name }}
-                                        </div>
-                                        <div class="text-sm text-gray-500 mt-1">
-                                            {{ $k->mahasiswa->npm }}
+                                    <td class="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap">
+                                        <div class="font-semibold text-gray-900 text-sm md:text-base">
+                                            {{ optional($item->mahasiswa)->name ?? '-' }}
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="text-gray-900 text-base">
-                                            {{ \Illuminate\Support\Carbon::parse($k->tanggal_kegiatan)->locale('id')->translatedFormat('d F Y') }}
-                                        </span>
+                                    <td class="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap">
+                                        <div class="text-gray-900 text-sm md:text-base">
+                                            {{ optional($item->mahasiswa)->npm ?? '-' }}
+                                        </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-unib-blue-100 text-unib-blue-800 border border-unib-blue-300">
-                                            {{ $k->durasi_jam }} jam
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-gray-900 text-base break-words max-w-[300px] inline-block">
-                                            {{ $k->deskripsi_kegiatan }}
-                                            @if(strlen($k->deskripsi_kegiatan) > 100)
-                                                <button onclick="showFullDescription('{{ $k->deskripsi_kegiatan }}')" 
-                                                        class="text-unib-blue-600 hover:text-unib-blue-800 text-sm ml-1">
+                                    <td class="px-3 md:px-6 py-3 md:py-4">
+                                        <span class="text-gray-900 text-sm md:text-base break-words max-w-[200px] md:max-w-[300px] inline-block">
+                                            {{ $item->judul_kp ?? '-' }}
+                                            @if($item->judul_kp && strlen($item->judul_kp) > 100)
+                                                <button onclick="showFullDescription('{{ $item->judul_kp }}')" 
+                                                        class="text-unib-blue-600 hover:text-unib-blue-800 text-xs md:text-sm ml-1">
                                                     selengkapnya
                                                 </button>
                                             @endif
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 text-center whitespace-nowrap">
-                                        @if($k->file_dokumentasi)
-                                            <a href="{{ \Illuminate\Support\Facades\Storage::url($k->file_dokumentasi) }}" 
-                                               target="_blank" 
-                                               class="inline-block transform hover:scale-105 transition duration-200">
-                                                <img 
-                                                    src="{{ \Illuminate\Support\Facades\Storage::url($k->file_dokumentasi) }}" 
-                                                    alt="Dokumentasi Kegiatan" 
-                                                    class="w-16 h-16 object-cover rounded-lg border border-unib-blue-200 cursor-pointer hover:opacity-75 transition duration-200 hover:shadow-md"
-                                                    loading="lazy"
-                                                >
-                                            </a>
+                                    <td class="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap">
+                                        @php
+                                            $displayStatus = $item->status ?? 'pengajuan';
+                                            if ($item->status === 'sedang_kp' && $item->nilai_akhir && $item->file_laporan) {
+                                                $displayStatus = 'selesai';
+                                            }
+                                        @endphp
+                                        @if($displayStatus === \App\Models\KerjaPraktek::STATUS_DISETUJUI || $displayStatus === 'disetujui')
+                                            <span class="inline-flex items-center px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium bg-blue-100 text-blue-800 border border-blue-300">
+                                                <i class="fas fa-check-circle mr-1"></i> Disetujui
+                                            </span>
+                                        @elseif($displayStatus === \App\Models\KerjaPraktek::STATUS_DITOLAK || $displayStatus === 'ditolak')
+                                            <span class="inline-flex items-center px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium bg-red-100 text-red-800 border border-red-300">
+                                                <i class="fas fa-times-circle mr-1"></i> Ditolak
+                                            </span>
+                                        @elseif($displayStatus === \App\Models\KerjaPraktek::STATUS_SEDANG_KP || $displayStatus === 'sedang_kp')
+                                            <span class="inline-flex items-center px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium bg-emerald-100 text-emerald-800 border border-emerald-300 whitespace-nowrap">
+                                                <i class="fas fa-play-circle mr-1"></i> Sedang KP
+                                            </span>
+                                        @elseif($displayStatus === \App\Models\KerjaPraktek::STATUS_SELESAI || $displayStatus === 'selesai')
+                                            <span class="inline-flex items-center px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                                                <i class="fas fa-flag-checkered mr-1"></i> Selesai
+                                            </span>
                                         @else
-                                            <span class="text-gray-500 text-base">-</span>
+                                            <span class="inline-flex items-center px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1"></i> Pengajuan
+                                            </span>
                                         @endif
+                                    </td>
+                                    <td class="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap">
+                                        <span class="text-gray-900 text-sm md:text-base">
+                                            {{ $item->created_at ? $item->created_at->locale('id')->translatedFormat('d F Y') : '-' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-3 md:px-6 py-3 md:py-4 text-center whitespace-nowrap">
+                                        <div class="flex flex-col sm:flex-row items-center justify-center gap-1 md:gap-3">
+                                            <a href="{{ route('pengawas.mahasiswa.show', $item) }}"
+                                               class="text-unib-blue-600 hover:text-unib-blue-800 whitespace-nowrap transition-colors duration-200 text-xs md:text-sm">
+                                                <i class="fas fa-eye mr-1"></i> Detail
+                                            </a>
+
+                                            @if($item->file_kartu_implementasi && !$item->acc_pembimbing_lapangan)
+                                                <form method="POST" action="{{ route('pengawas.mahasiswa.acc-kartu', $item) }}">
+                                                    @csrf
+                                                    <button
+                                                        onclick="return confirm('ACC kartu implementasi?')"
+                                                        class="text-green-600 hover:text-green-800 transition-colors duration-200 text-xs md:text-sm"
+                                                    >
+                                                        <i class="fas fa-check mr-1"></i> ACC Kartu
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-16 text-gray-500 animate-fade-in-up">
+                                    <td colspan="6" class="text-center py-8 md:py-16 text-gray-500 animate-fade-in-up">
                                         <div class="flex flex-col items-center justify-center">
                                             <!-- DotLottie Animation -->
-                                            <div class="mb-6 lottie-container">
+                                            <div class="mb-4 md:mb-6 lottie-container">
                                                 <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js" type="module"></script>
                                                 <dotlottie-wc 
                                                     src="https://lottie.host/f4be40d9-971a-446d-9d51-ed1128f637ef/8YGejDufWD.lottie" 
-                                                    style="width: 300px; height: 300px;" 
+                                                    style="width: 200px; height: 200px;" 
                                                     autoplay 
                                                     loop>
                                                 </dotlottie-wc>
                                             </div>
-                                            <div class="text-lg font-medium text-gray-900 mb-2">Tidak Ada Kegiatan</div>
-                                            <p class="text-base text-gray-600 max-w-md mx-auto">
-                                                Belum ada kegiatan yang tercatat.
+                                            <div class="text-base md:text-lg font-medium text-gray-900 mb-2">Tidak Ada Mahasiswa</div>
+                                            <p class="text-sm md:text-base text-gray-600 max-w-md mx-auto px-4">
+                                                Belum ada mahasiswa yang tercatat untuk tempat ini.
                                             </p>
-                                            @if(request()->filled('search') || request()->filled('periode'))
-                                                <button onclick="window.location.href='{{ route('pengawas.kegiatan.index') }}'" 
-                                                        class="mt-6 bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-3 rounded-lg text-base font-medium shadow-md transform hover:scale-105 transition duration-200 flex items-center justify-center">
+                                            @if(request()->filled('search') || request()->filled('status'))
+                                                <button onclick="window.location.href='{{ request()->url() }}'" 
+                                                        class="mt-4 md:mt-6 bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg text-sm md:text-base font-medium shadow-md transform hover:scale-105 transition duration-200 flex items-center justify-center">
                                                     Reset Filter
                                                 </button>
                                             @endif
@@ -202,37 +240,36 @@
                 </div>
 
                 {{-- Pagination --}}
-                <div class="p-6 border-t bg-unib-blue-50">
+                <div class="p-4 md:p-6 border-t bg-unib-blue-50">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <p class="text-sm text-unib-blue-700">
-                            Menampilkan {{ $kegiatan->firstItem() }} - {{ $kegiatan->lastItem() }} dari {{ $kegiatan->total() }} hasil
+                        <p class="text-xs md:text-sm text-unib-blue-700">
+                            Menampilkan {{ $kp->firstItem() }} - {{ $kp->lastItem() }} dari {{ $kp->total() }} hasil
                         </p>
-                        <div class="flex space-x-1">
-                            {{ $kegiatan->withQueryString()->links() }}
+                        <div class="flex space-x-1 overflow-x-auto">
+                            {{ $kp->links() }}
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
     {{-- Modal untuk deskripsi lengkap --}}
     <div id="descriptionModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-95 border border-unib-blue-200 max-h-[80vh] overflow-hidden">
-            <div class="p-6">
+            <div class="p-4 md:p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-gray-900">Deskripsi Lengkap Kegiatan</h3>
+                    <h3 class="text-base md:text-lg font-bold text-gray-900">Judul KP Lengkap</h3>
                     <button onclick="closeDescriptionModal()" class="text-gray-400 hover:text-gray-600 text-xl">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div class="mb-6">
-                    <p id="fullDescription" class="text-gray-700 text-base leading-relaxed max-h-60 overflow-y-auto"></p>
+                <div class="mb-4 md:mb-6">
+                    <p id="fullDescription" class="text-gray-700 text-sm md:text-base leading-relaxed max-h-60 overflow-y-auto"></p>
                 </div>
                 <div class="flex justify-end">
                     <button onclick="closeDescriptionModal()" 
-                            class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md transition duration-200">
+                            class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium shadow-md transition duration-200">
                         Tutup
                     </button>
                 </div>
@@ -279,12 +316,8 @@
         }
         
         /* Responsive design */
-        @media (max-width: 768px) {
+        @media (max-width: 640px) {
             .grid-cols-1 {
-                grid-template-columns: 1fr;
-            }
-            
-            .md\:grid-cols-4 {
                 grid-template-columns: 1fr;
             }
             
@@ -293,29 +326,14 @@
                 overflow-x: auto;
             }
             
-            .px-6 {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-            
-            .py-4 {
-                padding-top: 1rem;
-                padding-bottom: 1rem;
-            }
-            
-            .text-base {
-                font-size: 0.875rem;
-                line-height: 1.25rem;
-            }
-            
             .lottie-container dotlottie-wc {
-                width: 200px !important;
-                height: 200px !important;
+                width: 150px !important;
+                height: 150px !important;
             }
             
             /* Responsive table adjustments */
             table {
-                font-size: 0.875rem;
+                font-size: 0.75rem;
             }
             
             .flex.items-end.gap-3 {
@@ -327,20 +345,37 @@
             }
         }
         
-        @media (max-width: 640px) {
-            .px-6 {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
+        @media (max-width: 480px) {
+            .px-3 {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
             }
             
-            .py-4 {
-                padding-top: 0.75rem;
-                padding-bottom: 0.75rem;
+            .py-3 {
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
             }
             
             .lottie-container dotlottie-wc {
-                width: 150px !important;
-                height: 150px !important;
+                width: 120px !important;
+                height: 120px !important;
+            }
+        }
+        
+        /* Custom breakpoint for very small screens */
+        @media (max-width: 360px) {
+            .text-xs {
+                font-size: 0.7rem;
+            }
+            
+            .px-2 {
+                padding-left: 0.4rem;
+                padding-right: 0.4rem;
+            }
+            
+            .py-1 {
+                padding-top: 0.25rem;
+                padding-bottom: 0.25rem;
             }
         }
     </style>

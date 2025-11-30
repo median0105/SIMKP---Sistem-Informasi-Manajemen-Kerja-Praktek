@@ -2,12 +2,9 @@
     <x-slot name="header">
         <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    <i class="fas fa-user-circle text-white"></i>
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
-                        {{ __('Profile Management') }}
+                        {{ __('Informasi Pengguna') }}
                     </h2>
                     <p class="text-blue-100 text-sm mt-1">
                         Kelola informasi profil dan keamanan akun Anda
@@ -27,7 +24,7 @@
                         Informasi Profil
                     </h3>
                     <div class="inline-flex items-center px-4 py-2 rounded-full text-base font-semibold bg-white/20 backdrop-blur-sm text-white border border-white/30 shadow-sm whitespace-nowrap">
-                        <i class="fas fa-user mr-2"></i>Profile Data
+                        <i class="fas fa-user mr-2"></i>Data Pengguna
                     </div>
                 </div>
                 <div class="p-6">

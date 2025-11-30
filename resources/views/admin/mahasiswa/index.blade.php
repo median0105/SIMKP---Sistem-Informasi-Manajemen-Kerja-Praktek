@@ -5,9 +5,6 @@
  <x-slot name="header">
     <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
         <div class="flex items-center space-x-3">
-            <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                <!-- Ikon dihapus -->
-            </div>
             <div>
                 <h2 class="font-bold text-xl leading-tight">
                     Daftar Mahasiswa Bimbingan
@@ -93,7 +90,7 @@
                                         <th class="px-6 py-4 text-left text-base font-semibold text-unib-blue-800 uppercase tracking-wider">
                                             Judul KP
                                         </th>
-                                        <th class="px-6 py-4 text-left text-base font-semibold text-unib-blue-800 uppercase tracking-wider">
+                                        <th class="px-6 py-4 text-left text-base font-semibold text-unib-blue-800 uppercase tracking-wider whitespace-nowrap">
                                             Status KP
                                         </th>
                                         <th class="px-6 py-4 text-left text-base font-semibold text-unib-blue-800 uppercase tracking-wider">
@@ -144,7 +141,7 @@
                                                     {{ $kp->judul_kp ?? '-' }}
                                                 </span>
                                             </td>
-                                            <td class="px-6 py-4">
+                                            <td class="px-6 py-4 whitespace-nowrap">
                                                 @if($status)
                                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $statusClass }} border shadow-sm">
                                                         {{ $statusLabel }}

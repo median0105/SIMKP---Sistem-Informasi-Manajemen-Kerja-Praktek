@@ -4,9 +4,6 @@
     <x-slot name="header">
         <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    <!-- Ikon dihapus sesuai pattern -->
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Kegiatan Mahasiswa Bimbingan
@@ -62,7 +59,7 @@
                             <p class="text-sm font-medium text-gray-600">Total Kegiatan</p>
                             <p class="text-2xl font-bold text-unib-blue-600 mt-2">{{ $kegiatan->total() }}</p>
                         </div>
-                        <div class="bg-gradient-to-r from-unib-blue-100 to-unib-blue-200 rounded-full p-3">
+                        <div class="bg-gradient-to-r from-unib-blue-100 to-unib-blue-200 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                             <i class="fas fa-tasks text-unib-blue-600 text-xl"></i>
                         </div>
                     </div>
@@ -75,7 +72,7 @@
                             <p class="text-sm font-medium text-gray-600">Total Durasi</p>
                             <p class="text-2xl font-bold text-green-600 mt-2">{{ $kegiatan->sum('durasi_jam') }} jam</p>
                         </div>
-                        <div class="bg-gradient-to-r from-green-100 to-green-200 rounded-full p-3">
+                        <div class="bg-gradient-to-r from-green-100 to-green-200 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                             <i class="fas fa-clock text-green-600 text-xl"></i>
                         </div>
                     </div>
@@ -88,7 +85,7 @@
                             <p class="text-sm font-medium text-gray-600">Mahasiswa Aktif</p>
                             <p class="text-2xl font-bold text-purple-600 mt-2">{{ $kegiatan->unique('mahasiswa_id')->count() }}</p>
                         </div>
-                        <div class="bg-gradient-to-r from-purple-100 to-purple-200 rounded-full p-3">
+                        <div class="bg-gradient-to-r from-purple-100 to-purple-200 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                             <i class="fas fa-user-graduate text-purple-600 text-xl"></i>
                         </div>
                     </div>
@@ -101,7 +98,7 @@
                             <p class="text-sm font-medium text-gray-600">Perusahaan</p>
                             <p class="text-2xl font-bold text-teknik-orange-600 mt-2">{{ $kegiatan->unique('kerja_praktek_id')->count() }}</p>
                         </div>
-                        <div class="bg-gradient-to-r from-teknik-orange-100 to-teknik-orange-200 rounded-full p-3">
+                        <div class="bg-gradient-to-r from-teknik-orange-100 to-teknik-orange-200 rounded-full p-3 w-10 h-10 flex items-center justify-center">
                             <i class="fas fa-building text-teknik-orange-600 text-xl"></i>
                         </div>
                     </div>

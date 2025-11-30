@@ -4,9 +4,6 @@
 <x-slot name="header">
     <div class="flex items-center justify-between bg-unib-blue-600 text-white p-4 rounded-lg shadow-lg">
         <div class="flex items-center space-x-3">
-            <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                <!-- Icon bisa ditambahkan di sini -->
-            </div>
             <div>
                 <h2 class="font-bold text-xl leading-tight">
                     Kegiatan Saya

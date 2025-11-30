@@ -13,6 +13,7 @@
                 autoplay 
                 loop>
             </dotlottie-wc>
+            
         </div>
     </div>
 </div>
@@ -230,12 +231,12 @@
                             @if($bimbingan->status_verifikasi)
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-300">
                                     <i class="fas fa-check mr-1"></i>
-                                    Verified
+                                    Terverifikasi
                                 </span>
                             @else
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-300">
                                     <i class="fas fa-clock mr-1"></i>
-                                    Pending
+                                    Tertunda
                                 </span>
                             @endif
                         </div>

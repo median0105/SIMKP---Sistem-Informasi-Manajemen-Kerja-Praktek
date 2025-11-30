@@ -3,9 +3,6 @@
     <x-slot name="header">
         <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    <!-- Ikon dihapus -->
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         {{ __('Kerja Praktek') }}
@@ -23,8 +20,8 @@
                 <div class="bg-white overflow-hidden shadow-xl rounded-2xl border border-unib-blue-100 animate-fade-in-up">
                     <div class="p-8 bg-white">
                         <div class="flex items-center mb-8">
-                            <div class="bg-gradient-to-r from-unib-blue-500 to-unib-blue-600 p-3 rounded-xl mr-4">
-                                <i class="fas fa-file-alt text-white text-2xl"></i>
+                            <div class="bg-gradient-to-r from-unib-blue-500 to-unib-blue-600 rounded-xl mr-4 w-14 h-14 flex items-center justify-center shadow-sm">
+                                 <i class="fas fa-file-alt text-white text-2xl"></i>
                             </div>
                             <div>
                                 <h3 class="text-2xl font-bold text-gray-900">Pengajuan Kerja Praktek</h3>
@@ -350,7 +347,7 @@
                 <div class="bg-white overflow-hidden shadow-xl rounded-2xl border border-unib-blue-100 mb-8 animate-fade-in-up">
                     <div class="p-8 bg-white">
                         <div class="flex items-center mb-8">
-                            <div class="bg-gradient-to-r from-unib-blue-500 to-unib-blue-600 p-3 rounded-xl mr-4">
+                            <div class="bg-gradient-to-r from-unib-blue-500 to-unib-blue-600 rounded-xl mr-4 w-14 h-14 flex items-center justify-center shadow-sm">
                                 <i class="fas fa-clipboard-check text-white text-2xl"></i>
                             </div>
                             <div>

@@ -8,9 +8,6 @@
                    class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg inline-flex items-center transition duration-200 backdrop-blur-sm border border-white/30">
                     <i class="fas fa-arrow-left mr-2"></i>Kembali
                 </a>
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    <!-- Ikon dihapus -->
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Detail Mahasiswa
@@ -42,19 +39,19 @@
                                 @include('components.kp-status-badge',['status'=>$displayStatus])
                             </div>
                         </div>
-                        <div class="text-sm text-gray-600 text-right">
-                            <div class="flex items-center">
-                                <i class="fas fa-calendar-alt mr-2 text-unib-blue-400"></i>
-                                Mulai: {{ $kp->tanggal_mulai ? $kp->tanggal_mulai->locale('id')->translatedFormat('d F Y') : '-' }}
-                            </div>
-                        </div>
+                        <div class="text-sm text-gray-600">
+                    <div class="flex items-center justify-end">
+                        <i class="fas fa-calendar-alt mr-2 text-unib-blue-400 w-4 text-center"></i>
+                        <span class="whitespace-nowrap">Mulai: {{ $kp->created_at ? $kp->created_at->locale('id')->translatedFormat('d F Y') : '-' }}</span>
                     </div>
+                </div>
+            </div>
 
                     {{-- Status Indicators --}}
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                         <div class="text-center border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition duration-150">
                             <div class="w-12 h-12 mx-auto rounded-full flex items-center justify-center {{ $kp->file_laporan ? 'bg-green-100 text-green-700 border border-green-200':'bg-gray-100 text-gray-500 border border-gray-200' }}">
-                                <!-- Ikon dihapus -->
+                                <i class="fas fa-file-alt"></i>
                             </div>
                             <div class="mt-3 font-medium text-gray-900">Laporan</div>
                             <div class="text-sm text-gray-600">{{ $kp->file_laporan ? 'Sudah upload' : 'Belum upload' }}</div>
@@ -62,7 +59,7 @@
 
                         <div class="text-center border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition duration-150">
                             <div class="w-12 h-12 mx-auto rounded-full flex items-center justify-center {{ $kp->acc_seminar ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-gray-100 text-gray-500 border border-gray-200' }}">
-                                <!-- Ikon dihapus -->
+                                <i class="fas fa-microphone"></i>
                             </div>
                             <div class="mt-3 font-medium text-gray-900">Seminar</div>
                             <div class="text-sm text-gray-600">
@@ -91,7 +88,7 @@
 
                         <div class="text-center border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition duration-150">
                             <div class="w-12 h-12 mx-auto rounded-full flex items-center justify-center {{ $kp->nilai_akhir ? 'bg-blue-100 text-blue-700 border border-blue-200':'bg-gray-100 text-gray-500 border border-gray-200' }}">
-                                <!-- Ikon dihapus -->
+                               <i class="fas fa-graduation-cap"></i>
                             </div>
                             <div class="mt-3 font-medium text-gray-900">Hasil Akhir</div>
                             <div class="text-sm text-gray-600">
@@ -106,14 +103,14 @@
 
                     {{-- Feedback Form --}}
                     <div class="mt-6 pt-6 border-t border-gray-200">
-                        <h4 class="text-base font-semibold text-gray-900 mb-3">Feedback Pembimbing Lapangan</h4>
+                        <h4 class="text-base font-semibold text-gray-900 mb-3">Masukan Pembimbing Lapangan</h4>
                         <form method="POST" action="{{ route('pengawas.mahasiswa.feedback', $kp) }}" class="space-y-4">
                             @csrf
                             <textarea name="catatan_pengawas" rows="4" 
                                       class="w-full border-gray-300 rounded-lg shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 px-4 py-3 text-base transition duration-200"
                                       placeholder="Tulis catatan/masukan...">{{ old('catatan_pengawas', $kp->catatan_pengawas) }}</textarea>
                             <button class="bg-unib-blue-600 hover:bg-unib-blue-700 text-white px-6 py-3 rounded-lg text-base font-medium transition duration-200 flex items-center">
-                                <i class="fas fa-save mr-2"></i>Simpan Feedback
+                                <i class="fas fa-save mr-2"></i>Simpan Masukan
                             </button>
                         </form>
                     </div>
@@ -200,8 +197,8 @@
                         <div class="space-y-4">
                             @foreach($kp->mahasiswa->kegiatan as $kegiatan)
                                 <div class="flex items-start space-x-4 py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50 rounded-lg px-3 transition duration-150">
-                                    <div class="bg-purple-100 rounded-full p-3 mt-1 border border-purple-200">
-                                        <!-- Ikon dihapus -->
+                                    <div class="bg-purple-100  border border-purple-200 rounded-full p-3 w-10 h-10 flex items-center justify-center">
+                                        <i class="fas fa-paperclip"></i>
                                     </div>
                                     <div class="flex-1">
                                         <p class="text-gray-900 font-medium">{{ Str::limit($kegiatan->deskripsi_kegiatan, 100) }}</p>

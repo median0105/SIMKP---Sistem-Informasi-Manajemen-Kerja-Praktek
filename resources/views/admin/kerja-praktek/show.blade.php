@@ -7,9 +7,6 @@
                    class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg inline-flex items-center backdrop-blur-sm transition duration-200 border border-white/30">
                     <i class="fas fa-arrow-left mr-2"></i>Kembali
                 </a>
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    <!-- Ikon dihapus sesuai pattern -->
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Detail Kerja Praktek - {{ $kerjaPraktek->mahasiswa->name }}
@@ -216,7 +213,7 @@
                             @if($kerjaPraktek->status === 'sedang_kp')
                                 <button type="button" onclick="sendReminder({{ $kerjaPraktek->id }})"
                                         class="bg-yellow-600 hover:bg-yellow-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-md transform hover:scale-105 transition duration-200 flex items-center">
-                                    <i class="fas fa-bell mr-2"></i>Kirim Reminder
+                                    <i class="fas fa-bell mr-2"></i>Kirim Pengingat
                                 </button>
                             @endif
                         </div>
@@ -409,9 +406,9 @@
                                     <div class="flex justify-between items-start mb-2">
                                         <h4 class="font-medium text-gray-900">{{ $bimbingan->topik_bimbingan }}</h4>
                                         @if($bimbingan->status_verifikasi)
-                                            <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">Verified</span>
+                                            <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">Terverifikasi</span>
                                         @else
-                                            <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">Pending</span>
+                                            <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">Tertunda</span>
                                         @endif
                                     </div>
                                     <p class="text-sm text-gray-600 mb-2">{{ $bimbingan->tanggal_bimbingan->locale('id')->translatedFormat('d F Y') }}</p>

@@ -10,7 +10,7 @@
            
             <div>
                 <h2 class="font-bold text-xl leading-tight">
-                    Daftar KP {{ $status ? '— '.strtoupper(str_replace('_',' ',$status)) : '' }}
+                    Daftar Kerja Praktek {{ $status ? '— '.strtoupper(str_replace('_',' ',$status)) : '' }}
                 </h2>
             </div>
         </div>

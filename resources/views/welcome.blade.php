@@ -1209,8 +1209,8 @@
                         @if (Route::has('login'))
                             @auth
                                 <a href="{{ url('/dashboard') }}" class="header-btn header-btn-primary">
-                                    <i class="fas fa-tachometer-alt"></i>
-                                    Dashboard
+                                    <i class="fas fa-home"></i>
+                                    Beranda
                                 </a>
                             @else
                                 <a href="{{ route('login') }}" class="header-btn header-btn-primary">

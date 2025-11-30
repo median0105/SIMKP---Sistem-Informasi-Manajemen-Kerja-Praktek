@@ -8,9 +8,6 @@
                     <i class="fas fa-arrow-left mr-1.5"></i>Kembali
                 </a>
                 <div class="flex items-center space-x-2">
-                    <div class="bg-white/20 p-1.5 rounded-full backdrop-blur-sm">
-                   
-                    </div>
                     <div>
                         <h2 class="font-bold text-lg leading-tight">
                             Detail Kuisioner

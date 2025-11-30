@@ -4,9 +4,6 @@
     <x-slot name="header">
         <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                  
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Manajemen User
@@ -154,7 +151,7 @@
                                         <td class="px-6 py-4">
                                             <span class="text-gray-900 text-base">{{ $user->email }}</span>
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             @php
                                                 $r = $user->role;
                                                 [$rlbl,$rcls,$ricon] = $roleMap[$r] ?? [$r,'bg-gray-100 text-gray-800 border-gray-300', 'fas fa-user'];

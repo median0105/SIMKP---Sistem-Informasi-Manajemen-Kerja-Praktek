@@ -7,9 +7,6 @@
                    class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg inline-flex items-center backdrop-blur-sm transition duration-200 border border-white/30 text-sm">
                     <i class="fas fa-arrow-left mr-2"></i>Kembali
                 </a>
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    <!-- Ikon dihapus sesuai pattern -->
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Tambah Bimbingan

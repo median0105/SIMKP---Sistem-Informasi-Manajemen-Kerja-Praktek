@@ -104,7 +104,7 @@
                             <p class="text-2xl font-bold text-unib-blue-600 mt-2">{{ $stats['total_bimbingan'] }}</p>
                         </div>
                         <div class="bg-unib-blue-100 rounded-full p-3 w-12 h-12 flex items-center justify-center">
-                            <!-- Ikon dihapus -->
+                            <i class="fas fa-comments text-blue-600"></i>
                         </div>
                     </div>
                 </div>
@@ -116,7 +116,7 @@
                             <p class="text-2xl font-bold text-green-600 mt-2">{{ $stats['bimbingan_verified'] }}</p>
                         </div>
                         <div class="bg-green-100 rounded-full p-3 w-12 h-12 flex items-center justify-center">
-                            <!-- Ikon dihapus -->
+                            <i class="fas fa-check text-green-600"></i>
                         </div>
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                             <p class="text-2xl font-bold text-purple-600 mt-2">{{ $stats['total_kegiatan'] }}</p>
                         </div>
                         <div class="bg-purple-100 rounded-full p-3 w-12 h-12 flex items-center justify-center">
-                            <!-- Ikon dihapus -->
+                            <i class="fas fa-tasks text-purple-600"></i>
                         </div>
                     </div>
                 </div>
@@ -140,7 +140,7 @@
                             <p class="text-2xl font-bold text-orange-600 mt-2">{{ $stats['total_jam_kegiatan'] }}</p>
                         </div>
                         <div class="bg-orange-100 rounded-full p-3 w-12 h-12 flex items-center justify-center">
-                            <!-- Ikon dihapus -->
+                            <i class="fas fa-clock text-orange-600"></i>
                         </div>
                     </div>
                 </div>
@@ -167,7 +167,7 @@
                                 <div class="flex items-center">
                                     <div class="w-2 h-2 bg-unib-blue-500 rounded-full mr-3"></div>
                                     <div>
-                                        <p class="text-sm text-gray-500">Judul KP</p>
+                                        <p class="text-sm text-gray-500">Judul Kerja Praktek</p>
                                         <p class="font-medium text-gray-900">{{ $kp->judul_kp }}</p>
                                     </div>
                                 </div>
@@ -266,7 +266,7 @@
                                 @if($kp->status === 'sedang_kp')
                                     <button onclick="sendReminder({{ $kp->id }})" 
                                             class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 flex items-center">
-                                        <i class="fas fa-bell mr-2"></i>Kirim Reminder
+                                        <i class="fas fa-bell mr-2"></i>Kirim Pengingat
                                     </button>
                                 @endif
                                 <a href="{{ route('admin.kerja-praktek.show', $kp) }}" 

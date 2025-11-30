@@ -3,9 +3,6 @@
     <x-slot name="header">
         <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    <!-- Ikon dihapus sesuai pattern -->
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Verifikasi Kerja Praktek
@@ -155,7 +152,7 @@
                                                 @endif
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             @php
                                                 // Status mapping with UNIB colors
                                                 $statusMap = [
@@ -171,7 +168,7 @@
                                                 {{ $statusLabel }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 text-base">
                                                 {{ optional($kp->created_at)->locale('id')->translatedFormat('d F Y') }}
                                             </span>
@@ -208,7 +205,7 @@
                                                     <button type="button" onclick="sendReminder({{ $kp->id }})"
                                                             class="text-teknik-orange-600 hover:text-teknik-orange-800 text-base font-medium flex items-center px-3 py-2 rounded-lg hover:bg-orange-100 transition duration-200"
                                                             title="Kirim Reminder">
-                                                        Reminder
+                                                        Pengingat
                                                     </button>
                                                 @endif
                                             </div>

@@ -7,9 +7,6 @@
                    class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg inline-flex items-center transition duration-200 backdrop-blur-sm border border-white/30">
                     <i class="fas fa-arrow-left mr-2"></i>Kembali ke Daftar
                 </a>
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    <!-- Ikon dihapus -->
-                </div>
                 <div>
                     <h2 class="font-bold text-xl leading-tight">
                         Detail Bimbingan
@@ -32,11 +29,11 @@
                         </h3>
                         @if($bimbingan->status_verifikasi)
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-300 shadow-sm">
-                                <i class="fas fa-check mr-2 text-xs"></i>Verified
+                                <i class="fas fa-check mr-2 text-xs"></i>Terverifikasi
                             </span>
                         @else
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-300 shadow-sm">
-                                <i class="fas fa-clock mr-2 text-xs"></i>Pending
+                                <i class="fas fa-clock mr-2 text-xs"></i>Tertunda
                             </span>
                         @endif
                     </div>
@@ -49,7 +46,7 @@
                             <div>
                                 <p class="text-sm text-gray-500">Tanggal Bimbingan</p>
                                 <p class="font-medium text-gray-900">
-                                    {{ optional($bimbingan->tanggal_bimbingan)->format('d M Y H:i') ?? '-' }}
+                                    {{ optional($bimbingan->tanggal_bimbingan)->locale('id')->translatedFormat('d F Y') ?? '-' }}
                                 </p>
                             </div>
                         </div>
@@ -58,7 +55,7 @@
                             <div>
                                 <p class="text-sm text-gray-500">Dibuat</p>
                                 <p class="font-medium text-gray-900">
-                                    {{ $bimbingan->created_at->format('d M Y H:i') }}
+                                    {{ $bimbingan->created_at->locale('id')->translatedFormat('d F Y') }}
                                 </p>
                             </div>
                         </div>
@@ -78,7 +75,7 @@
                         <div>
                             <p class="text-sm font-medium text-gray-700 mb-2 flex items-center">
                                 <i class="fas fa-comment-dots mr-2 text-unib-blue-500"></i>
-                                Feedback Dosen
+                                Masukan dari Dosen
                             </p>
                             @if($bimbingan->catatan_dosen)
                                 <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
@@ -86,7 +83,7 @@
                                 </div>
                             @else
                                 <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                    <p class="text-gray-500 text-sm italic">Belum ada feedback dosen.</p>
+                                    <p class="text-gray-500 text-sm italic">Belum ada Masukan dosen.</p>
                                 </div>
                             @endif
                         </div>

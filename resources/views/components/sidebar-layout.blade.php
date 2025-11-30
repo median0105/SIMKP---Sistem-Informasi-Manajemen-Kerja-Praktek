@@ -8,7 +8,7 @@
     <title>SIMKP - Sistem Informasi Manajemen Kerja Praktek</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('storage/unib.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo Unib.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

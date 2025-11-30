@@ -64,7 +64,7 @@
                     
                         <select name="tempat_magang_id"
                                 class="w-full border-gray-300 rounded-lg shadow-sm focus:border-unib-blue-500 focus:ring-unib-blue-500 px-4 py-3 text-base transition duration-200">
-                            <option value="">Semua Tempat Magang</option>
+                            <option value="">Semua Instansi</option>
                             @foreach($tempatMagang as $tm)
                                 <option value="{{ $tm->id }}" {{ $tempat_magang_id == $tm->id ? 'selected' : '' }}>
                                     {{ $tm->nama_perusahaan }}
@@ -147,7 +147,7 @@
                         <tbody class="divide-y divide-gray-200 bg-white">
                             @forelse($kerjaPrakteks as $kp)
                                 <tr class="hover:bg-unib-blue-50 transition duration-150 group">
-                                    <td class="px-4 py-3 whitespace-nowrap min-w-[150px]">
+                                    <td data-label="Mahasiswa" class="px-4 py-3 whitespace-nowrap min-w-[150px]">
                                         <div class="font-semibold text-gray-900 text-sm group-hover:text-unib-blue-700 transition-colors">
                                             {{ $kp->mahasiswa->name }}
                                         </div>
@@ -155,12 +155,12 @@
                                             {{ $kp->mahasiswa->npm }}
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 min-w-[200px]">
+                                    <td data-label="Judul KP" class="px-4 py-3">
                                         <span class="text-gray-900 text-sm group-hover:text-unib-blue-700 transition-colors">
                                             {{ \Illuminate\Support\Str::limit($kp->judul_kp, 60) }}
                                         </span>
                                     </td>
-                                    <td class="px-4 py-3 min-w-[180px]">
+                                    <td data-label="Duplikat" class="px-4 py-3">
                                         @if($kp->duplicate_info && count($kp->duplicate_info) > 0)
                                             <div class="space-y-1">
                                                 @foreach($kp->duplicate_info as $duplicate)
@@ -175,12 +175,12 @@
                                             </div>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3 whitespace-nowrap min-w-[150px]">
+                                    <td data-label="Tempat Magang" class="px-4 py-3">
                                         <span class="text-gray-900 text-sm group-hover:text-unib-blue-700 transition-colors">
                                             {{ $kp->pilihan_tempat == 3 ? ($kp->tempat_magang_sendiri ?? '-') : ($kp->tempatMagang->nama_perusahaan ?? '-') }}
                                         </span>
                                     </td>
-                                    <td class="px-4 py-3 whitespace-nowrap min-w-[180px]">
+                                    <td data-label="Dosen Pembimbing" class="px-4 py-3">
                                         @php
                                             $pembimbing = $kp->dosenPembimbing->where('jenis_pembimbingan','akademik')->where('is_active', true)->first();
                                         @endphp
@@ -203,7 +203,7 @@
                                             </form>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3 whitespace-nowrap min-w-[180px]">
+                                    <td data-label="Dosen Penguji" class="px-4 py-3">
                                         @php
                                             $penguji = $kp->dosenPenguji->where('is_active', true)->first();
                                         @endphp
@@ -226,7 +226,7 @@
                                             </form>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3 whitespace-nowrap min-w-[120px]">
+                                    <td data-label="Status" class="px-4 py-3">
                                         @php
                                             $statusMap = [
                                                 'pengajuan' => ['bg-yellow-100 text-yellow-800 border-yellow-300'],
@@ -243,12 +243,12 @@
                                             {{ $statusKey === 'tidak_lulus' ? 'Tidak Lulus' : ucfirst($statusKey) }}
                                         </span>
                                     </td>
-                                    <td class="px-4 py-3 whitespace-nowrap min-w-[140px]">
+                                    <td data-label="Tanggal Dibuat" class="px-4 py-3">
                                         <span class="text-gray-900 text-sm group-hover:text-unib-blue-700 transition-colors">
                                             {{ $kp->created_at->locale('id')->translatedFormat('d F Y') }}
                                         </span>
                                     </td>
-                                    <td class="px-4 py-3 whitespace-nowrap min-w-[120px]">
+                                    <td data-label="Aksi" class="px-4 py-3">
                                         <div class="flex flex-col gap-1">
                                             @if($kp->status === 'ditolak')
                                                 <form method="POST" action="{{ route('superadmin.users.destroy-kp', [$kp->mahasiswa, $kp]) }}" onsubmit="return confirm('Hapus data KP ditolak ini?')" class="w-full">
@@ -392,6 +392,65 @@
         .overflow-x-auto::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
+        /* ====== RESPONSIVE FIX TANPA MERUBAH TAMPILAN ASLI ====== */
+
+/* Hilangkan scroll horizontal */
+
+/* Untuk layar kecil, table dibuat fleksibel */
+@media (max-width: 1024px) {
+
+    /* Bungkus tabel agar bisa shrink tanpa scroll */
+    table {
+        width: 100% !important;
+        min-width: auto !important;
+        display: block;
+    }
+
+    thead {
+        display: none; /* hide header di mobile */
+    }
+
+    tbody tr {
+        display: block;
+        margin-bottom: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 12px;
+        background: white;
+    }
+
+    tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 4px;
+        white-space: normal !important;
+        min-width: auto !important;
+        text-align: left;
+        border-bottom: 1px dashed #e5e7eb;
+    }
+
+    tbody td:last-child {
+        border-bottom: none;
+    }
+
+    /* Label otomatis dari data-label */
+    tbody td:before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: #1e3a8a;
+        margin-right: 12px;
+        text-transform: uppercase;
+        font-size: 12px;
+    }
+}
+
+/* RESPONSIVE FILTER FORM */
+@media (max-width: 768px) {
+    form.grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
     </style>
 
     <!-- DotLottie Web Component Script -->

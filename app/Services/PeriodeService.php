@@ -64,7 +64,7 @@ class PeriodeService
             return [
                 'can_access' => false,
                 'message' => 'Sistem Kerja Praktek belum dibuka, Periode akan dimulai pada ' . 
-                             $periode->tanggal_mulai_kp->format('d F Y'),
+                             $periode->tanggal_mulai_kp->locale('id')->translatedFormat('d F Y'),
                 'periode' => $periode
             ];
         }
@@ -74,7 +74,7 @@ class PeriodeService
             return [
                 'can_access' => false,
                 'message' => 'Periode Kerja Praktek telah berakhir pada ' . 
-                             $periode->tanggal_selesai_kp->format('d F Y'),
+                             $periode->tanggal_selesai_kp->locale('id')->translatedFormat('d F Y'),
                 'periode' => $periode
             ];
         }

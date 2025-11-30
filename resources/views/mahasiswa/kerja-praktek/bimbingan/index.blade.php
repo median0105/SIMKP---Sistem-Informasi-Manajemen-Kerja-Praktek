@@ -1,13 +1,7 @@
-mhs bimbingan
-
 <x-sidebar-layout>
-    {{-- Header section with UNIB blue gradient --}}
   <x-slot name="header">
     <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
         <div class="flex items-center space-x-3">
-            <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                <!-- Ikon dihapus -->
-            </div>
             <div>
                 <h2 class="font-bold text-xl leading-tight">
                     {{ __('Bimbingan Kerja Praktek') }}
@@ -19,7 +13,6 @@ mhs bimbingan
 
     <div class="py-8 bg-gradient-to-br from-unib-blue-50 to-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
             @if($kerjaPraktek && $kerjaPraktek->status === 'sedang_kp')
                 <!-- Tombol Tambah -->
                 <div class="mb-8 flex justify-end animate-fade-in-up">
@@ -63,21 +56,21 @@ mhs bimbingan
 
                                                 @if($item->status_verifikasi)
                                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-green-100 text-green-800 border border-green-300 shadow-sm">
-                                                        Verified
+                                                        Terverifikasi
                                                     </span>
                                                 @else
                                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-yellow-100 text-yellow-800 border border-yellow-300 shadow-sm">
-                                                        Pending
+                                                        Tertunda
                                                     </span>
                                                 @endif
                                             </div>
 
                                             <!-- Tanggal -->
                                             <div class="flex items-center text-sm text-gray-600 mb-4">
-                                                <div class="bg-unib-blue-100 p-2 rounded-lg mr-3">
-                                                    <i class="fas fa-calendar text-unib-blue-600"></i>
+                                                <div class="bg-unib-blue-100 p-3 mr-2 rounded-xl w-8 h-8 flex items-center justify-center "> 
+                                                    <i class="fas fa-calendar text-unib-blue-600 "></i>
                                                 </div>
-                                                {{ $item->tanggal_bimbingan->format('d F Y') }}
+                                                {{ $item->tanggal_bimbingan->locale('id')->translatedFormat('d F Y') }}
                                             </div>
 
                                             <!-- Catatan Mahasiswa -->
@@ -94,7 +87,7 @@ mhs bimbingan
                                             @if($item->catatan_dosen)
                                                 <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 shadow-sm transform transition-all duration-300 hover:shadow-md">
                                                     <p class="text-sm font-medium text-gray-600 mb-2">
-                                                        Feedback Dosen:
+                                                        Balasan dari Dosen:
                                                     </p>
                                                     <p class="text-gray-900 leading-relaxed">
                                                         {{ $item->catatan_dosen }}

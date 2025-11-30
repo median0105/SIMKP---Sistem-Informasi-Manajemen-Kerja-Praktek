@@ -3,13 +3,16 @@
     <x-slot name="header">
         <div class="flex items-center justify-between bg-unib-blue-600 text-white p-3 rounded-lg shadow-lg">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    
-                </div>
-                <div>
-                    <h2 class="font-bold text-xl leading-tight">
-                        Edit Sertifikat Pengawas Lapangan
-                    </h2>
+                <a href="{{ route('superadmin.sertifikat-pengawas.index') }}" 
+                   class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg inline-flex items-center transition duration-200 transform hover:scale-105 backdrop-blur-sm border border-white/30">
+                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                </a>
+                <div class="flex items-center space-x-3">
+                    <div>
+                        <h2 class="font-bold text-xl leading-tight">
+                            Edit Sertifikat Pengawas Lapangan
+                        </h2>
+                    </div>
                 </div>
             </div>
         </div>
